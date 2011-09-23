@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" lang="nb-NO">
+
+<h:head>
+
+	<title><ui:insert name="title" /> - Datahotell</title>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<link rel="stylesheet" type="text/css" href="#{resource['css:style.css']}" media="all" />
+	<link rel="stylesheet" type="text/css" href="#{resource['css:manager.css']}" media="all" />
+
+</h:head>
+<h:body>
+
+	<div id="page">
+
+		<div id="header">
+
+			<div id="parent">
+				<a href="http://www.difi.no/"><img src="#{resource['images:difi.png']}"
+					alt="Direktoratet for forvaltning og IKT (Difi)" /> </a>
+			</div>
+
+			<h1>
+				<h:link outcome="pretty:home" value="Datahotell" />
+			</h1>
+
+		</div>
+
+		<div id="menu">
+			<h:form>
+				<ul id="supmenu">
+					<h:panelGroup rendered="#{user.hasAccess}">
+						<li class="meta"><h:commandLink value="Logg ut" action="#{user.logout}" /></li>
+						<li class="meta">#{user.user.name}</li>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{!user.hasAccess}">
+						<li class="meta"><h:commandLink value="Logg inn" action="#{user.login(true)}" /></li>
+					</h:panelGroup>
+
+					<li><h:link outcome="pretty:home" value="Hjem" /></li>
+				</ul>
+
+			</h:form>
+
+		</div>
+
+		<div id="main">
+
+			<div id="content">
+				<h2>
+					<ui:insert name="title" />
+				</h2>
+
+				<h:messages style="color:red;margin:8px;" />
+
+				<ui:insert name="content">
+
+					<div class="split">
+
+						<div class="split_left">
+						<ui:insert name="left" />
+						</div>
+
+						<div class="split_right">
+						<ui:insert name="right" />
+						</div>
+					
+					</div>
+				
+				</ui:insert>
+			</div>
+
+			<div id="sidebar">
+				<ui:insert name="sidebar">
+					<h3>Oppgaver</h3>
+					
+					<ul class="tasks">
+						<ui:insert name="tasks" />
+					</ul>
+				
+				
+					<h3>Hjelpesenter</h3>
+
+					<p>
+						Gå til vårt
+						<h:link outcome="pretty:help" value="hjelpesenter" />
+						for å finne ut hva du kan gjøre om du ikke har CSV-fil å laste opp.
+					</p>
+				</ui:insert>
+			</div>
+
+		</div>
+
+		<div id="footer">
+			<p>
+				Driftes av <a href="http://www.difi.no/">Direktoratet for forvaltning og IKT (Difi)</a>.
+			</p>
+		</div>
+
+	</div>
+
+</h:body>
+</html>

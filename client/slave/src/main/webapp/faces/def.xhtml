@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Felttype: #{info.def.name}</ui:define>
+
+	<ui:define name="content">
+		<h3>Brukt i datasett</h3>
+
+		<ul>
+			<ui:repeat value="#{info.defDatasets}" var="d">
+				<li><h:link outcome="pretty:dataset" value="#{d.name}">
+						<f:param name="owner" value="#{d.owner}" />
+						<f:param name="group" value="#{d.group}" />
+						<f:param name="dataset" value="#{d.shortName}" />
+					</h:link><br /><span style="color: #999;">#{d.owner}/#{d.group}/#{d.shortName}</span></li>
+			</ui:repeat>
+		</ul>
+	</ui:define>
+</ui:composition>

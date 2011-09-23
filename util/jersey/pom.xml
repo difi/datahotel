@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>datahotel-util</artifactId>
+		<groupId>no.difi.datahotel</groupId>
+		<version>1.1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>datahotel-util-jersey</artifactId>
+	<groupId>no.difi.datahotel</groupId>
+	<packaging>jar</packaging>
+	<name>Data Hotel :: Util :: Jersey</name>
+
+	<dependencies>
+
+		<dependency>
+			<artifactId>datahotel-util-bridge</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<artifactId>datahotel-util-csv</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.svenson</groupId>
+			<artifactId>svenson</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+	</dependencies>
+
+</project>

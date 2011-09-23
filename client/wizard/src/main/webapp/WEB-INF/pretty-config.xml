@@ -1,0 +1,78 @@
+
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.0
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.0.xsd">
+
+	<!-- Begin RewriteRules -->
+    <rewrite trailingSlash="remove" />
+	<!-- <rewrite toCase="lowercase" /> -->
+
+    <url-mapping id="help">
+        <pattern value="/help" />
+        <view-id value="/faces/help/front.jsf" />
+        <action>#{user.login(false)}</action>
+    </url-mapping>
+	
+
+    <url-mapping id="home">
+        <pattern value="/" />
+        <view-id value="#{user.getFrontpage}" />
+        <action>#{user.login(false)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_group_new">
+        <pattern value="/manage/new" />
+        <view-id value="/faces/manage/group/new.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+
+    <url-mapping id="manage_group">
+        <pattern value="/manage/#{group : group.groupShortName}" />
+        <view-id value="/faces/manage/group/list.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_group_edit">
+        <pattern value="/manage/#{group : group.groupShortName}/edit" />
+        <view-id value="/faces/manage/group/edit.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_dataset_new">
+        <pattern value="/manage/#{group : group.groupShortName}/new" />
+        <view-id value="/faces/manage/dataset/new.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_dataset">
+        <pattern value="/manage/#{group : group.groupShortName}/#{dataset : dataset.datasetShortName}" />
+        <view-id value="/faces/manage/dataset/list.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_dataset_edit">
+        <pattern value="/manage/#{group : group.groupShortName}/#{dataset : dataset.datasetShortName}/edit" />
+        <view-id value="/faces/manage/dataset/edit.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_version">
+        <pattern value="/manage/#{group : group.groupShortName}/#{dataset : dataset.datasetShortName}/#{version : version.versionIdent}" />
+        <view-id value="/faces/manage/version/front.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_field_publish">
+        <pattern value="/manage/#{group : group.groupShortName}/#{dataset : dataset.datasetShortName}/#{version : version.versionIdent}/publish" />
+        <view-id value="/faces/manage/version/publish.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+    <url-mapping id="manage_field">
+        <pattern value="/manage/#{group : group.groupShortName}/#{dataset : dataset.datasetShortName}/#{version : version.versionIdent}/#{field : field.fieldIndex}" />
+        <view-id value="/faces/manage/version/field.jsf" />
+        <action>#{user.login(true)}</action>
+    </url-mapping>
+
+</pretty-config>

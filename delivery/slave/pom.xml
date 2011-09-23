@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>datahotel-delivery</artifactId>
+		<groupId>no.difi.datahotel</groupId>
+		<version>1.1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>datahotel-delivery-slave</artifactId>
+	<groupId>no.difi.datahotel</groupId>
+	<packaging>ear</packaging>
+	<name>Data Hotel :: Delivery :: Slave</name>
+
+	<build>
+		<finalName>datahotel-slave</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<modules>
+						<webModule>
+							<artifactId>datahotel-client-slave</artifactId>
+							<groupId>no.difi.datahotel</groupId>
+							<contextRoot>/</contextRoot>
+						</webModule>
+
+						<ejbModule>
+							<artifactId>datahotel-logic-slave</artifactId>
+							<groupId>no.difi.datahotel</groupId>
+						</ejbModule>
+					</modules>
+					<displayName>Data Hotel</displayName>
+					<generateApplicationXml>true</generateApplicationXml>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<dependencies>
+
+		<!-- WAR -->
+		<dependency>
+			<artifactId>datahotel-client-slave</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<type>war</type>
+		</dependency>
+
+		<!-- Logic -->
+		<dependency>
+			<artifactId>datahotel-logic-slave</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<type>ejb</type>
+		</dependency>
+
+		<!-- Libs -->
+		<dependency>
+			<artifactId>datahotel-util-shared</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<artifactId>datahotel-util-jsf</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.javacsv</groupId>
+			<artifactId>javacsv</artifactId>
+			<version>${javacsv-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging-api</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ocpsoft</groupId>
+			<artifactId>prettyfaces-jsf2</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+	</dependencies>
+
+</project>

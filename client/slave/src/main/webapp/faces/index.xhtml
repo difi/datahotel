@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Velkommen til datahotellet!</ui:define>
+
+	<ui:define name="content">
+
+		<h3>Hva er et datahotell?</h3>
+
+		<p>Et <strong>datahotell</strong> er en plass hvor dataeiere kan publisere sine datasett uten å måtte gjøre investeringer i ny infrastruktur eller ny programvare. Datahotellet er gratis for alle offentlige virksomheter i Norge. Alle som har data i et regneark (for eksempel Excel), eller som CSV-filer, kan publisere sine data hos oss. Les mer i vår <a href="/api">veileder for dataeiere</a>.</p>
+
+		<p>For <strong>utviklere</strong> betyr datahotellet at data som tidligere kun har vært tilgjengelig som regneark (eller ikke tilgjengelig i det hele tatt), blir gjort tilgjengelig gjennom et standardisert programmeringsgrensesnitt (API) som har flere populære formater (xml og json). Les mer i vår <a href="">veileder for utviklere</a>.</p>
+
+		<h3>Hvordan finne data?</h3>
+
+		<p>Datahotellet er nettopp åpnet, og er foreløpig i en beta-versjon. Derfor er det ikke så mange datasett her ennå.</p>
+
+		<p>Den beste måten å finne datasett på er å lete på datakildekatalogen <a href="http://data.norge.no/">data.norge.no</a>. Alle datasett som ligger på datahotellet skal være registrert på <a href="http://data.norge.no">data.norge.no</a>. Her er det imidlertid på sin plass å nevne at dette nettstedet også nettopp er åpnet, og at det også er i beta.</p>
+
+		<p>Vil du lete litt her på datahotellet kan du ta en titt på <a href="/browse">listen over dataeiere</a>, og klikke deg frem. Datasett er gruppert etter eier og gruppe. Grupper er en logisk enhet hvor man kan samle flere datasett som hører sammen. Man bør kunne se på grupper som databaser og datasett som tabeller.</p>
+
+		<p>Du kan også kikke på <a href="/def">oversikten over ulike felttyper</a>. Alle felt i alle publiserte datasett skal være knyttet til en felttype. Dette er gjort for å kunne gjøre det mulig å finne potensielle datasett som kan brukes med data fra andre plasser eller innbyrdes på datahotellet.</p>
+
+	</ui:define>
+
+</ui:composition>

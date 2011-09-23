@@ -1,0 +1,134 @@
+<pretty-config xmlns="http://ocpsoft.com/prettyfaces/3.3.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.com/prettyfaces/3.3.0
+                                   		http://ocpsoft.com/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.0.xsd">
+
+	<!-- Begin RewriteRules -->
+	<rewrite trailingSlash="remove" />
+	<rewrite toCase="lowercase" />
+
+	<url-mapping id="home">
+		<pattern value="/" />
+		<view-id value="/faces/index.jsf"/>
+		<action>#{user.login}</action>
+	</url-mapping>
+
+
+	<url-mapping id="browse-list">
+		<pattern value="/browse" />
+		<view-id value="/faces/browse/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-owner-new">
+		<pattern value="/browse/new" />
+		<view-id value="/faces/browse/owner/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-owner-view">
+		<pattern value="/browse/#{owner : browse.ownerShortName}" />
+		<view-id value="/faces/browse/owner/view.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-owner-edit">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/edit" />
+		<view-id value="/faces/browse/owner/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-owner-reports">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/reports" />
+		<view-id value="/faces/browse/report/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-group-new">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/new" />
+		<view-id value="/faces/browse/group/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-group-view">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}" />
+		<view-id value="/faces/browse/group/view.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-group-edit">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/edit" />
+		<view-id value="/faces/browse/group/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-group-reports">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/reports" />
+		<view-id value="/faces/browse/report/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-dataset-view">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/#{dataset : browse.datasetShortName}" />
+		<view-id value="/faces/browse/dataset/view.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-dataset-edit">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/#{dataset : browse.datasetShortName}/edit" />
+		<view-id value="/faces/browse/dataset/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-dataset-version">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/#{dataset : browse.datasetShortName}/version" />
+		<view-id value="/faces/browse/dataset/versions.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="browse-dataset-reports">
+		<pattern value="/browse/#{owner : browse.ownerShortName}/#{group : browse.groupShortName}/#{dataset : browse.datasetShortName}/reports" />
+		<view-id value="/faces/browse/report/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+
+	<url-mapping id="report">
+		<pattern value="/report/#{id : report.id}" />
+		<view-id value="/faces/browse/report/view.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+
+	<url-mapping id="def-list">
+		<pattern value="/def" />
+		<view-id value="/faces/definition/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="def-new">
+		<pattern value="/def/new" />
+		<view-id value="/faces/definition/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="def-view">
+		<pattern value="/def/#{shortName : definition.shortName}" />
+		<view-id value="/faces/definition/view.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+	<url-mapping id="def-edit">
+		<pattern value="/def/#{shortName : definition.shortName}/edit" />
+		<view-id value="/faces/definition/edit.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+
+	<url-mapping id="setting">
+		<pattern value="/setting" />
+		<view-id value="/faces/setting/list.jsf" />
+		<action>#{user.login}</action>
+	</url-mapping>
+
+</pretty-config>

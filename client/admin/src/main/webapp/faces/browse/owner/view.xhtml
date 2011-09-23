@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Eier: #{browse.owner.name}</ui:define>
+
+	<ui:define name="content">
+
+		<h3>Egenskaper</h3>
+
+		<dl>
+			<dt>Navn</dt>
+			<dd>#{browse.owner.name}</dd>
+
+			<dt>Kortnavn</dt>
+			<dd>#{browse.owner.shortName}</dd>
+
+			<dt>Orgnr</dt>
+			<dd>#{browse.owner.organizationNumber}</dd>
+
+			<dt>Hjemmeside</dt>
+			<dd>#{browse.owner.url}</dd>
+
+			<dt>Brukere</dt>
+			<dd>#{browse.users.size()}</dd>
+		</dl>
+
+		<h3>Grupper</h3>
+
+		<h:dataTable value="#{browse.groups}" var="group">
+			<h:column>
+				<f:facet name="header">Navn</f:facet>
+				<h:link outcome="pretty:browse-group-view" value="#{group.name}">
+					<f:param name="owner" value="#{browse.owner.shortName}" />
+					<f:param name="group" value="#{group.shortName}" />
+				</h:link>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Klager</f:facet>
+				<h:link outcome="pretty:browse-group-reports" value="Klager">
+					<f:param name="owner" value="#{browse.owner.shortName}" />
+					<f:param name="group" value="#{group.shortName}" />
+				</h:link>
+			</h:column>
+		</h:dataTable>
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ul>
+			<li><h:link outcome="pretty:browse-owner-edit"
+					value="Rediger egenskaper">
+					<f:param name="owner" value="#{browse.owner.shortName}" />
+				</h:link></li>
+			<li><h:link outcome="pretty:browse-group-new" value="Ny gruppe">
+					<f:param name="owner" value="#{browse.owner.shortName}" />
+				</h:link></li>
+		</ul>
+	</ui:define>
+
+</ui:composition>

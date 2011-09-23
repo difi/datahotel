@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dataset>
+    <name>Kommuner</name>
+    <shortName>kommune</shortName>
+    <group>geo</group>
+    <owner>difi</owner>
+</dataset>

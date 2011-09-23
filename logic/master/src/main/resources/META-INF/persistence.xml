@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="datahotel" transaction-type="JTA">
+
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>jdbc/datahotel</jta-data-source>
+
+		<class>no.difi.datahotel.logic.model.Access</class>
+		<class>no.difi.datahotel.logic.model.DatasetEntity</class>
+		<class>no.difi.datahotel.logic.model.GroupEntity</class>
+		<class>no.difi.datahotel.logic.model.DefinitionEntity</class>
+		<class>no.difi.datahotel.logic.model.FieldEntity</class>
+		<class>no.difi.datahotel.logic.model.OwnerEntity</class>
+		<class>no.difi.datahotel.logic.model.ReportEntity</class>
+		<class>no.difi.datahotel.logic.model.SettingEntity</class>
+		<class>no.difi.datahotel.logic.model.UserEntity</class>
+		<class>no.difi.datahotel.logic.model.VersionEntity</class>
+
+		<properties>
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="database" />
+			<property name="eclipselink.logging.level" value="INFO" />
+		</properties>
+
+	</persistence-unit>
+
+</persistence>

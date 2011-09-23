@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/faces/template.xhtml">
+
+	<ui:define name="title">
+		Datasett:
+			#{browse.owner.shortName}/#{browse.group.shortName}/#{browse.dataset.name}
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h3>Versjoner</h3>
+
+		<h:dataTable value="#{browse.dataset.versions}" var="version">
+			<h:column>
+				<f:facet name="header">Versjon</f:facet>
+				#{version.versionDate}
+			</h:column>
+		</h:dataTable>
+	</ui:define>
+
+</ui:composition>

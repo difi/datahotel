@@ -1,0 +1,297 @@
+html, body {
+        background-color: #F0F0F6;
+        margin: 0px;
+        padding: 0px;
+}
+body {
+        padding: 10pt;
+        clear:both;
+}
+body, input, select, option {
+        color: #3C3D3E;
+        font-family: Verdana, Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.5em;
+}
+
+a {
+        color: #373a3e;
+}
+a img {
+        border: 0px;
+} 
+
+h1 {
+        display: inline;
+        color: #fff;
+        margin :0px;
+        padding: 3pt;
+        font-size: 20pt;
+}
+h1 a {
+        color: #fff;
+        text-decoration: none;
+}
+h2 {
+        font-weight: normal;
+}
+h3 {
+        font-size: 10pt;
+        margin: 0px;
+        margin-top: 20pt;
+}
+
+table {
+        border-collapse: collapse;
+        width: 100%;
+        overflow:hidden;
+        
+}
+th, td {
+}
+th {
+        text-align: left;
+}
+
+
+#page {
+        -moz-border-radius: 10pt;
+        -webkit-border-radius: 10pt;
+        
+        background-color: #fff;
+        margin: auto;
+        padding: 10pt;
+        width: 800pt;
+}
+
+#parent {
+        float: right;
+        padding: 0pt;
+        padding-left: 5pt;
+}
+
+#header {
+        -moz-border-radius: 4pt;
+        -webkit-border-top-left-radius: 4pt;
+        -webkit-border-top-right-radius: 4pt;
+        background-color: #005380;
+        border-bottom: 2px solid #fff;
+        padding: 10pt;
+}
+#header {
+        position: relative;
+        overflow:hidden;
+}
+#header form {
+        bottom: 5pt;
+        margin: 0px;
+        padding: 0px;
+        position: absolute;
+        right: 10pt;
+}
+
+#menu {
+        -moz-border-radius: 4pt;
+        -webkit-border-bottom-left-radius: 4pt;
+        -webkit-border-bottom-right-radius: 4pt;
+
+        background-color: #5F6062;
+        height: 24pt;
+}
+#menu ul {
+        margin: 0px;
+        padding: 4pt;
+        padding-left: 10pt;
+        padding-right: 10pt;
+        padding-bottom: 4pt;
+}
+#menu li {
+        display: inline;
+        list-style-type: none;
+        padding: 4pt;
+        padding-bottom: 8pt;
+        padding-left: 10pt;
+        padding-right: 10pt;
+}
+#menu li.meta {
+        float: right;
+        padding-top: 0pt;
+}
+#menu a {
+        color: #fff;
+        text-decoration: none;
+}
+#menu li.current_page_parent, #menu li.current_page_item {
+        background-color: #fff;
+}
+#menu li.current_page_parent a, #menu li.current_page_item a {
+        color: #3C3D3E;
+}
+
+#main {
+        padding-top: 10pt;
+        padding-left: 10pt;
+        padding-right: 220pt;
+        height: 100%;
+        overflow: hidden;
+        width:760px;
+}
+#main div.box {
+        margin-bottom: 10pt;
+        margin-left: -10pt;
+        margin-right: -10pt;
+        clear:both;
+}
+#main div.right {
+        float:right;
+        width: 270pt;
+        clear:none;
+}
+#main div.left {
+        float:left;
+        width:270pt;
+        clear:none;
+}
+#main div.box th {
+        background-color: #fff;
+}
+
+#content {
+        float: left;
+        padding-bottom: 10pt;
+        width: 100%;
+}
+
+table#completion th, td {
+    border-bottom: 1px solid #999;
+    padding: 2px;
+}
+
+#sidebar {
+        float: right;
+        margin-top:12px;
+        margin-right: -219pt;
+        margin-left: 10px;
+        margin-bottom: 10pt;
+        padding-left: 10px;
+        width: 191pt;
+        border-left: 1px solid #999;
+        color: #3C3D3E; 
+}
+
+#sidebar ul {
+        margin: 0px;
+        padding-top: 5px;
+        padding-right: 5px;
+        padding-left: 29px;
+}
+
+#footer {
+        -moz-border-radius: 4pt;
+        -webkit-border-radius: 4pt;
+
+        background-color: #5F6062;
+        clear: both;
+        color: #fff;
+        padding: 5pt;
+        padding-left: 10pt;
+        padding-right: 10pt;
+}
+#footer p {
+        margin: 0px;
+}
+#footer a {
+        color: #fff;
+}
+
+div.box, li.widget-container {
+        background-color: #fff;
+        padding: 0pt;
+
+        -moz-border-radius: 4pt;
+        -webkit-border-radius: 4pt;
+        
+        background-color: #D2E5E6;
+
+        list-style-type: none;
+        padding: 10pt;
+}
+div.box {
+        background-color: #e5e5e5;
+}
+li.widget-container {
+        margin: 0px;
+        margin-bottom: 10pt;
+        overflow:visible;
+        height:100%;
+        clear:both;
+}
+div.box h3, li.widget-container h3 {
+        border-bottom: 2px solid #fff;
+        margin-top: 0pt;
+        margin-bottom: 2pt;
+        padding-bottom: 2pt;
+}
+li.widget-container ul {
+        margin-left: 0px;
+        padding-left: 0px;
+        display:block;
+        overflow:hidden;
+        height:100%;
+}
+li.widget-container li {
+        list-style-type: none;
+        clear:both;
+}
+div.box tr.tr_1 td {
+        background-color: #fff;
+}
+
+div.section{
+        clear:both;
+        width:100%;     
+}
+
+p.timestamp {
+        text-align: right;
+        font-style: italic;
+}
+
+textarea.elmer_field_bruksmoenster, textarea.elmer_field_description, textarea.elmer_field_message {
+        width: 100%;
+        height: 200pt;
+}
+
+div.title h2.title{
+        margin-right:10pt;
+}
+
+h2.title {
+        display:inline;
+}
+
+div.title {
+        margin-top:15pt;
+        margin-bottom:5pt;
+}
+
+
+form.nice, dl {
+	padding-left: 120pt;
+}
+
+form.nice label, dt {
+	display: block;
+	float: left;
+	margin-left: -120pt;
+	width: 110pt;
+}
+
+form.nice input, form.nize textarea, dd {
+	display: block;
+	margin-bottom: 10pt;
+}
+
+dl.tiny dd {
+	margin-bottom: 3pt;
+}

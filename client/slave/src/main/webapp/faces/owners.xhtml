@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/faces/template.xhtml">
+
+	<ui:define name="title">Alle eiere</ui:define>
+
+	<ui:define name="content">
+		<ul>
+			<ui:repeat value="#{info.owners}" var="ow">
+				<li><h:link outcome="pretty:groups" value="#{ow.name}">
+						<f:param name="owner" value="#{ow.shortName}" />
+					</h:link><br /><span style="color: #999;">#{ow.shortName}</span>
+				</li>
+			</ui:repeat>
+		</ul>
+	</ui:define>
+</ui:composition>
+
+

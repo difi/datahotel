@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Eiere</ui:define>
+
+	<ui:define name="content">
+		<h:dataTable value="#{browse.owners}" var="owner">
+			<h:column>
+				<f:facet name="header">Navn</f:facet>
+				<h:link outcome="pretty:browse-owner-view">
+					<f:param name="owner" value="#{owner.shortName}" />
+					#{owner.name}
+				</h:link>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Klager</f:facet>
+				<h:link outcome="pretty:browse-owner-reports">
+					<f:param name="owner" value="#{owner.shortName}" />
+					Klager
+				</h:link>
+			</h:column>
+		</h:dataTable>
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ul>
+			<li><h:link outcome="pretty:browse-owner-new" value="Ny eier" />
+			</li>
+		</ul>
+	</ui:define>
+
+</ui:composition>

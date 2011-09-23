@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Alle datasettgrupper for eieren</ui:define>
+
+	<ui:define name="content">
+		<ul class="buttons">
+			<ui:repeat value="#{info.groups}" var="dsg">
+				<li><h:link outcome="pretty:datasets" value="#{dsg.name}">
+						<f:param name="owner" value="#{info.owner.shortName}" />
+						<f:param name="group" value="#{dsg.shortName}" />
+					</h:link><br />
+				<span style="color: #999;">#{info.owner.shortName}/#{dsg.shortName}</span>
+				</li>
+			</ui:repeat>
+		</ul>
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ul>
+			<li><a href="/report/#{param['owner']}">Gi tilbakemelding</a></li>
+		</ul>
+	</ui:define>
+
+</ui:composition>

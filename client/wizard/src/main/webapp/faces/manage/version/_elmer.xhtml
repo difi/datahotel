@@ -1,0 +1,35 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk" template="/faces/template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form>
+
+			<div class="split">
+
+				<div class="split_left">
+					<ul class="elmer">
+						<li><h:commandButton value="Filinnhold" action="#{field.moveTo(-1)}" /></li>
+						<li>
+							<ul>
+								<ui:repeat value="#{field.all}" var="f" varStatus="status">
+									<li><h:commandButton value="Felt #{f.shortName != '' ? f.shortName : (status.index+1)}" action="#{field.moveTo(status.index)}" /></li>
+								</ui:repeat>
+							</ul>
+						</li>
+						<li><h:commandButton value="Publisering" action="#{field.moveTo(field.all.size())}" disabled="#{field.all.size() == 0}" /></li>
+					</ul>
+				</div>
+
+				<div class="split_right">
+					<ui:insert name="right" />
+				</div>
+
+			</div>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

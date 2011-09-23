@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<datasetStructure>
+    <owners>
+        <owner>
+            <name>difi</name>
+            <datasetGroups>
+                <datasetGroup>
+                    <name>miljo</name>
+                    <datasets>
+                        <dataset>
+                            <name>kalkulator</name>
+                            <lastEdited>1312546189012</lastEdited>
+                        </dataset>
+                    </datasets>
+                </datasetGroup>
+            </datasetGroups>
+        </owner>
+    </owners>
+</datasetStructure>

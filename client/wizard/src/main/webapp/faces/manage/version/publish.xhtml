@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk" template="/faces/manage/version/_elmer.xhtml">
+
+	<ui:define name="title">Publisering</ui:define>
+
+	<ui:define name="right">
+
+		<p>Datasettet ditt er klart til publisering.</p>
+
+		<p>Fra man klikker på "Publiser" vil det ta noen minutter før datasettet blir synlig for andre.</p>
+
+		<h:commandButton value="Publiser" action="#{version.publish}" />
+
+	</ui:define>
+
+</ui:composition>

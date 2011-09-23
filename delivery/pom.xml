@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>datahotel</artifactId>
+		<groupId>no.difi.datahotel</groupId>
+		<version>1.1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>datahotel-delivery</artifactId>
+	<groupId>no.difi.datahotel</groupId>
+	<packaging>pom</packaging>
+	<name>Data Hotel :: Delivery</name>
+
+	<modules>
+		<module>full</module>
+		<module>master</module>
+		<module>slave</module>
+	</modules>
+
+</project>

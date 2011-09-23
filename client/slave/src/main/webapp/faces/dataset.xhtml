@@ -1,0 +1,67 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+
+	<ui:define name="title">Datasettnavn: #{info.dataset.name}</ui:define>
+
+	<ui:define name="content">
+		<dl>
+			<dt>Kortnavn</dt>
+			<dd>#{info.dataset.shortName}</dd>
+
+			<dt>Gruppe</dt>
+			<dd>
+				<h:link outcome="pretty:datasets" value="#{info.group.name}">
+					<f:param name="owner" value="#{info.owner.shortName}" />
+					<f:param name="group" value="#{info.group.shortName}" />
+				</h:link>
+			</dd>
+
+			<dt>Hjemmeside</dt>
+			<dd>#{info.group.url}</dd>
+		</dl>
+
+		<h3>Felter i datasettet</h3>
+		<ui:repeat value="#{info.fields}" var="f">
+			<h4>#{f.name} (#{f.shortName})</h4>
+
+			<dl class="tiny">
+				<h:panelGroup rendered="#{f.groupable}">
+				<dt>Grupperbar</dt>
+				<dd>#{f.groupable}</dd>
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{f.searchable}">
+				<dt>S&#xF8;kbar</dt>
+				<dd>#{f.searchable}</dd>
+				</h:panelGroup>
+
+				<h:panelGroup rendered="#{f.indexPrimaryKey}">
+				<dt>Prim&#xE6;rn&#xF8;kkel</dt>
+				<dd>#{f.indexPrimaryKey}</dd>
+				</h:panelGroup>
+
+				<dt>Definisjon</dt>
+				<dd>
+					<h:link outcome="pretty:def" value="#{f.definition.name}">
+						<f:param name="def" value="#{f.definition.shortName}" />
+					</h:link>
+				</dd>
+				
+				<dt>Beskrivelse</dt>
+				<dd>#{f.content}</dd>
+			</dl>
+		</ui:repeat>
+	</ui:define>
+
+	<ui:define name="sidebar">
+		<ul>
+			<li><a
+				href="/report/#{param['owner']}/#{param['group']}/#{param['dataset']}">Gi tilbakemelding</a>
+			</li>
+		</ul>
+	</ui:define>
+
+</ui:composition>
+

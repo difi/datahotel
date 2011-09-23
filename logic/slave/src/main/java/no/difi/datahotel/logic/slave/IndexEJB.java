@@ -1,0 +1,82 @@
+package no.difi.datahotel.logic.slave;
+
+import static no.difi.datahotel.util.shared.Filesystem.DATASET_DATA;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_INDEX;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SHARED;
+
+import java.io.File;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+
+import no.difi.datahotel.util.bridge.Fields;
+import no.difi.datahotel.util.csv.CSVParser;
+import no.difi.datahotel.util.csv.CSVParserFactory;
+import no.difi.datahotel.util.shared.Filesystem;
+
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+
+@Stateless
+public class IndexEJB {
+
+	private static Logger logger = Logger.getLogger(Index.class.getSimpleName());
+
+	public void delete(String owner, String group, String dataset) {
+		Filesystem.delete(FOLDER_INDEX, owner, group, dataset);
+	}
+
+	public void update(String owner, String group, String dataset) {
+		try {
+			Fields fields = Fields.read(owner, group, dataset);
+			File filename = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, DATASET_DATA);
+
+			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
+			
+			IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_33, new StandardAnalyzer(Version.LUCENE_33));
+			IndexWriter writer = new IndexWriter(dir, writerConfig);
+
+			writer.deleteAll();
+
+			CSVParser csv = CSVParserFactory.getCSVParser(filename);
+			while (csv.hasNext()) {
+				Map<String, String> line = csv.getNextLine();
+				Document doc = new Document();
+				String searchable = "";
+				for (no.difi.datahotel.util.bridge.Field f : fields.getFields()) {
+					String value = line.get(f.getShortName());
+					
+					if (value.matches("[0-9.,]+"))
+						doc.add(new Field(f.getShortName(), value, Store.YES,  Index.NOT_ANALYZED_NO_NORMS));
+					else
+						doc.add(new Field(f.getShortName(), value, Store.YES,  Index.ANALYZED));
+
+					if (f.getSearchable())
+						searchable += " " + line.get(f.getShortName());
+				}
+
+				if (!searchable.trim().isEmpty())
+					doc.add(new Field("searchable", searchable.trim(), Store.NO, Index.ANALYZED));
+
+				writer.addDocument(doc);
+			}
+
+			writer.optimize();
+			writer.commit();
+			writer.close();
+			dir.close();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+		}
+	}
+}

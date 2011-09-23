@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:t="http://myfaces.apache.org/tomahawk" template="/faces/manage/version/_elmer.xhtml">
+
+	<ui:define name="title">Felt #{field.field.shortName == "" ? field.fieldIndex + 1 : field.field.shortName}</ui:define>
+
+	<ui:define name="right">
+
+		<div class="form_nice">
+
+			<label>Navn</label>
+			<h:inputText value="#{field.field.name}" required="true" />
+
+			<label>Kortnavn</label>
+			<h:inputText value="#{field.field.shortName}" required="true" validatorMessage="Kortnavn må inneholde små bokstaver (ikke særnorske), tall og bindestrek.">
+				<f:validateRegex pattern="^[a-z0-9\-]+" />
+			</h:inputText>
+
+			<label>Beskrivelse</label>
+			<h:inputTextarea value="#{field.field.description}" required="true" />
+
+			<label>Definisjon</label>
+			<h:selectOneMenu value="#{field.field.definition}">
+				<f:selectItems value="#{field.definitions}" var="d" itemLabel="#{d.name}" />
+			</h:selectOneMenu>
+
+			<label>Søkbart</label>
+			<h:selectBooleanCheckbox value="#{field.field.searchable}" title="Sok" />
+
+			<label>Grupperbart</label>
+			<h:selectBooleanCheckbox value="#{field.field.groupable}" title="Gruppe" />
+
+			<!-- <h:selectBooleanCheckbox value="#{field.field.primaryIndexKey}" title="Primary" disabled="true" /> -->
+
+			<h:commandButton value="Neste" action="#{field.next}" />
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>

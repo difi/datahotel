@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<artifactId>datahotel-client</artifactId>
+		<groupId>no.difi.datahotel</groupId>
+		<version>1.1.0</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>datahotel-client-admin</artifactId>
+	<groupId>no.difi.datahotel</groupId>
+	<packaging>war</packaging>
+	<name>Data Hotel :: Client :: Admin</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<ejbVersion>3.0</ejbVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<artifactId>datahotel-logic-master</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<artifactId>datahotel-util-jsf</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.ocpsoft</groupId>
+			<artifactId>prettyfaces-jsf2</artifactId>
+			<version>3.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+</project>

@@ -1,0 +1,24 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	template="/faces/template.xhtml">
+
+	<ui:define name="title">Redigere gruppe</ui:define>
+
+	<ui:define name="content">
+		<h:form class="nice">
+			<label>Navn</label>
+			<h:inputText value="#{browse.group.name}" required="true" />
+
+			<label>Kortnavn</label>
+			<h:inputText value="#{browse.group.shortName}" required="true" />
+
+			<label>Hjemmeside</label>
+			<h:inputText value="#{browse.group.url}" />
+
+			<h:commandButton value="Lagre" action="#{browse.saveGroup}" />
+		</h:form>
+	</ui:define>
+
+</ui:composition>

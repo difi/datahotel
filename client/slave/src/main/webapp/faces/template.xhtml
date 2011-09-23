@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>Datahotell</title>
+
+	<link rel="stylesheet" type="text/css" href="#{resource['style:style.css']}" />
+</h:head>
+<h:body>
+	<div id="page">
+		<div id="header">
+			<div id="parent">
+				<a href="http://www.difi.no/"><h:graphicImage value="#{resource['img:difi.png']}" /> </a>
+			</div>
+			<h1>
+				<h:link outcome="pretty:home">Datahotell</h:link>
+			</h1>
+		</div>
+
+		<div id="menu">
+			<ul id="supmenu">
+				<li><h:link outcome="pretty:home">Hjem</h:link></li>
+				<li><h:link outcome="pretty:owners">Datasett</h:link></li>
+				<li><h:link outcome="pretty:defs">Felttyper</h:link></li>
+				<li><h:link outcome="pretty:api">API</h:link></li>
+			</ul>
+		</div>
+
+		<div id="main">
+			<div id="content">
+				<h2>
+					<ui:insert name="title" />
+				</h2>
+
+				<ui:insert name="content" />
+			</div>
+			<div id="sidebar">
+				<ui:insert name="sidebar">
+
+					<h3>Er du datasetteier?</h3>
+
+					<p>På datahotellet kan du dele dataene uten å gjøre investeringer i egen infrastruktur. Bruk vår <a href="/wizard">veileder for dataeiere</a> for å komme i gang.</p>
+
+					<h3>Er du utvikler?</h3>
+
+					<p>På datahotellet har alle datasett et programmeringsgrensesnitt (API). Les mer om hvordan data kan lastes ned i vår <a href="/api">veileder for utviklere</a>.</p>
+
+					<h3>Lisens</h3>
+
+					<p>Alle data på datahotellet er foreløpig ulisensiert. Så snart <a href="http://data.norge.no/blogg/2011/03/norsk-lisens-for-offentlige-data-nlod-skal-pa-h%C3%B8ring/">Fornyingsdepartementet standardiserte lisens for offentlige data</a> blir publisert vil data på datahotellet tilgjengeliggjøres under denne lisensen.</p>
+
+					<h3>Sist oppdatert</h3>
+
+					<ul>
+						<ui:repeat value="#{info.last}" var="d">
+							<li><h:link outcome="pretty:dataset" title="#{d.dataset.name} - #{d.timestamp}">
+									<f:param name="owner" value="#{d.dataset.owner}" />
+									<f:param name="group" value="#{d.dataset.group}" />
+									<f:param name="dataset" value="#{d.dataset.shortName}" />
+									#{d.dataset.owner}/#{d.dataset.group}/#{d.dataset.shortName}
+								</h:link>
+							</li>
+						</ui:repeat>
+					</ul>
+
+				</ui:insert>
+			</div>
+		</div>
+
+		<div id="footer">
+			<p>
+				Driftes av <a href="http://www.difi.no/" id="difi">Direktoratet for forvaltning og IKT (Difi)</a>.
+			</p>
+		</div>
+	</div>
+</h:body>
+</html>

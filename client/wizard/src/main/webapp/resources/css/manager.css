@@ -1,0 +1,94 @@
+div.split {
+	padding-left: 160pt;
+}
+div.split_left {
+	float: left;
+	margin-left: -160pt;
+	margin-right: 10pt;
+	width: 150pt;
+}
+div.split-right {
+	width: 100%;
+}
+
+ul.nice {
+	margin: 0px;
+	padding: 0px;
+}
+ul.nice li {
+	border-bottom: 1px solid #ccc;
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+ul.nice li.active {
+	background-color: #ccc;
+}
+ul.nice li:last-child {
+	border-bottom: 0px;
+}
+ul.nice a {
+	background-position: 5px 5px;
+	background-repeat: no-repeat;
+	display: block;
+	padding: 4pt;
+	padding-left: 40px;
+	text-decoration: none;
+}
+ul.nice li.group a {
+	background-image: url('../icon/folder.png');
+}
+ul.nice li.dataset a {
+	background-image: url('../icon/database.png');
+}
+ul.nice li.version a {
+	background-image: url('../icon/page.png');
+}
+ul.nice li.current_version a {
+	background-image: url('../icon/check.png');
+}
+ul.nice a span {
+	text-decoration: underline;
+}
+ul.nice a span.short {
+	color: #999;
+	text-decoration: none;
+}
+
+
+form.nice, div.form_nice, dl {
+	padding-left: 120pt;
+}
+
+form.nice label, div.form_nice label, dt {
+	display: block;
+	float: left;
+	margin-left: -120pt;
+	width: 110pt;
+}
+
+form.nice input, form.nice textarea, form.nice select, div.form_nice input, div.form_nice textarea, div.form_nice select, dd {
+	display: block;
+	margin-bottom: 10pt;
+}
+
+ul.elmer {
+	margin: 0px;
+	padding: 0px;
+}
+ul.elmer {
+	margin: 0px;
+	padding: 0px;
+	padding-left: 15pt;
+}
+ul.elmer li {
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+ul.elmer input {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	margin-bottom: 5pt;
+	width: 100%;
+}
