@@ -1,7 +1,5 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" template="/faces/template.xhtml">
 
 	<ui:define name="title">Datasettnavn: #{info.dataset.name}</ui:define>
 
@@ -28,18 +26,18 @@
 
 			<dl class="tiny">
 				<h:panelGroup rendered="#{f.groupable}">
-				<dt>Grupperbar</dt>
-				<dd>#{f.groupable}</dd>
+					<dt>Grupperbar</dt>
+					<dd>#{f.groupable}</dd>
 				</h:panelGroup>
 
 				<h:panelGroup rendered="#{f.searchable}">
-				<dt>S&#xF8;kbar</dt>
-				<dd>#{f.searchable}</dd>
+					<dt>S&#xF8;kbar</dt>
+					<dd>#{f.searchable}</dd>
 				</h:panelGroup>
 
 				<h:panelGroup rendered="#{f.indexPrimaryKey}">
-				<dt>Prim&#xE6;rn&#xF8;kkel</dt>
-				<dd>#{f.indexPrimaryKey}</dd>
+					<dt>Prim&#xE6;rn&#xF8;kkel</dt>
+					<dd>#{f.indexPrimaryKey}</dd>
 				</h:panelGroup>
 
 				<dt>Definisjon</dt>
@@ -48,7 +46,7 @@
 						<f:param name="def" value="#{f.definition.shortName}" />
 					</h:link>
 				</dd>
-				
+
 				<dt>Beskrivelse</dt>
 				<dd>#{f.content}</dd>
 			</dl>
@@ -56,11 +54,23 @@
 	</ui:define>
 
 	<ui:define name="sidebar">
+
+		<h3>Data</h3>
+
 		<ul>
-			<li><a
-				href="/report/#{param['owner']}/#{param['group']}/#{param['dataset']}">Gi tilbakemelding</a>
-			</li>
+			<li><a href="/api/csv/#{param['owner']}/#{param['group']}/#{param['dataset']}">CSV</a></li>
+			<li><a href="/api/json/#{param['owner']}/#{param['group']}/#{param['dataset']}">JSON</a></li>
+			<li><a href="/api/jsonp/#{param['owner']}/#{param['group']}/#{param['dataset']}">JSONP</a></li>
+			<li><a href="/api/xml/#{param['owner']}/#{param['group']}/#{param['dataset']}">XML</a></li>
+			<li><a href="/api/yaml/#{param['owner']}/#{param['group']}/#{param['dataset']}">YAML</a></li>
 		</ul>
+
+		<h3>Tilbakemelding</h3>
+
+		<ul>
+			<li><a href="/report/#{param['owner']}/#{param['group']}/#{param['dataset']}">Gi tilbakemelding</a></li>
+		</ul>
+
 	</ui:define>
 
 </ui:composition>
