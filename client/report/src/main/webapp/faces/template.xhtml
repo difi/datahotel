@@ -4,7 +4,7 @@
 
 <h:head>
 
-	<title><ui:insert name="title" /> - Datahotell</title>
+	<title><ui:insert name="title" /> - Datahotell beta</title>
 
 	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 
@@ -24,7 +24,7 @@
 			</div>
 
 			<h1>
-				<a href="/">Datahotell</a>
+				<a href="/">Datahotell beta</a>
 			</h1>
 
 		</div>
@@ -45,11 +45,23 @@
 
 		<div id="footer">
 			<p>
-				Driftes av <a href="http://www.difi.no/">Direktoratet for forvaltning og IKT (Difi)</a>.
+				Driftes av <a href="http://www.difi.no/">Direktoratet for forvaltning og IKT (Difi)</a>. Utviklet av <a href="http://camp.difi.no/">DifiCamp 2011</a>. Teknisk støtte på <a href="https://github.com/difi/datahotel">GitHub</a>.
 			</p>
 		</div>
-
 	</div>
+
+<!-- Piwik --> 
+<script type="text/javascript">
+var pkBaseURL = (("https:" == document.location.protocol) ? "https://stat.difi.no/" : "http://stat.difi.no/");
+document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script type="text/javascript">
+try {
+var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 61);
+piwikTracker.trackPageView();
+piwikTracker.enableLinkTracking();
+} catch( err ) {}
+</script><noscript><p><img src="http://stat.difi.no/piwik.php?idsite=61" style="border:0" alt="" /></p></noscript>
+<!-- End Piwik Tracking Code -->
 
 </h:body>
 
