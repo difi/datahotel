@@ -6,6 +6,8 @@
 
 	<ui:define name="right2">
 		<h:form enctype="multipart/form-data">
+                        <p>Pass på at første rad i regnearket inneholder felttitler. Ikke vær redd for å slette urelevante rader.</p>
+                    
 			<ul class="nice">
 				<ui:repeat value="#{version.all}" var="v">
 					<li class="#{v eq dataset.dataset.currentVersion ? 'current_version' : 'version'}"><h:link
