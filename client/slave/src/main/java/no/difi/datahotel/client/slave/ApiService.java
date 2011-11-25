@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriInfo;
 import no.difi.datahotel.logic.slave.ChunkEJB;
 import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.logic.slave.SearchEJB;
+import no.difi.datahotel.logic.slave.StructureEJB;
 import no.difi.datahotel.util.bridge.Dataset;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Group;
@@ -37,15 +38,15 @@ public class ApiService {
 	@EJB
 	private MetadataEJB metadataEJB;
 	@EJB
+	private StructureEJB structureEJB;
+	@EJB
 	private ChunkEJB chunkEJB;
 	@EJB
 	private SearchEJB searchEJB;
 
 	/**
 	 * "/api/type" Gets a list of owners available in the datahotel.
-	 * 
-	 * @param httpHeaders
-	 *            Http headers
+	 *
 	 * @param type
 	 *            Mime type
 	 * @return
@@ -61,7 +62,7 @@ public class ApiService {
 			if (ownerList.size() == 0)
 				throw new Exception("No owners could be found.");
 
-			return Response.ok(dataFormat.format(ownerList, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(ownerList, metadata)).header("Content-Type", "").type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -72,8 +73,6 @@ public class ApiService {
 	 * "/api/type/owner" Gets a list of groups or metadata for an owner in the
 	 * datahotel.
 	 * 
-	 * @param httpHeaders
-	 *            Http headers
 	 * @param type
 	 *            Mime type
 	 * @param owner
@@ -92,7 +91,7 @@ public class ApiService {
 			if (groupList.size() == 0)
 				throw new Exception("Groups for this owner could not be found.");
 
-			return Response.ok(dataFormat.format(groupList, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(groupList, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -102,8 +101,6 @@ public class ApiService {
 	/**
 	 * "/api/type/owner/group" Gets a dataset list or metadata for a group.
 	 * 
-	 * @param httpHeaders
-	 *            Http headers
 	 * @param type
 	 *            Mime type
 	 * @param owner
@@ -124,7 +121,7 @@ public class ApiService {
 			if (datasets.size() == 0)
 				throw new Exception("Datasets for this owner and group could not be found.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -151,10 +148,13 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
+			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			
+			// TODO Check "If-None-Match"-header.
 
 			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
 
-			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -186,7 +186,7 @@ public class ApiService {
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
 
-			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -216,7 +216,7 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -254,7 +254,7 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime()).build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();

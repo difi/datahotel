@@ -7,17 +7,17 @@
 	<rewrite toCase="lowercase" />
 
 	<url-mapping id="owner">
-		<pattern value="/#{/[a-z]+/ owner : report.ownerShortName}" />
+		<pattern value="/#{/[a-z0-9\-]+/ owner : report.ownerShortName}" />
 		<view-id value="/faces/owner.jsf" />
 	</url-mapping>
 
 	<url-mapping id="group" parentId="owner">
-		<pattern value="/#{/[a-z]+/ group : report.groupShortName}" />
+		<pattern value="/#{/[a-z0-9\-]+/ group : report.groupShortName}" />
 		<view-id value="/faces/group.jsf" />
 	</url-mapping>
 
 	<url-mapping id="dataset" parentId="group">
-		<pattern value="/#{/[a-z]+/ dataset : report.datasetShortName}" />
+		<pattern value="/#{/[a-z0-9\-]+/ dataset : report.datasetShortName}" />
 		<view-id value="/faces/dataset.jsf" />
 	</url-mapping>
 
