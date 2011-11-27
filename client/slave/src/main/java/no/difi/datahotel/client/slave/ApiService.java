@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -202,13 +203,14 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}")
 	public Response getDataset(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String metadata) {
+			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String metadata, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
 			
-			// TODO Check "If-None-Match"-header.
+			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
 
 			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
 
@@ -234,13 +236,14 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/fields")
 	public Response getMetadata(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String metadata) {
+			@QueryParam("callback") String metadata, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
 			
-			// TODO Check "If-None-Match"-header.
+			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
 
 			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
 
@@ -258,13 +261,14 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/search")
 	public Response getSearch(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset, @DefaultValue("") @QueryParam("query") String query,
-			@QueryParam("callback") String metadata) {
+			@QueryParam("callback") String metadata, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
 
-			// TODO Check "If-None-Match"-header.
+			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
 
 			Object results;
 			
@@ -291,14 +295,15 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/lookup")
 	public Response getLookupMulti(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String metadata, @Context UriInfo uriInfo) {
+			@QueryParam("callback") String metadata, @Context UriInfo uriInfo, @Context HttpServletRequest req) {
 
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
 
-			// TODO Check "If-None-Match"-header.
+			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
 
 			Map<String, String> query = new HashMap<String, String>();
 			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
@@ -328,4 +333,7 @@ public class ApiService {
 		}
 	}
 
+	private Response returnNotModified() {
+		return Response.ok().status(304).build();
+	}
 }
