@@ -69,6 +69,24 @@ public class ApiService {
 		}
 	}
 
+	@GET
+	@Path("{type}/_all")
+	public Response getGroupListForOwner(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		try {
+			dataFormat = DataFormat.get(type);
+			List<Dataset> datasets = metadataEJB.getAllDatasets();
+
+			if (datasets.size() == 0)
+				throw new Exception("No datasets available.");
+
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+		} catch (Exception e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+					.build();
+		}
+	}
+	
 	/**
 	 * "/api/type/owner" Gets a list of groups or metadata for an owner in the
 	 * datahotel.
@@ -180,13 +198,16 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
+			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			
+			// TODO Check "If-None-Match"-header.
 
 			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
 
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
 
-			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -201,6 +222,9 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
+			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+
+			// TODO Check "If-None-Match"-header.
 
 			Object results;
 			
@@ -216,7 +240,7 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -232,6 +256,9 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
+			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+
+			// TODO Check "If-None-Match"-header.
 
 			Map<String, String> query = new HashMap<String, String>();
 			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
@@ -254,7 +281,7 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();

@@ -1,6 +1,7 @@
 package no.difi.datahotel.logic.slave;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.enterprise.inject.New;
 
 import no.difi.datahotel.util.bridge.Dataset;
 import no.difi.datahotel.util.bridge.Definition;
@@ -39,6 +41,8 @@ public class MetadataEJB {
 	private TreeSet<DatasetHolder> list = new TreeSet<MetadataEJB.DatasetHolder>();
 	private Map<String, Definition> defList = new HashMap<String, Definition>();
 	private Map<String, Set<Dataset>> defDataset = new HashMap<String, Set<Dataset>>();
+	
+	private List<Dataset> allDatasets = new ArrayList<Dataset>(); 
 
 	@Schedule(second = "0", minute = "*/3", hour = "*")
 	@PostConstruct
@@ -50,6 +54,7 @@ public class MetadataEJB {
 		TreeSet<DatasetHolder> list = new TreeSet<MetadataEJB.DatasetHolder>();
 		Map<String, Definition> defList = new HashMap<String, Definition>();
 		Map<String, Set<Dataset>> defDataset = new HashMap<String, Set<Dataset>>();
+		List<Dataset> allDatasets = new ArrayList<Dataset>();
 
 		for (String o : structureEJB.getOwners()) {
 			Owner owner = Owner.read(o);
@@ -72,6 +77,7 @@ public class MetadataEJB {
 						logger.info("Reading " + o + "/" + g + "/" + d);
 						Dataset ds = Dataset.read(o, g, d);
 						datasets.get(o).get(g).put(d, ds);
+						allDatasets.add(ds);
 		
 						Fields fs = Fields.read(o, g, d);
 						if (fs != null) {
@@ -100,6 +106,9 @@ public class MetadataEJB {
 		this.list = list;
 		this.defList = defList;
 		this.defDataset = defDataset;
+		
+		Collections.sort(allDatasets);
+		this.allDatasets = allDatasets;
 	}
 
 	public List<Owner> getOwners() {
@@ -178,6 +187,10 @@ public class MetadataEJB {
 		if (defDataset != null && defDataset.containsKey(shortName))
 			return new ArrayList<Dataset>(defDataset.get(shortName));
 		return null;
+	}
+	
+	public List<Dataset> getAllDatasets() {
+		return allDatasets;
 	}
 
 	public class DatasetHolder implements Comparable<DatasetHolder> {
