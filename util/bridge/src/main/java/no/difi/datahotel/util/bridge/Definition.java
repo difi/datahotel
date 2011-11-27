@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Definition {
+public class Definition implements Comparable<Definition> {
 	@XmlElement
 	private String name;
 	
@@ -59,5 +59,10 @@ public class Definition {
 		// TODO Make better.
 		
 		return true;
+	}
+
+	@Override
+	public int compareTo(Definition other) {
+		return name.compareTo(other.name);
 	}
 }

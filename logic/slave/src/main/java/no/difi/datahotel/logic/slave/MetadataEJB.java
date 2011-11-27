@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
-import javax.enterprise.inject.New;
 
 import no.difi.datahotel.util.bridge.Dataset;
 import no.difi.datahotel.util.bridge.Definition;
@@ -42,7 +41,8 @@ public class MetadataEJB {
 	private Map<String, Definition> defList = new HashMap<String, Definition>();
 	private Map<String, Set<Dataset>> defDataset = new HashMap<String, Set<Dataset>>();
 	
-	private List<Dataset> allDatasets = new ArrayList<Dataset>(); 
+	private List<Dataset> allDatasets = new ArrayList<Dataset>();
+	private List<Definition> allDefinitions = new ArrayList<Definition>();
 
 	@Schedule(second = "0", minute = "*/3", hour = "*")
 	@PostConstruct
@@ -107,8 +107,11 @@ public class MetadataEJB {
 		this.defList = defList;
 		this.defDataset = defDataset;
 		
-		Collections.sort(allDatasets);
 		this.allDatasets = allDatasets;
+		Collections.sort(allDatasets);
+		
+		allDefinitions = new ArrayList<Definition>(defList.values());
+		Collections.sort(allDefinitions);
 	}
 
 	public List<Owner> getOwners() {

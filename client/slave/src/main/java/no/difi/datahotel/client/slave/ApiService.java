@@ -1,6 +1,7 @@
 package no.difi.datahotel.client.slave;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.logic.slave.SearchEJB;
 import no.difi.datahotel.logic.slave.StructureEJB;
 import no.difi.datahotel.util.bridge.Dataset;
+import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Group;
 import no.difi.datahotel.util.bridge.Owner;
@@ -71,7 +73,7 @@ public class ApiService {
 
 	@GET
 	@Path("{type}/_all")
-	public Response getGroupListForOwner(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+	public Response getAllDatasets(@PathParam("type") String type, @QueryParam("callback") String metadata) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
@@ -87,6 +89,44 @@ public class ApiService {
 		}
 	}
 	
+	@GET
+	@Path("{type}/_defs")
+	public Response getAllDefinitions(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		try {
+			dataFormat = DataFormat.get(type);
+			List<Definition> defs = metadataEJB.getDefinitions();
+			Collections.sort(defs);
+
+			if (defs.size() == 0)
+				throw new Exception("No fields available.");
+
+			return Response.ok(dataFormat.format(defs, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+		} catch (Exception e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+					.build();
+		}
+	}
+
+	@GET
+	@Path("{type}/_defs/{def}")
+	public Response getDatasetsByDefinition(@PathParam("type") String type, @PathParam("def") String def, @QueryParam("callback") String metadata) {
+		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		try {
+			dataFormat = DataFormat.get(type);
+			List<Dataset> datasets = metadataEJB.getDefinitionUsage(def);
+			Collections.sort(datasets);
+
+			if (datasets.size() == 0)
+				throw new Exception("Definition never used.");
+
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+		} catch (Exception e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+					.build();
+		}
+	}
+
 	/**
 	 * "/api/type/owner" Gets a list of groups or metadata for an owner in the
 	 * datahotel.
