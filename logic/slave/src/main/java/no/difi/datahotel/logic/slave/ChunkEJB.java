@@ -6,22 +6,26 @@ import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SHARED;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
 import no.difi.datahotel.util.shared.Filesystem;
 
-@Stateless
+@Singleton
 public class ChunkEJB {
 
 	private static Logger logger = Logger.getLogger(ChunkEJB.class.getSimpleName());
 
+	private Map<String, Map<String, Map<String, Long>>> posts = new HashMap<String, Map<String,Map<String, Long>>>();
+	private Map<String, Map<String, Map<String, Long>>> pages = new HashMap<String, Map<String,Map<String, Long>>>();
+	
 	private int size = 100;
 
 	public void update(String owner, String group, String dataset) {
@@ -60,6 +64,18 @@ public class ChunkEJB {
 				delete(owner, group, dataset);
 
 			Filesystem.getFolderPathF(FOLDER_CHUNK, owner, group, datasetTmp).renameTo(goal);
+			
+			if (!posts.containsKey(owner)) {
+				posts.put(owner, new HashMap<String, Map<String,Long>>());
+				pages.put(owner, new HashMap<String, Map<String,Long>>());
+			}
+			if (!posts.get(owner).containsKey(group)) {
+				posts.get(owner).put(group, new HashMap<String, Long>());
+				pages.get(owner).put(group, new HashMap<String, Long>());
+			}
+			posts.get(owner).get(group).put(dataset, (long) counter);
+			pages.get(owner).get(group).put(dataset, (long) number);
+			
 		} catch (IOException e) {
 			// TODO Start sending exceptions.
 			logger.log(Level.WARNING, e.getMessage(), e);
@@ -89,4 +105,21 @@ public class ChunkEJB {
 		return null;
 	}
 
+	public Long getPosts(String owner, String group, String dataset) {
+		try {
+			return posts.get(owner).get(group).get(dataset);
+		} catch (Exception e) 
+		{
+			return 0L;
+		}
+	}
+
+	public Long getPages(String owner, String group, String dataset) {
+		try {
+			return pages.get(owner).get(group).get(dataset);
+		} catch (Exception e) 
+		{
+			return 0L;
+		}
+	}
 }

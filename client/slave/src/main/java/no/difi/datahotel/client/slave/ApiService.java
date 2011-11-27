@@ -49,7 +49,7 @@ public class ApiService {
 
 	/**
 	 * "/api/type" Gets a list of owners available in the datahotel.
-	 *
+	 * 
 	 * @param type
 	 *            Mime type
 	 * @return
@@ -65,7 +65,8 @@ public class ApiService {
 			if (ownerList.size() == 0)
 				throw new Exception("No owners could be found.");
 
-			return Response.ok(dataFormat.format(ownerList, metadata)).header("Content-Type", "").type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(ownerList, metadata)).header("Content-Type", "")
+					.type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -83,13 +84,14 @@ public class ApiService {
 			if (datasets.size() == 0)
 				throw new Exception("No datasets available.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
-	
+
 	@GET
 	@Path("{type}/_defs")
 	public Response getAllDefinitions(@PathParam("type") String type, @QueryParam("callback") String metadata) {
@@ -111,7 +113,8 @@ public class ApiService {
 
 	@GET
 	@Path("{type}/_defs/{def}")
-	public Response getDatasetsByDefinition(@PathParam("type") String type, @PathParam("def") String def, @QueryParam("callback") String metadata) {
+	public Response getDatasetsByDefinition(@PathParam("type") String type, @PathParam("def") String def,
+			@QueryParam("callback") String metadata) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
@@ -121,7 +124,8 @@ public class ApiService {
 			if (datasets.size() == 0)
 				throw new Exception("Definition never used.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -150,7 +154,8 @@ public class ApiService {
 			if (groupList.size() == 0)
 				throw new Exception("Groups for this owner could not be found.");
 
-			return Response.ok(dataFormat.format(groupList, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(groupList, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -180,7 +185,8 @@ public class ApiService {
 			if (datasets.size() == 0)
 				throw new Exception("Datasets for this owner and group could not be found.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -203,18 +209,24 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}")
 	public Response getDataset(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String metadata, @Context HttpServletRequest req) {
+			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String metadata,
+			@Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
-			
+
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
 			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
 
-			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", timestamp)
+					.header("X-Datahotel-Page", page)
+					.header("X-Datahotel-Total-Pages", chunkEJB.getPages(owner, group, dataset))
+					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(owner, group, dataset))
+					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -241,7 +253,7 @@ public class ApiService {
 		try {
 			dataFormat = DataFormat.get(type);
 			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
-			
+
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
@@ -250,7 +262,8 @@ public class ApiService {
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
 
-			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -260,8 +273,9 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}/{group}/{dataset}/search")
 	public Response getSearch(@PathParam("type") String type, @PathParam("owner") String owner,
-			@PathParam("group") String group, @PathParam("dataset") String dataset, @DefaultValue("") @QueryParam("query") String query,
-			@QueryParam("callback") String metadata, @Context HttpServletRequest req) {
+			@PathParam("group") String group, @PathParam("dataset") String dataset,
+			@DefaultValue("") @QueryParam("query") String query, @QueryParam("callback") String metadata,
+			@Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
@@ -271,11 +285,10 @@ public class ApiService {
 				return returnNotModified();
 
 			Object results;
-			
+
 			if (!query.trim().isEmpty())
 				results = new CSVData(searchEJB.find(owner, group, dataset, query));
-			else
-			{
+			else {
 				List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)
@@ -284,7 +297,8 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -314,11 +328,10 @@ public class ApiService {
 						query.put(f.getShortName(), uriInfo.getQueryParameters().get(f.getShortName()).get(0));
 
 			Object results;
-			
+
 			if (query.size() > 0)
 				results = new CSVData(searchEJB.lookup(owner, group, dataset, query));
-			else
-			{
+			else {
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)
 					if (f.getGroupable())
@@ -326,7 +339,8 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
