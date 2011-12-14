@@ -11,7 +11,8 @@
 
 		<p>http://hotell.difi.no/api/[format]/[eier]/[gruppe]/[datasett]</p>
 		
-		<h3>Eksempel på nedlasting av hele datasett</h3>
+		
+		<h3>Eksempel på nedlasting av datasett</h3>
 		
 		<p>Dersom jeg for eksempel ønsker å laste ned Difis liste over fylker, i json-format, kan jeg gjøre det fra denne adressen:</p>
 		
@@ -20,6 +21,29 @@
 		<p>Dersom jeg ønsker å laste ned den samme listen i csv-format, kan jeg gjøre det fra denne adressen:</p>
 		
 		<p><a href="/api/csv/difi/geo/fylke">http://hotell.difi.no/api/csv/difi/geo/fylke</a></p>
+		
+		<p>Merk at datasett på mer enn 100 poster har pagination, se neste avsnitt.</p>
+		
+		
+		<h3>Pagination</h3>
+		
+		<p>Presentasjon av datasett foregår med pagination, og det vil vises maks 100 poster om gangen ved utlisting (gjelder ikke søk og oppslag). For å vise neste side benytter man parameteret <em>page</em> hvor første side er <em>page=1</em> (1-indeksert). Eksempel:</p>
+
+		<p><a href="/api/json/fmsf/partistotte/2011?page=8">http://hotell.difi.no/api/json/fmsf/partistotte/2011?page=8</a></p>
+		
+		<p>Ved uthenting av data hvor pagination benyttes finnes det metadata om dette i HTTP-header. Følgende parametere kan hentes:</p>
+		
+		<ul>
+			<li>X-Datahotel-Page</li>
+			<li>X-Datahotel-Total-Pages</li>
+			<li>X-Datahotel-Total-Posts</li>
+		</ul>
+		
+		
+		<h3>ETag</h3>
+		
+		<p>Alle oppslag som henter data (ikke oversikt over organisasjoner, grupper og datasett) har støtte for ETag.</p>
+		
 		
 		<h3>Eksempel på nedlasting av feltdefinisjoner</h3>
 		
@@ -30,6 +54,7 @@
 		<p>Eller i xml:</p>
 		
 		<p><a href="/api/json/difi/geo/fylke/fields">http://hotell.difi.no/api/xml/difi/geo/fylke/fields</a></p>
+		
 		
 		<h3>Eksempel på oppslag i API'et</h3>
 		
@@ -46,6 +71,7 @@
 		<p>Hvis jeg ønsker å hente ned alle poster som har kategorien «transport» kan jeg derfor gjøre det ved å hente data fra denne URLen:</p>
 		
 		<p><a href="/api/json/difi/miljo/kalkulator/lookup?kategori=transport">http://hotell.difi.no/api/json/difi/miljo/kalkulator/lookup?kategori=transport</a></p>
+		
 		
 		<h3>Teknisk beskrivelse av APIet i XML-format</h3>
 		
