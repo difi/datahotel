@@ -234,6 +234,42 @@ public class ApiService {
 	}
 
 	/**
+	 * "/api/type/owner/group/dataset" Gets a dataset or metadata of a dataset
+	 * based on owner and group.
+	 * 
+	 * @param type
+	 * @param owner
+	 * @param group
+	 * @param dataset
+	 * @param page
+	 * @param metadata
+	 * @return
+	 */
+	@GET
+	@Path("csv/{owner}/{group}/{dataset}/full")
+	public Response getFullDataset(@PathParam("owner") String owner,
+			@PathParam("group") String group, @PathParam("dataset") String dataset,
+			@Context HttpServletRequest req) {
+		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		try {
+			dataFormat = DataFormat.get("csv");
+			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+
+			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
+
+			return Response
+					.ok(chunkEJB.getFullDataset(owner, group, dataset))
+					.type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", timestamp)
+					.build();
+		} catch (Exception e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)
+					.build();
+		}
+	}
+
+	/**
 	 * "/api/type/owner/group/dataset/metadata" Gets a dataset or metadata of a
 	 * dataset based on owner and group.
 	 * 

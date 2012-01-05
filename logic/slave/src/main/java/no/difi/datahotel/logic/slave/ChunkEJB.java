@@ -28,13 +28,15 @@ public class ChunkEJB {
 	
 	private int size = 100;
 
+	public File getFullDataset(String owner, String group, String dataset) {
+		return Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, "dataset.csv");
+	}
+	
 	public void update(String owner, String group, String dataset) {
 		try {
 			String datasetTmp = dataset + "-tmp." + System.currentTimeMillis();
 
-			File source = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, "dataset.csv");
-			CSVParser parser = CSVParserFactory.getCSVParser(source);
-
+			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(owner, group, dataset));
 			CSVWriter writer = null;
 
 			int number = 1, counter = 0;
