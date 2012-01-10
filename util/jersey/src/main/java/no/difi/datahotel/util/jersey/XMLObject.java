@@ -8,6 +8,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Class representing an XML.
@@ -26,32 +36,49 @@ public class XMLObject implements FormaterInterface {
 		} 
 		else {
 			builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			builder.append("<error> Unsupported object </error>");
+			builder.append("<error>Unsupported object</error>");
 		}
 	}
 	
 	private void parseCSVData(CSVData csvData) {
-		builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		
-		if(csvData == null) {
-			builder.append("<error>An error has occured</error>");
-			return;
-		}
-		
-		builder.append("<entries>\n");
-		
-		for(Map<String, String> entry : csvData.getEntries()) {
-			builder.append("\t<entry>\n");
+		try
+		{
+			if (csvData == null)
+				throw new NullPointerException();
 			
-			for(String key : entry.keySet()) {
-				builder.append("\t\t<" + key.replaceAll("\\s+", "") + ">");
-				builder.append("" + entry.get(key));
-				builder.append("</" + key.replaceAll("\\s+", "") + ">\n");
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+			
+			Document doc = docBuilder.newDocument();
+			doc.setXmlStandalone(true);
+			Element rootElement = doc.createElement("entries");
+			doc.appendChild(rootElement);
+			
+			for(Map<String, String> e : csvData.getEntries()) {
+				Element entry = doc.createElement("entry");
+				rootElement.appendChild(entry);
+				
+				for(String key : e.keySet()) {
+					Element value = doc.createElement(key);
+					entry.appendChild(value);
+					value.setTextContent(e.get(key));
+				}
 			}
-			builder.append("\t</entry>\n");
+			
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource source = new DOMSource(doc);
+
+			StringWriter writer = new StringWriter();
+			Result result = new StreamResult(writer);
+			transformer.transform(source, result);
+			builder.append(writer.toString());
+			writer.close();
+			
+		} catch (Exception e) {
+			builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+			builder.append("<error>An error has occured</error>");
 		}
-		
-		builder.append("</entries>");
 	}
 	
 	@SuppressWarnings("unchecked")
