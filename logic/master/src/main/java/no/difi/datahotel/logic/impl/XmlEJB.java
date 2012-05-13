@@ -3,8 +3,11 @@ package no.difi.datahotel.logic.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.EJB;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 
 import no.difi.datahotel.logic.model.DatasetEntity;
@@ -30,9 +33,26 @@ public class XmlEJB {
 	private GroupEJB groupEJB;
 	@EJB
 	private DatasetEJB datasetEJB;
-	
+
 	@EJB
 	private FieldEJB fieldEJB;
+
+	private long lastTimestamp = 0;
+
+	/**
+	 * Updates structure file when update is done in database only.
+	 */
+	@Schedule(second = "0", minute = "*", hour = "*")
+	public void checkTimestamp() {
+		try {
+			if (lastTimestamp == 0)
+				lastTimestamp = datasetEJB.getLastUpdated();
+			else if (datasetEJB.getLastUpdated() > lastTimestamp)
+				saveDatasetStructureToDisk();
+		} catch (Exception e) {
+			Logger.getLogger(XmlEJB.class.getSimpleName()).log(Level.WARNING, e.getMessage(), e);
+		}
+	}
 
 	/**
 	 * Generates a {@code XML} structure describing all {@code datasets} and
@@ -57,31 +77,22 @@ public class XmlEJB {
 			for (GroupEntity g : groupEJB.getByOwner(o)) {
 				Map<String, Long> datasets = new HashMap<String, Long>();
 
-				for (DatasetEntity d : datasetEJB.getDatasetsByDatasetGroup(g))
+				for (DatasetEntity d : datasetEJB.getDatasetsByDatasetGroup(g)) {
 					if (d.getLastEdited() != 0)
 						datasets.put(d.getShortName(), d.getLastEdited());
+					if (d.getLastEdited() > this.lastTimestamp)
+						this.lastTimestamp = d.getLastEdited();
+				}
 
 				if (datasets.size() != 0)
 					groups.put(g.getShortName(), datasets);
 			}
-			
+
 			if (groups.size() != 0)
 				structure.put(o.getShortName(), groups);
 		}
 
 		datasetStructure.save();
-	}
-
-	private Definition createDefinition(FieldEntity fieldEntity) {
-		if (fieldEntity.getDefinition() != null) {
-			Definition definition = new Definition();
-			definition.setDescription(fieldEntity.getDefinition()
-					.getDescription());
-			definition.setName(fieldEntity.getDefinition().getName());
-			definition.setShortName(fieldEntity.getDefinition().getShortName());
-			return definition;
-		}
-		return null;
 	}
 
 	public void saveFieldsToDisk(DatasetEntity dataset, VersionEntity version) throws Exception {
@@ -104,8 +115,18 @@ public class XmlEJB {
 
 		}
 
-		fields.save(dataset.getDatasetGroup().getOwner().getShortName(),
-				dataset.getDatasetGroup().getShortName(),
+		fields.save(dataset.getDatasetGroup().getOwner().getShortName(), dataset.getDatasetGroup().getShortName(),
 				dataset.getShortName());
+	}
+
+	private Definition createDefinition(FieldEntity fieldEntity) {
+		if (fieldEntity.getDefinition() != null) {
+			Definition definition = new Definition();
+			definition.setDescription(fieldEntity.getDefinition().getDescription());
+			definition.setName(fieldEntity.getDefinition().getName());
+			definition.setShortName(fieldEntity.getDefinition().getShortName());
+			return definition;
+		}
+		return null;
 	}
 }

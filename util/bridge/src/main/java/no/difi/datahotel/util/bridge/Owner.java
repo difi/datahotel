@@ -13,7 +13,7 @@ import no.difi.datahotel.util.shared.Filesystem;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Owner extends Abstract {
+public class Owner extends Abstract implements Comparable<Owner> {
 	@XmlElement
 	private String name;
 
@@ -61,12 +61,17 @@ public class Owner extends Abstract {
 
 		return false;
 	}
-
+	
 	public void save() throws Exception {
 		save(Filesystem.getFileF(Filesystem.FOLDER_SHARED, shortName, Filesystem.OWNER_METADATA), this);
 	}
 
 	public static Owner read(String owner) {
 		return (Owner) read(Owner.class, Filesystem.getFileF(Filesystem.FOLDER_SHARED, owner, Filesystem.OWNER_METADATA));
+	}
+
+	@Override
+	public int compareTo(Owner other) {
+		return shortName.compareTo(other.shortName);
 	}
 }

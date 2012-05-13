@@ -33,8 +33,12 @@
 		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
 		<init-param>
 			<param-name>maxFileSize</param-name>
-			<param-value>20m</param-value>
+			<param-value>150m</param-value>
 		</init-param>
+		<init-param>
+			<param-name>uploadMaxFileSize</param-name>
+			<param-value>150m</param-value>
+        </init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>

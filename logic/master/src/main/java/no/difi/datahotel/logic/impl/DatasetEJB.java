@@ -1,10 +1,15 @@
 package no.difi.datahotel.logic.impl;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+
+import org.eclipse.persistence.config.CacheUsage;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 import no.difi.datahotel.logic.model.DatasetEntity;
 import no.difi.datahotel.logic.model.GroupEntity;
@@ -82,5 +87,17 @@ public class DatasetEJB extends AbstractJPAHandler {
 		query.setMaxResults(5);
 
 		return query.getResultList();
+	}
+	
+	public long getLastUpdated() {
+		try {
+			Query query = em.createNamedQuery(DatasetEntity.LASTUPDATED);
+			query.setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache);
+			query.setHint(QueryHints.REFRESH, HintValues.TRUE);
+			query.setMaxResults(1);
+			return ((DatasetEntity) query.getSingleResult()).getLastEdited();
+		} catch (NoResultException e) {
+			return 0;
+		}
 	}
 }

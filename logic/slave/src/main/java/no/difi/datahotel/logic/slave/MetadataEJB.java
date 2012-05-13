@@ -32,7 +32,6 @@ public class MetadataEJB {
 	@EJB
 	private StructureEJB structureEJB;
 
-	// TODO La disse ha en oppstartsverdi.
 	private Map<String, Owner> owners = new HashMap<String, Owner>();
 	private Map<String, Map<String, Group>> groups = new HashMap<String, Map<String,Group>>();
 	private Map<String, Map<String, Map<String, Dataset>>> datasets = new HashMap<String, Map<String,Map<String,Dataset>>>();
