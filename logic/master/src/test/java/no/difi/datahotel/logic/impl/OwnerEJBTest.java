@@ -55,9 +55,9 @@ public class OwnerEJBTest extends AbstractEntityManagerTest {
 		xmlOwnerField.setAccessible(true);
 		xmlOwnerField.set(xmlEJB, ownerEJB);
 
-		Field ownerXmlField = OwnerEJB.class.getDeclaredField("xmlEJB");
-		ownerXmlField.setAccessible(true);
-		ownerXmlField.set(ownerEJB, xmlEJB);
+		//Field ownerXmlField = OwnerEJB.class.getDeclaredField("xmlEJB");
+		//ownerXmlField.setAccessible(true);
+		//ownerXmlField.set(ownerEJB, xmlEJB);
 
 		DatasetEJB datasetEJB = new DatasetEJB();
 		Field datasetEmField = AbstractJPAHandler.class.getDeclaredField("em");
