@@ -15,6 +15,7 @@ import no.difi.datahotel.util.bridge.Fields;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.shared.Filesystem;
+import no.difi.datahotel.util.shared.Timestamp;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -36,7 +37,11 @@ public class IndexEJB {
 		Filesystem.delete(FOLDER_INDEX, owner, group, dataset);
 	}
 
-	public void update(String owner, String group, String dataset) {
+	public void update(String owner, String group, String dataset, long timestamp) {
+		File tsfile = Filesystem.getFileF(FOLDER_INDEX, owner, group, dataset, "timestamp");
+		if (timestamp == Timestamp.getTimestamp(tsfile))
+			return;
+		
 		try {
 			Fields fields = Fields.read(owner, group, dataset);
 			File filename = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, DATASET_DATA);
@@ -75,6 +80,8 @@ public class IndexEJB {
 			writer.commit();
 			writer.close();
 			dir.close();
+			
+			Timestamp.setTimestamp(tsfile, timestamp);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}

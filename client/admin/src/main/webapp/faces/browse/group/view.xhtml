@@ -40,15 +40,6 @@
 					#{ds.name}
 				</h:link>
 			</h:column>
-			<h:column>
-				<f:facet name="header">Klager</f:facet>
-				<h:link outcome="pretty:browse-dataset-reports">
-					<f:param name="owner" value="#{browse.owner.shortName}" />
-					<f:param name="group" value="#{browse.group.shortName}" />
-					<f:param name="dataset" value="#{ds.shortName}" />
-					Klager
-				</h:link>
-			</h:column>
 		</h:dataTable>
 	</ui:define>
 

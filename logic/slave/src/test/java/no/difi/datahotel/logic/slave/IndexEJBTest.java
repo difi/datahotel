@@ -46,13 +46,13 @@ public class IndexEJBTest {
 	
 	@Test
 	public void testIndex() throws Exception {
-		indexEJB.update(o, g, d);
+		indexEJB.update(o, g, d, 1);
 	}
 	
 	@Test
 	public void testNoSource()
 	{
-		indexEJB.update(o, g, "no-exists");
+		indexEJB.update(o, g, "no-exists", 2);
 	}
 	
 	@Test
@@ -89,7 +89,7 @@ public class IndexEJBTest {
 	
 	@Test
 	public void testLookupAdv() throws Exception {
-		indexEJB.update("difi", "geo", "kommune");
+		indexEJB.update("difi", "geo", "kommune", 3);
 		
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");

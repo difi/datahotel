@@ -18,7 +18,6 @@
 		<module>admin</module>
 		<module>slave</module>
 		<module>login</module>
-		<module>report</module>
 		<module>wizard</module>
 	</modules>
 

@@ -28,17 +28,10 @@
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/admin</contextRoot>
 						</webModule>
-						<!-- <webModule> <artifactId>datahotel-client-import</artifactId> <groupId>no.difi.datahotel</groupId> 
-							<contextRoot>/import</contextRoot> </webModule> -->
 						<webModule>
 							<artifactId>datahotel-client-slave</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/</contextRoot>
-						</webModule>
-						<webModule>
-							<artifactId>datahotel-client-report</artifactId>
-							<groupId>no.difi.datahotel</groupId>
-							<contextRoot>/report</contextRoot>
 						</webModule>
 						<webModule>
 							<artifactId>datahotel-client-wizard</artifactId>
@@ -84,20 +77,8 @@
 			<version>1.1.0</version>
 			<type>war</type>
 		</dependency>
-		<!-- <dependency>
-			<artifactId>datahotel-client-import</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<type>war</type>
-		</dependency> -->
 		<dependency>
 			<artifactId>datahotel-client-slave</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<artifactId>datahotel-client-report</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>

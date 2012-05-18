@@ -1,19 +1,18 @@
 package no.difi.datahotel.logic.impl;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import org.eclipse.persistence.config.CacheUsage;
-import org.eclipse.persistence.config.HintValues;
-import org.eclipse.persistence.config.QueryHints;
-
 import no.difi.datahotel.logic.model.DatasetEntity;
 import no.difi.datahotel.logic.model.GroupEntity;
 import no.difi.datahotel.logic.model.VersionEntity;
+
+import org.eclipse.persistence.config.CacheUsage;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  * The EJB with the logic for accessing the db with metadata about the datasets.

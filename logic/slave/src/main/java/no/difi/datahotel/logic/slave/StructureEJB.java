@@ -53,8 +53,8 @@ public class StructureEJB {
 						logger.info("Update: " + o + "/" + g + "/" + d);
 						try
 						{
-							chunkEJB.update(o, g, d);
-							indexEJB.update(o, g, d);
+							chunkEJB.update(o, g, d, getTimestamp(o, g, d));
+							indexEJB.update(o, g, d, getTimestamp(o, g, d));
 						} catch (Exception e)
 						{
 							logger.log(Level.WARNING, e.getMessage());

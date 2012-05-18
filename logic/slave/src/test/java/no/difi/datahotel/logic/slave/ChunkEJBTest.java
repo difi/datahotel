@@ -56,7 +56,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdate() {
-		chunkEJB.update("difi", "test", "simple");
+		chunkEJB.update("difi", "test", "simple", 1);
 
 		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-1.csv").exists());
 		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-2.csv").exists());
@@ -64,7 +64,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdateError() {
-		chunkEJB.update("difi", "test", "simple-not-here");
+		chunkEJB.update("difi", "test", "simple-not-here", 2);
 
 		// TODO Fikse verifisert bruk av logger
 		// Mockito.verify(logger).log(Level.WARNING, null);
@@ -72,7 +72,7 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testGet() throws Exception {
-		chunkEJB.update("difi", "test", "simple");
+		chunkEJB.update("difi", "test", "simple", 3);
 		
 		assertEquals(100, chunkEJB.get("difi", "test", "simple", 1).size());
 		assertEquals(19, chunkEJB.get("difi", "test", "simple", 2).size());
@@ -87,7 +87,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testOneHundred() throws Exception {
-		chunkEJB.update("difi", "test", "hundred");		
+		chunkEJB.update("difi", "test", "hundred", 4);		
 
 		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
 		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
@@ -100,7 +100,7 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testDelete() {
-		chunkEJB.update("difi", "test", "simple");
+		chunkEJB.update("difi", "test", "simple", 5);
 		chunkEJB.delete("difi", "test", "simple");
 		
 		assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test").exists());

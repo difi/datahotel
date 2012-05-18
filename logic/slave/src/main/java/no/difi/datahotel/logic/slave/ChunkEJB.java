@@ -17,6 +17,7 @@ import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
 import no.difi.datahotel.util.shared.Filesystem;
+import no.difi.datahotel.util.shared.Timestamp;
 
 @Singleton
 public class ChunkEJB {
@@ -25,14 +26,18 @@ public class ChunkEJB {
 
 	private Map<String, Map<String, Map<String, Long>>> posts = new HashMap<String, Map<String,Map<String, Long>>>();
 	private Map<String, Map<String, Map<String, Long>>> pages = new HashMap<String, Map<String,Map<String, Long>>>();
-	
+
 	private int size = 100;
 
 	public File getFullDataset(String owner, String group, String dataset) {
 		return Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, "dataset.csv");
 	}
 	
-	public void update(String owner, String group, String dataset) {
+	public void update(String owner, String group, String dataset, long timestamp) {
+		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, owner, group, dataset, "timestamp");
+		if (timestamp == Timestamp.getTimestamp(tsfile))
+			return;
+		
 		try {
 			String datasetTmp = dataset + "-tmp." + System.currentTimeMillis();
 
@@ -78,6 +83,7 @@ public class ChunkEJB {
 			posts.get(owner).get(group).put(dataset, (long) counter);
 			pages.get(owner).get(group).put(dataset, (long) number);
 			
+			Timestamp.setTimestamp(tsfile, timestamp);
 		} catch (IOException e) {
 			// TODO Start sending exceptions.
 			logger.log(Level.WARNING, e.getMessage(), e);
