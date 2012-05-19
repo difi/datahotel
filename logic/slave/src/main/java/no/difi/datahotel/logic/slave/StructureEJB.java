@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -24,6 +23,8 @@ public class StructureEJB {
 	private static Logger logger = Logger.getLogger(StructureEJB.class.getSimpleName());
 
 	@EJB
+	private SystemEJB systemEJB;
+	@EJB
 	private ChunkEJB chunkEJB;
 	@EJB
 	private IndexEJB indexEJB;
@@ -33,7 +34,13 @@ public class StructureEJB {
 	private long currentLastModified;
 
 	@Schedule(second = "13,37", minute = "*", hour = "*")
-	@PostConstruct
+	public void schedule() {
+		if (!systemEJB.isReady())
+			return;
+
+		update();
+	}
+	
 	public void update() {
 		// Run only when needed.
 		File file = Filesystem.getFileF(FOLDER_SHARED, STRUCTURE);

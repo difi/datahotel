@@ -24,20 +24,20 @@ public class ChunkEJB {
 
 	private static Logger logger = Logger.getLogger(ChunkEJB.class.getSimpleName());
 
-	private Map<String, Map<String, Map<String, Long>>> posts = new HashMap<String, Map<String,Map<String, Long>>>();
-	private Map<String, Map<String, Map<String, Long>>> pages = new HashMap<String, Map<String,Map<String, Long>>>();
+	private Map<String, Map<String, Map<String, Long>>> posts = new HashMap<String, Map<String, Map<String, Long>>>();
+	private Map<String, Map<String, Map<String, Long>>> pages = new HashMap<String, Map<String, Map<String, Long>>>();
 
 	private int size = 100;
 
 	public File getFullDataset(String owner, String group, String dataset) {
 		return Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, "dataset.csv");
 	}
-	
+
 	public void update(String owner, String group, String dataset, long timestamp) {
 		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, owner, group, dataset, "timestamp");
 		if (timestamp == Timestamp.getTimestamp(tsfile))
 			return;
-		
+
 		try {
 			String datasetTmp = dataset + "-tmp." + System.currentTimeMillis();
 
@@ -71,10 +71,10 @@ public class ChunkEJB {
 				delete(owner, group, dataset);
 
 			Filesystem.getFolderPathF(FOLDER_CHUNK, owner, group, datasetTmp).renameTo(goal);
-			
+
 			if (!posts.containsKey(owner)) {
-				posts.put(owner, new HashMap<String, Map<String,Long>>());
-				pages.put(owner, new HashMap<String, Map<String,Long>>());
+				posts.put(owner, new HashMap<String, Map<String, Long>>());
+				pages.put(owner, new HashMap<String, Map<String, Long>>());
 			}
 			if (!posts.get(owner).containsKey(group)) {
 				posts.get(owner).put(group, new HashMap<String, Long>());
@@ -82,7 +82,7 @@ public class ChunkEJB {
 			}
 			posts.get(owner).get(group).put(dataset, (long) counter);
 			pages.get(owner).get(group).put(dataset, (long) number);
-			
+
 			Timestamp.setTimestamp(tsfile, timestamp);
 		} catch (IOException e) {
 			// TODO Start sending exceptions.
@@ -105,7 +105,7 @@ public class ChunkEJB {
 				result.add(parser.getNextLine());
 
 			parser.close();
-			
+
 			return result;
 		} catch (IOException e) {
 			logger.log(Level.WARNING, e.getMessage());
@@ -116,8 +116,7 @@ public class ChunkEJB {
 	public Long getPosts(String owner, String group, String dataset) {
 		try {
 			return posts.get(owner).get(group).get(dataset);
-		} catch (Exception e) 
-		{
+		} catch (Exception e) {
 			return 0L;
 		}
 	}
@@ -125,8 +124,7 @@ public class ChunkEJB {
 	public Long getPages(String owner, String group, String dataset) {
 		try {
 			return pages.get(owner).get(group).get(dataset);
-		} catch (Exception e) 
-		{
+		} catch (Exception e) {
 			return 0L;
 		}
 	}

@@ -12,7 +12,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -31,6 +30,8 @@ public class MetadataEJB {
 	
 	@EJB
 	private StructureEJB structureEJB;
+	@EJB
+	private SystemEJB systemEJB;
 
 	private Map<String, Owner> owners = new HashMap<String, Owner>();
 	private Map<String, Map<String, Group>> groups = new HashMap<String, Map<String,Group>>();
@@ -44,7 +45,13 @@ public class MetadataEJB {
 	private List<Definition> allDefinitions = new ArrayList<Definition>();
 
 	@Schedule(second = "0", minute = "*/3", hour = "*")
-	@PostConstruct
+	public void schedule() {
+		if (!systemEJB.isReady())
+			return;
+
+		update();
+	}
+
 	public void update() {
 		Map<String, Owner> owners = new HashMap<String, Owner>();
 		Map<String, Map<String, Group>> groups = new HashMap<String, Map<String, Group>>();

@@ -31,7 +31,7 @@ import org.apache.lucene.util.Version;
 @Stateless
 public class IndexEJB {
 
-	private static Logger logger = Logger.getLogger(Index.class.getSimpleName());
+	private static Logger logger = Logger.getLogger(IndexEJB.class.getSimpleName());
 
 	public void delete(String owner, String group, String dataset) {
 		Filesystem.delete(FOLDER_INDEX, owner, group, dataset);

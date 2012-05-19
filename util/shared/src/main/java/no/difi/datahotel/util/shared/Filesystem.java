@@ -10,8 +10,10 @@ public class Filesystem {
 	public static final String DATASET_DATA = "dataset.csv";
 	public static final String DATASET_FIELDS = "fields.xml";
 	public static final String DATASET_METADATA = "metadata.xml";
+	public static final String METADATA = "meta.xml";
+	public static final String INACTIVE = "inactive";
 	
-	private static final String FOLDER_DATAHOTEL = ".datahotel";
+	private static final String FOLDER_DATAHOTEL = "datahotel";
 
 	public static final String FOLDER_ARCHIVE = "archive";
 	public static final String FOLDER_CHUNK = "chunk";
@@ -29,7 +31,7 @@ public class Filesystem {
 	public static File getFolderPathF(String... folder) {
 		String dir = getHome();
 		for (String f : folder)
-			dir += f + File.separator;
+			dir += f.replace("/", File.separator) + File.separator;
 		return new File(dir);
 	}
 	
@@ -46,8 +48,16 @@ public class Filesystem {
 		String[] dir = new String[uri.length - 1];
 		for (int i = 0; i < uri.length - 1; i++)
 			dir[i] = uri[i];
-		
+
 		return new File(getFolderF(dir).toString() + File.separator + uri[uri.length - 1]);
+	}
+
+	public static File getFileF(File folder, String... uri) {
+		String path = folder.toString(); 
+		for (int i = 0; i < uri.length - 1; i++)
+			path += uri[i].replace("/", File.separator) + File.separator;
+		
+		return new File(path + File.separator + uri[uri.length - 1]);
 	}
 	
 	public static void delete(String folder, String owner, String group, String dataset) {
