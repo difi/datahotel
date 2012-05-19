@@ -1,73 +1,27 @@
 package no.difi.datahotel.util.bridge;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import no.difi.datahotel.util.shared.Filesystem;
 
 @XmlRootElement
 public class Metadata extends Abstract {
 
-	// Values for administration
-	private String location;
-	private String shortName;
-	private Map<String, Metadata> children = new HashMap<String, Metadata>();
-	private boolean active;
-	private boolean dataset;
-	private Long updated;
-
 	// Values for users
+	private String shortName;
 	private String name;
 	private String description;
 	private String url;
+	private Long updated;
 
-	@XmlTransient
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	@XmlTransient
 	public String getShortName() {
 		return shortName;
 	}
 
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
-	}
-
-	@XmlTransient
-	public Map<String, Metadata> getChildren() {
-		return children;
-	}
-
-	public void setChildren(Map<String, Metadata> children) {
-		this.children = children;
-	}
-
-	@XmlTransient
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
-	@XmlTransient
-	public boolean isDataset() {
-		return dataset;
-	}
-
-	public void setDataset(boolean dataset) {
-		this.dataset = dataset;
 	}
 
 	public String getName() {
@@ -93,7 +47,7 @@ public class Metadata extends Abstract {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-
+	
 	public Long getUpdated() {
 		return updated;
 	}
@@ -102,20 +56,13 @@ public class Metadata extends Abstract {
 		this.updated = updated;
 	}
 
-	public void save() throws Exception {
-		save(Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.METADATA), this);
-	}
-
-	public static Metadata read(String location) {
-		File fileMeta = Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.METADATA);
-		File fileInactive = Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.INACTIVE);
-		File fileDataset = Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.DATASET_DATA);
-
-		Metadata metadata = (Metadata) read(Metadata.class, fileMeta);
+	public static MetadataSlave read(String location) {
+		File folder = Filesystem.getFolderF(Filesystem.FOLDER_SHARED, location);
+		MetadataSlave metadata = (MetadataSlave) read(MetadataSlave.class, Filesystem.getFileF(folder, Filesystem.METADATA));
 		metadata.setLocation(location);
-		metadata.setShortName(fileMeta.getName());
-		metadata.setActive(fileInactive.exists());
-		metadata.setDataset(fileDataset.exists());
+		metadata.setShortName(folder.getName());
+		metadata.setActive(!Filesystem.getFileF(folder, Filesystem.INACTIVE).exists());
+		metadata.setDataset(Filesystem.getFileF(folder, Filesystem.DATASET_DATA).exists());
 
 		return metadata;
 	}

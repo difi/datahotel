@@ -34,10 +34,15 @@ public class ChunkEJB {
 	}
 
 	public void update(String owner, String group, String dataset, long timestamp) {
+	// public void update(String location, long timestamp) {
 		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, owner, group, dataset, "timestamp");
-		if (timestamp == Timestamp.getTimestamp(tsfile))
+		if (timestamp == Timestamp.getTimestamp(tsfile)) {
+			logger.info("[" + owner + "/" + group +"/" + dataset + "] Chunk up to date.");
 			return;
-
+		}
+			
+		logger.info("[" + owner + "/" + group +"/" + dataset + "] Building chunk.");
+		
 		try {
 			String datasetTmp = dataset + "-tmp." + System.currentTimeMillis();
 

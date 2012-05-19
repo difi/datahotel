@@ -64,7 +64,6 @@ public class VersionBean {
 		versionEJB.saveFile(version);
 		
 		xmlEJB.saveFieldsToDisk(dataset, version);
-		xmlEJB.saveDatasetStructureToDisk();
 		
 		return "pretty:manage_dataset";
 	}

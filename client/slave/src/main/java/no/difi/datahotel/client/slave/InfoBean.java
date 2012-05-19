@@ -6,14 +6,11 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
+import no.difi.datahotel.logic.slave.FieldEJB;
 import no.difi.datahotel.logic.slave.MetadataEJB;
-import no.difi.datahotel.logic.slave.MetadataEJB.DatasetHolder;
-import no.difi.datahotel.util.bridge.Dataset;
-import no.difi.datahotel.util.bridge.Group;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
-import no.difi.datahotel.util.bridge.Fields;
-import no.difi.datahotel.util.bridge.Owner;
+import no.difi.datahotel.util.bridge.Metadata;
 
 @ManagedBean(name = "info")
 @RequestScoped
@@ -21,41 +18,36 @@ public class InfoBean {
 
 	@EJB
 	private MetadataEJB metadataEJB;
+	@EJB
+	private FieldEJB fieldEJB;
 
 	private String ownerShortName;
 	private String groupShortName;
 	private String datasetShortName;
 	private String defShortName;
 
-	private Owner owner;
-	private Group group;
-	private Dataset dataset;
-	private Fields fields;
+	private Metadata owner, group, dataset;
+	private List<Field> fields;
 	private Definition def;
 
-	public List<Owner> getOwners() {
-		return metadataEJB.getOwners();
+	public List<Metadata> getOwners() {
+		return metadataEJB.getChildren();
 	}
 
-	public List<Group> getGroups() {
-		return metadataEJB.getGroups(getOwnerShortName());
+	public List<Metadata> getGroups() {
+		return metadataEJB.getChildren(getOwnerShortName());
 	}
 
-	public List<Dataset> getDatasets() {
-		return metadataEJB
-				.getDatasets(getOwnerShortName(), getGroupShortName());
-	}
-
-	public List<DatasetHolder> getLast() {
-		return metadataEJB.getLast(5);
+	public List<Metadata> getDatasets() {
+		return metadataEJB.getChildren(getOwnerShortName(), getGroupShortName());
 	}
 
 	public List<Definition> getDefinitions() {
-		return metadataEJB.getDefinitions();
+		return fieldEJB.getDefinitions();
 	}
 
-	public List<Dataset> getDefDatasets() {
-		return metadataEJB.getDefinitionUsage(getDefShortName());
+	public List<String> getDefDatasets() {
+		return fieldEJB.getUsage(getDefShortName());
 	}
 
 	// GETTERS AND SETTERS! :)
@@ -65,7 +57,7 @@ public class InfoBean {
 	}
 
 	public void setOwnerShortName(String owner) {
-		this.owner = metadataEJB.getOwner(owner);
+		this.owner = metadataEJB.getChild(owner);
 		this.ownerShortName = owner;
 	}
 
@@ -74,7 +66,7 @@ public class InfoBean {
 	}
 
 	public void setGroupShortName(String group) {
-		this.group = metadataEJB.getGroup(getOwnerShortName(), group);
+		this.group = metadataEJB.getChild(getOwnerShortName(), group);
 		this.groupShortName = group;
 	}
 
@@ -83,15 +75,13 @@ public class InfoBean {
 	}
 
 	public void setDatasetShortName(String dataset) {
-		this.dataset = metadataEJB.getDataset(getOwnerShortName(),
-				getGroupShortName(), dataset);
-		this.fields = metadataEJB.getFields(getOwnerShortName(),
-				getGroupShortName(), dataset);
+		this.dataset = metadataEJB.getChild(getOwnerShortName(), getGroupShortName(), dataset);
+		this.fields = fieldEJB.getFields(getOwnerShortName(), getGroupShortName(), dataset);
 		this.datasetShortName = dataset;
 	}
 
 	public void setDefShortName(String defName) {
-		this.def = metadataEJB.getDefinition(defName);
+		this.def = fieldEJB.getDefinition(defName);
 		this.defShortName = defName;
 	}
 
@@ -99,15 +89,15 @@ public class InfoBean {
 		return defShortName;
 	}
 
-	public Owner getOwner() {
+	public Metadata getOwner() {
 		return owner;
 	}
 
-	public Group getGroup() {
+	public Metadata getGroup() {
 		return group;
 	}
 
-	public Dataset getDataset() {
+	public Metadata getDataset() {
 		return dataset;
 	}
 
@@ -116,6 +106,6 @@ public class InfoBean {
 	}
 
 	public List<Field> getFields() {
-		return fields.getFields();
+		return fields;
 	}
 }

@@ -1,24 +1,16 @@
 package no.difi.datahotel.logic.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.EJB;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 
 import no.difi.datahotel.logic.model.DatasetEntity;
 import no.difi.datahotel.logic.model.FieldEntity;
-import no.difi.datahotel.logic.model.GroupEntity;
-import no.difi.datahotel.logic.model.OwnerEntity;
 import no.difi.datahotel.logic.model.VersionEntity;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Fields;
-import no.difi.datahotel.util.bridge.Structure;
 
 /**
  * {@code XmlEJB} handles the I/O of {@code XML} files. It utilizes {@code JAXB}
@@ -28,72 +20,7 @@ import no.difi.datahotel.util.bridge.Structure;
 public class XmlEJB {
 
 	@EJB
-	private OwnerEJB ownerEJB;
-	@EJB
-	private GroupEJB groupEJB;
-	@EJB
-	private DatasetEJB datasetEJB;
-
-	@EJB
 	private FieldEJB fieldEJB;
-
-	private long lastTimestamp = 0;
-
-	/**
-	 * Updates structure file when update is done in database only.
-	 */
-	@Schedule(second = "0", minute = "*", hour = "*")
-	public void checkTimestamp() {
-		try {
-			if (lastTimestamp == 0)
-				lastTimestamp = datasetEJB.getLastUpdated();
-			else if (datasetEJB.getLastUpdated() > lastTimestamp)
-				saveDatasetStructureToDisk();
-		} catch (Exception e) {
-			Logger.getLogger(XmlEJB.class.getSimpleName()).log(Level.WARNING, e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Generates a {@code XML} structure describing all {@code datasets} and
-	 * saves it to disc.
-	 * <p>
-	 * The structure is a tree view of all {@code Owners} ->
-	 * {@code DatasetGroups} -> {@code Datasets} </br> It will be located in the
-	 * base {@code datahotel} folder, and named {@code datasetStructure.xml}
-	 * 
-	 * @return the generated structure.
-	 * @see #readDatasetStructure()
-	 * @see Structure
-	 */
-	public void saveDatasetStructureToDisk() throws Exception {
-		Structure datasetStructure = new Structure();
-		Map<String, Map<String, Map<String, Long>>> structure = new HashMap<String, Map<String, Map<String, Long>>>();
-		datasetStructure.setStructure(structure);
-
-		for (OwnerEntity o : ownerEJB.getAll()) {
-			Map<String, Map<String, Long>> groups = new HashMap<String, Map<String, Long>>();
-
-			for (GroupEntity g : groupEJB.getByOwner(o)) {
-				Map<String, Long> datasets = new HashMap<String, Long>();
-
-				for (DatasetEntity d : datasetEJB.getDatasetsByDatasetGroup(g)) {
-					if (d.getLastEdited() != 0)
-						datasets.put(d.getShortName(), d.getLastEdited());
-					if (d.getLastEdited() > this.lastTimestamp)
-						this.lastTimestamp = d.getLastEdited();
-				}
-
-				if (datasets.size() != 0)
-					groups.put(g.getShortName(), datasets);
-			}
-
-			if (groups.size() != 0)
-				structure.put(o.getShortName(), groups);
-		}
-
-		datasetStructure.save();
-	}
 
 	public void saveFieldsToDisk(DatasetEntity dataset, VersionEntity version) throws Exception {
 		Fields fields = new Fields();

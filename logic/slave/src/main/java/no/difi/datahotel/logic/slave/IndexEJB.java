@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import no.difi.datahotel.util.bridge.Fields;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.shared.Filesystem;
@@ -33,17 +33,23 @@ public class IndexEJB {
 
 	private static Logger logger = Logger.getLogger(IndexEJB.class.getSimpleName());
 
+	@EJB
+	private FieldEJB fieldEJB;
+	
 	public void delete(String owner, String group, String dataset) {
 		Filesystem.delete(FOLDER_INDEX, owner, group, dataset);
 	}
 
 	public void update(String owner, String group, String dataset, long timestamp) {
 		File tsfile = Filesystem.getFileF(FOLDER_INDEX, owner, group, dataset, "timestamp");
-		if (timestamp == Timestamp.getTimestamp(tsfile))
+		if (timestamp == Timestamp.getTimestamp(tsfile)) {
+			logger.info("[" + owner + "/" + group +"/" + dataset + "] Index up to date.");
 			return;
+		}
+		
+		logger.info("[" + owner + "/" + group +"/" + dataset + "] Building index.");
 		
 		try {
-			Fields fields = Fields.read(owner, group, dataset);
 			File filename = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, DATASET_DATA);
 
 			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
@@ -54,11 +60,13 @@ public class IndexEJB {
 			writer.deleteAll();
 
 			CSVParser csv = CSVParserFactory.getCSVParser(filename);
+			long i = 0;
 			while (csv.hasNext()) {
+				i++;
 				Map<String, String> line = csv.getNextLine();
 				Document doc = new Document();
 				String searchable = "";
-				for (no.difi.datahotel.util.bridge.Field f : fields.getFields()) {
+				for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(owner, group, dataset)) {
 					String value = line.get(f.getShortName());
 					
 					if (value.matches("[0-9.,]+"))
@@ -74,6 +82,9 @@ public class IndexEJB {
 					doc.add(new Field("searchable", searchable.trim(), Store.NO, Index.ANALYZED));
 
 				writer.addDocument(doc);
+				
+				if (i % 10000 == 0)
+					logger.info("[" + owner + "/" + group +"/" + dataset + "] Document " + i);
 			}
 
 			writer.optimize();

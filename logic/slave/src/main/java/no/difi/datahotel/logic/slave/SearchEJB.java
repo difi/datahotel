@@ -5,6 +5,7 @@ import static no.difi.datahotel.util.shared.Filesystem.FOLDER_INDEX;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
@@ -30,20 +31,24 @@ public class SearchEJB {
 
 	private static QueryParser parser = new QueryParser(Version.LUCENE_33, "searchable", new StandardAnalyzer(Version.LUCENE_33));
 
-	public ArrayList<Map<String, String>> find(String owner, String group, String dataset, String q) throws Exception {
+	public List<Map<String, String>> find(String owner, String group, String dataset, String q, int page) throws Exception {
+		int num = 25;
+		
 		Directory dir = FSDirectory.open(Filesystem.getFolderPathF(FOLDER_INDEX, owner, group, dataset));
 		IndexSearcher searcher = new IndexSearcher(dir);
 
-		TopDocs docs = searcher.search(parser.parse(q), 10);
-		ArrayList<Map<String, String>> result = convert(searcher, docs);
-
+		TopDocs docs = searcher.search(parser.parse(q), num * page);
+		List<Map<String, String>> result = convert(searcher, docs);
+		
 		searcher.close();
 		dir.close();
 
-		return result;
+		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size() - 1);
 	}
 	
-	public ArrayList<Map<String, String>> lookup(String owner, String group, String dataset, Map<String, String> query) throws Exception {
+	public List<Map<String, String>> lookup(String owner, String group, String dataset, Map<String, String> query, int page) throws Exception {
+		int num = 25;
+
 		Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
 		IndexSearcher searcher = new IndexSearcher(dir);
 		
@@ -61,13 +66,13 @@ public class SearchEJB {
 		
 		Query q = MultiFieldQueryParser.parse(Version.LUCENE_33, values, keys, occurs, new StandardAnalyzer(Version.LUCENE_33));
 		
-		TopDocs docs = searcher.search(q, 100);
-		ArrayList<Map<String, String>> result = convert(searcher, docs);
+		TopDocs docs = searcher.search(q, num * page);
+		List<Map<String, String>> result = convert(searcher, docs);
 
 		searcher.close();
 		dir.close();
 
-		return result;
+		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size() - 1);
 	}
 
 	private ArrayList<Map<String, String>> convert(IndexSearcher searcher, TopDocs docs) throws IOException {

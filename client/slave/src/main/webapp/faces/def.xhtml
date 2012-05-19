@@ -8,11 +8,7 @@
 
 		<ul>
 			<ui:repeat value="#{info.defDatasets}" var="d">
-				<li><h:link outcome="pretty:dataset" value="#{d.name}">
-						<f:param name="owner" value="#{d.owner}" />
-						<f:param name="group" value="#{d.group}" />
-						<f:param name="dataset" value="#{d.shortName}" />
-					</h:link><br /><span style="color: #999;">#{d.owner}/#{d.group}/#{d.shortName}</span></li>
+				<li><a href="/browse/#{d}">#{d}</a></li>
 			</ui:repeat>
 		</ul>
 	</ui:define>

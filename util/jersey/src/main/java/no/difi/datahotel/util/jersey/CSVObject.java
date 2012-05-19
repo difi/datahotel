@@ -1,7 +1,7 @@
 package no.difi.datahotel.util.jersey;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import no.difi.datahotel.util.csv.CSVWriter;
@@ -13,7 +13,7 @@ public class CSVObject implements FormaterInterface {
 
 	public String format(Object object, String metadata) throws Exception {
 		if (object instanceof CSVData) {
-			ArrayList<Map<String, String>> data = ((CSVData) object).getEntries();
+			List<Map<String, String>> data = ((CSVData) object).getEntries();
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			CSVWriter writer = new CSVWriter(baos);

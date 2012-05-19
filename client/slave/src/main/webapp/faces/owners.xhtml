@@ -11,7 +11,7 @@
 			<ui:repeat value="#{info.owners}" var="ow">
 				<li><h:link outcome="pretty:groups" value="#{ow.name}">
 						<f:param name="owner" value="#{ow.shortName}" />
-					</h:link><br /><span style="color: #999;">#{ow.shortName}</span>
+					</h:link><br /><span style="color: #999;">#{ow.location}</span>
 				</li>
 			</ui:repeat>
 		</ul>

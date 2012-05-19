@@ -16,7 +16,7 @@ public enum DataFormat {
 	CSV("csv", "text/plain", new CSVObject()), // text/csv
 	JSON("json", "application/json", new JSONObject()),
 	JSONP("jsonp", "application/json", new JSONPObject()),
-	YAML("yaml", "text/plain", new YAMLObject()),
+	// YAML("yaml", "text/plain", new YAMLObject()),
 	PLAIN_TEXT("text", "text/plain", new TextObject());
 
 	private static Logger logger = Logger.getLogger(DataFormat.class.getSimpleName());

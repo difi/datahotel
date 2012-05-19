@@ -19,14 +19,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import no.difi.datahotel.logic.slave.ChunkEJB;
+import no.difi.datahotel.logic.slave.FieldEJB;
 import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.logic.slave.SearchEJB;
-import no.difi.datahotel.logic.slave.StructureEJB;
-import no.difi.datahotel.util.bridge.Dataset;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
-import no.difi.datahotel.util.bridge.Group;
-import no.difi.datahotel.util.bridge.Owner;
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 
@@ -41,7 +39,7 @@ public class ApiService {
 	@EJB
 	private MetadataEJB metadataEJB;
 	@EJB
-	private StructureEJB structureEJB;
+	private FieldEJB fieldEJB;
 	@EJB
 	private ChunkEJB chunkEJB;
 	@EJB
@@ -60,12 +58,12 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Owner> ownerList = metadataEJB.getOwners();
+			List<Metadata> list = metadataEJB.getChildren();
 
-			if (ownerList.size() == 0)
-				throw new Exception("No owners could be found.");
+			if (list == null)
+				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(ownerList, metadata)).header("Content-Type", "")
+			return Response.ok(dataFormat.format(list, metadata)).header("Content-Type", "")
 					.type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
@@ -79,10 +77,7 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Dataset> datasets = metadataEJB.getAllDatasets();
-
-			if (datasets.size() == 0)
-				throw new Exception("No datasets available.");
+			List<Metadata> datasets = metadataEJB.getDatasets();
 
 			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
 					.build();
@@ -98,7 +93,7 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Definition> defs = metadataEJB.getDefinitions();
+			List<Definition> defs = fieldEJB.getDefinitions();
 			Collections.sort(defs);
 
 			if (defs.size() == 0)
@@ -118,7 +113,7 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Dataset> datasets = metadataEJB.getDefinitionUsage(def);
+			List<String> datasets = fieldEJB.getUsage(def);
 			Collections.sort(datasets);
 
 			if (datasets.size() == 0)
@@ -149,13 +144,12 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Group> groupList = metadataEJB.getGroups(owner);
+			List<Metadata> list = metadataEJB.getChildren(owner);
 
-			if (groupList.size() == 0)
-				throw new Exception("Groups for this owner could not be found.");
+			if (list == null)
+				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(groupList, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -180,13 +174,12 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Dataset> datasets = metadataEJB.getDatasets(owner, group);
+			List<Metadata> list = metadataEJB.getChildren(owner, group);
 
-			if (datasets.size() == 0)
-				throw new Exception("Datasets for this owner and group could not be found.");
+			if (list == null)
+				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -214,7 +207,9 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			// long timestamp = structureEJB.getTimestamp(owner, group,
+			// dataset);
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -222,11 +217,9 @@ public class ApiService {
 			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
 
 			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp)
-					.header("X-Datahotel-Page", page)
+					.header("ETag", timestamp).header("X-Datahotel-Page", page)
 					.header("X-Datahotel-Total-Pages", chunkEJB.getPages(owner, group, dataset))
-					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(owner, group, dataset))
-					.build();
+					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(owner, group, dataset)).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -247,22 +240,20 @@ public class ApiService {
 	 */
 	@GET
 	@Path("csv/{owner}/{group}/{dataset}/full")
-	public Response getFullDataset(@PathParam("owner") String owner,
-			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@Context HttpServletRequest req) {
+	public Response getFullDataset(@PathParam("owner") String owner, @PathParam("group") String group,
+			@PathParam("dataset") String dataset, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get("csv");
-			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			// long timestamp = structureEJB.getTimestamp(owner, group,
+			// dataset);
+			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			return Response
-					.ok(chunkEJB.getFullDataset(owner, group, dataset))
-					.type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp)
-					.build();
+			return Response.ok(chunkEJB.getFullDataset(owner, group, dataset))
+					.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -288,12 +279,12 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
+			List<Field> fields = fieldEJB.getFields(owner, group, dataset);
 
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
@@ -311,11 +302,13 @@ public class ApiService {
 	public Response getSearch(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
 			@DefaultValue("") @QueryParam("query") String query, @QueryParam("callback") String metadata,
-			@Context HttpServletRequest req) {
+			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			// long timestamp = structureEJB.getTimestamp(owner, group,
+			// dataset);
+			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -323,9 +316,9 @@ public class ApiService {
 			Object results;
 
 			if (!query.trim().isEmpty())
-				results = new CSVData(searchEJB.find(owner, group, dataset, query));
+				results = new CSVData(searchEJB.find(owner, group, dataset, query, page));
 			else {
-				List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
+				List<Field> fields = fieldEJB.getFields(owner, group, dataset);
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)
 					if (f.getSearchable())
@@ -345,18 +338,21 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/lookup")
 	public Response getLookupMulti(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String metadata, @Context UriInfo uriInfo, @Context HttpServletRequest req) {
+			@QueryParam("callback") String metadata, @Context UriInfo uriInfo,
+			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
 
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			long timestamp = structureEJB.getTimestamp(owner, group, dataset);
+			// long timestamp = structureEJB.getTimestamp(owner, group,
+			// dataset);
+			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
 			Map<String, String> query = new HashMap<String, String>();
-			List<Field> fields = metadataEJB.getFields(owner, group, dataset).getFields();
+			List<Field> fields = fieldEJB.getFields(owner, group, dataset);
 
 			for (Field f : fields)
 				if (f.getGroupable())
@@ -366,7 +362,7 @@ public class ApiService {
 			Object results;
 
 			if (query.size() > 0)
-				results = new CSVData(searchEJB.lookup(owner, group, dataset, query));
+				results = new CSVData(searchEJB.lookup(owner, group, dataset, query, page));
 			else {
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)

@@ -61,7 +61,7 @@ public class IndexEJBTest {
 		
 		try
 		{
-			search.find("no", "dataset", "here", "kings");
+			search.find("no", "dataset", "here", "kings", 1);
 		} catch (Exception e)
 		{
 			ex = e;
@@ -75,11 +75,11 @@ public class IndexEJBTest {
 	public void testSearch() throws Exception {
 		testIndex();
 		
-		assertEquals(2, search.find(o, g, d, "Energi").size());
-		assertEquals(0, search.find(o, g, d, "km").size());
-		assertEquals(1, search.find(o, g, d, "tog").size());
-		assertEquals(1, search.find(o, g, d, "ark").size());
-		assertEquals(2, search.find(o, g, d, "BUSS").size());
+		assertEquals(2, search.find(o, g, d, "Energi", 1).size());
+		assertEquals(0, search.find(o, g, d, "km", 1).size());
+		assertEquals(1, search.find(o, g, d, "tog", 1).size());
+		assertEquals(1, search.find(o, g, d, "ark", 1).size());
+		assertEquals(2, search.find(o, g, d, "BUSS", 1).size());
 	}
 
 	@Test
@@ -94,19 +94,19 @@ public class IndexEJBTest {
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");
 		query.put("fylke", "14");
-		assertEquals(1, search.lookup("difi", "geo", "kommune", query).size());
+		assertEquals(1, search.lookup("difi", "geo", "kommune", query, 1).size());
 
 		query.clear();
 		query.put("kommune", "1401");
-		assertEquals(1, search.lookup("difi", "geo", "kommune", query).size());
+		assertEquals(1, search.lookup("difi", "geo", "kommune", query, 1).size());
 		
 		query.clear();
 		query.put("fylke", "14");
-		assertEquals(26, search.lookup("difi", "geo", "kommune", query).size());
+		assertEquals(26, search.lookup("difi", "geo", "kommune", query, 1).size());
 
 		query.clear();
 		query.put("navn", "l*anger");
-		assertEquals(2, search.lookup("difi", "geo", "kommune", query).size());
+		assertEquals(2, search.lookup("difi", "geo", "kommune", query, 1).size());
 
 		indexEJB.delete("difi", "geo", "kommune");
 	}

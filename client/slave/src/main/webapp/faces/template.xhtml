@@ -50,20 +50,6 @@
 
 					<p>Alle data på datahotellet er foreløpig ulisensiert. Så snart <a href="http://data.norge.no/nlod">Fornyingsdepartementet standardiserte lisens for offentlige data</a> blir publisert vil data på datahotellet tilgjengeliggjøres under denne lisensen.</p>
 
-					<h3>Sist oppdatert</h3>
-
-					<ul>
-						<ui:repeat value="#{info.last}" var="d">
-							<li><h:link outcome="pretty:dataset" title="#{d.dataset.name} - #{d.timestamp}">
-									<f:param name="owner" value="#{d.dataset.owner}" />
-									<f:param name="group" value="#{d.dataset.group}" />
-									<f:param name="dataset" value="#{d.dataset.shortName}" />
-									#{d.dataset.owner}/#{d.dataset.group}/#{d.dataset.shortName}
-								</h:link>
-							</li>
-						</ui:repeat>
-					</ul>
-
 				</ui:insert>
 			</div>
 		</div>

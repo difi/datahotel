@@ -33,7 +33,7 @@ public class FilesystemTest {
 
 	@Test
 	public void testHome() {
-		Assert.assertEquals(true, Filesystem.getHome().contains(".datahotel"));
+		Assert.assertEquals(true, Filesystem.getHome().contains("datahotel"));
 	}
 
 	@Test
