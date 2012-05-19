@@ -8,11 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import no.difi.datahotel.logic.impl.AbstractJPAHandler;
-import no.difi.datahotel.logic.impl.DatasetEJB;
-import no.difi.datahotel.logic.impl.GroupEJB;
-import no.difi.datahotel.logic.impl.OwnerEJB;
-import no.difi.datahotel.logic.impl.XmlEJB;
 import no.difi.datahotel.logic.model.GroupEntity;
 import no.difi.datahotel.logic.model.OwnerEntity;
 import no.difi.datahotel.logic.model.UserEntity;
@@ -49,11 +44,6 @@ public class OwnerEJBTest extends AbstractEntityManagerTest {
 		Field groupEmField = AbstractJPAHandler.class.getDeclaredField("em");
 		groupEmField.setAccessible(true);
 		groupEmField.set(groupEJB, em);
-
-		XmlEJB xmlEJB = new XmlEJB();
-		Field xmlOwnerField = XmlEJB.class.getDeclaredField("ownerEJB");
-		xmlOwnerField.setAccessible(true);
-		xmlOwnerField.set(xmlEJB, ownerEJB);
 
 		DatasetEJB datasetEJB = new DatasetEJB();
 		Field datasetEmField = AbstractJPAHandler.class.getDeclaredField("em");

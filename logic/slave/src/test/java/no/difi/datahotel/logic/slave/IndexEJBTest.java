@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class IndexEJBTest {
 	private String o = "difi", g = "miljo", d = "kalkulator";
 
 	private IndexEJB indexEJB;
+	private FieldEJB fieldEJB;
+	
 	private SearchEJB search;
 
 	@BeforeClass
@@ -34,18 +37,21 @@ public class IndexEJBTest {
 
 	@Before
 	public void before() throws Exception {
-		indexEJB = getIndexEJB();
+		indexEJB = new IndexEJB();
+		
+		// TODO Ta over logger.
+		
+		fieldEJB = new FieldEJB();
+		Field settingsFieldField = IndexEJB.class.getDeclaredField("fieldEJB");
+		settingsFieldField.setAccessible(true);
+		settingsFieldField.set(indexEJB, fieldEJB);
+
 		search = new SearchEJB();
 	}
 
-	public static IndexEJB getIndexEJB() {
-		// TODO Ta over logger i IndexEJB.
-		
-		return new IndexEJB();
-	}
-	
 	@Test
 	public void testIndex() throws Exception {
+		fieldEJB.update(o, g, d);
 		indexEJB.update(o, g, d, 1);
 	}
 	
@@ -89,6 +95,7 @@ public class IndexEJBTest {
 	
 	@Test
 	public void testLookupAdv() throws Exception {
+		fieldEJB.update("difi", "geo", "kommune");
 		indexEJB.update("difi", "geo", "kommune", 3);
 		
 		Map<String, String> query = new HashMap<String, String>();

@@ -1,7 +1,7 @@
 package no.difi.datahotel.logic.slave;
 
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CHUNK;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -9,6 +9,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
+import no.difi.datahotel.util.bridge.MetadataSlave;
 import no.difi.datahotel.util.shared.Filesystem;
 
 import org.junit.AfterClass;
@@ -56,7 +57,12 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdate() {
-		chunkEJB.update("difi", "test", "simple", 1);
+		MetadataSlave metadata = new MetadataSlave();
+		metadata.setLocation("difi/test/simple");
+		metadata.setShortName("simple");
+		metadata.setUpdated(System.currentTimeMillis());
+
+		chunkEJB.update(metadata);
 
 		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-1.csv").exists());
 		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-2.csv").exists());
@@ -64,7 +70,12 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdateError() {
-		chunkEJB.update("difi", "test", "simple-not-here", 2);
+		MetadataSlave metadata = new MetadataSlave();
+		metadata.setLocation("difi/test/simple-not-here");
+		metadata.setShortName("simple-not-here");
+		metadata.setUpdated(System.currentTimeMillis());
+
+		chunkEJB.update(metadata);
 
 		// TODO Fikse verifisert bruk av logger
 		// Mockito.verify(logger).log(Level.WARNING, null);
@@ -72,7 +83,12 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testGet() throws Exception {
-		chunkEJB.update("difi", "test", "simple", 3);
+		MetadataSlave metadata = new MetadataSlave();
+		metadata.setLocation("difi/test/simple");
+		metadata.setShortName("simple");
+		metadata.setUpdated(System.currentTimeMillis());
+
+		chunkEJB.update(metadata);
 		
 		assertEquals(100, chunkEJB.get("difi", "test", "simple", 1).size());
 		assertEquals(19, chunkEJB.get("difi", "test", "simple", 2).size());
@@ -82,28 +98,50 @@ public class ChunkEJBTest {
 		
 		Thread.sleep(1000);
 		
-		chunkEJB.delete("difi", "test", "simple2");
+		// chunkEJB.delete("difi", "test", "simple2");
 	}
 	
 	@Test
 	public void testOneHundred() throws Exception {
-		chunkEJB.update("difi", "test", "hundred", 4);		
+		MetadataSlave metadata = new MetadataSlave();
+		metadata.setLocation("difi/test/hundred");
+		metadata.setShortName("hundred");
+		metadata.setUpdated(System.currentTimeMillis());
+
+		chunkEJB.update(metadata);		
 
 		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
 		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
 		
+		// assertEquals(new Long(2), chunkEJB.getPages("difi/test/hundred"));
+		assertEquals(new Long(100), chunkEJB.getPosts("difi/test/hundred"));
+		
 		Thread.sleep(1000);
 		
-		chunkEJB.delete("difi", "test", "hundred");
-		assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test", "hundred").exists());
+		// chunkEJB.delete("difi", "test", "hundred");
+		// assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test", "hundred").exists());
 	}
 
 	@Test
-	public void testDelete() {
-		chunkEJB.update("difi", "test", "simple", 5);
-		chunkEJB.delete("difi", "test", "simple");
-		
-		assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test").exists());
-	}
+	public void testNoNeed() throws Exception {
+		MetadataSlave metadata = new MetadataSlave();
+		metadata.setLocation("difi/test/hundred");
+		metadata.setShortName("hundred");
+		metadata.setUpdated(System.currentTimeMillis());
 
+		chunkEJB.update(metadata);		
+
+		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
+		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
+		long ts = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp").lastModified();
+		
+		Thread.sleep(1000);
+		
+		chunkEJB.update(metadata);
+		long ts2 = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp").lastModified();
+		assertEquals(ts, ts2);
+		
+		// chunkEJB.delete("difi", "test", "hundred");
+		// assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test", "hundred").exists());
+	}
 }

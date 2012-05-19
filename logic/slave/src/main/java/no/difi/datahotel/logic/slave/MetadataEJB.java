@@ -84,7 +84,7 @@ public class MetadataEJB {
 			String[] l = metadata.getLocation().split("/");
 
 			fieldEJB.update(l[0], l[1], l[2]);
-			chunkEJB.update(l[0], l[1], l[2], metadata.getUpdated());
+			chunkEJB.update(metadata);
 			indexEJB.update(l[0], l[1], l[2], metadata.getUpdated());
 
 			logger.info("[" + metadata.getLocation() + "] Ready");
@@ -98,7 +98,7 @@ public class MetadataEJB {
 		return f.toString().substring(root.toString().length() + 1).replace(File.separator, "/");
 	}
 
-	private String getLocation(String... dir) {
+	public String getLocation(String... dir) {
 		String location = dir[0];
 		for (int i = 1; i < dir.length; i++)
 			location += "/" + dir[i];
@@ -117,7 +117,7 @@ public class MetadataEJB {
 		return null;
 	}
 
-	public Metadata getChild(String... dir) {
+	public MetadataSlave getChild(String... dir) {
 		String location = getLocation(dir);
 		return directory.containsKey(location) ? directory.get(location) : null;
 	}
@@ -130,14 +130,6 @@ public class MetadataEJB {
 		return datasets;
 	}
 
-	public Map<String, MetadataSlave> getDirectory() {
-		return directory;
-	}
-
-	public void setDirectory(Map<String, MetadataSlave> directory) {
-		this.directory = directory;
-	}
-	
 	public Long getTimestamp(String location) {
 		return timestamps.get(location);
 	}

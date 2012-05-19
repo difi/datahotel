@@ -25,6 +25,7 @@ import no.difi.datahotel.logic.slave.SearchEJB;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.bridge.MetadataSlave;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 
@@ -202,12 +203,13 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}")
 	public Response getDataset(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String metadata,
+			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String callback,
 			@Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			MetadataSlave metadata = metadataEJB.getChild(owner, group, dataset); 
+			long timestamp = metadata.getUpdated();
 			// long timestamp = structureEJB.getTimestamp(owner, group,
 			// dataset);
 
@@ -216,12 +218,12 @@ public class ApiService {
 
 			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
 
-			return Response.ok(dataFormat.format(csvData, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+			return Response.ok(dataFormat.format(csvData, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
 					.header("ETag", timestamp).header("X-Datahotel-Page", page)
-					.header("X-Datahotel-Total-Pages", chunkEJB.getPages(owner, group, dataset))
-					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(owner, group, dataset)).build();
+					.header("X-Datahotel-Total-Pages", chunkEJB.getPages(metadata.getLocation()))
+					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(metadata.getLocation())).build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -245,14 +247,13 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get("csv");
-			// long timestamp = structureEJB.getTimestamp(owner, group,
-			// dataset);
-			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			MetadataSlave metadata = metadataEJB.getChild(owner, group, dataset);
+			long timestamp = metadata.getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			return Response.ok(chunkEJB.getFullDataset(owner, group, dataset))
+			return Response.ok(chunkEJB.getFullDataset(metadata.getLocation()))
 					.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)

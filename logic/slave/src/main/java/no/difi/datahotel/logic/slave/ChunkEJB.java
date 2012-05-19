@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Singleton;
 
+import no.difi.datahotel.util.bridge.MetadataSlave;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
@@ -24,29 +25,28 @@ public class ChunkEJB {
 
 	private static Logger logger = Logger.getLogger(ChunkEJB.class.getSimpleName());
 
-	private Map<String, Map<String, Map<String, Long>>> posts = new HashMap<String, Map<String, Map<String, Long>>>();
-	private Map<String, Map<String, Map<String, Long>>> pages = new HashMap<String, Map<String, Map<String, Long>>>();
+	private Map<String, Long> posts = new HashMap<String, Long>();
+	private Map<String, Long> pages = new HashMap<String, Long>();
 
 	private int size = 100;
 
-	public File getFullDataset(String owner, String group, String dataset) {
-		return Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, "dataset.csv");
+	public File getFullDataset(String location) {
+		return Filesystem.getFileF(FOLDER_SHARED, location, Filesystem.DATASET_DATA);
 	}
-
-	public void update(String owner, String group, String dataset, long timestamp) {
-	// public void update(String location, long timestamp) {
-		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, owner, group, dataset, "timestamp");
-		if (timestamp == Timestamp.getTimestamp(tsfile)) {
-			logger.info("[" + owner + "/" + group +"/" + dataset + "] Chunk up to date.");
+	
+	public void update(MetadataSlave metadata) {
+		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp");
+		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
+			logger.info("[" + metadata.getLocation() + "] Chunk up to date.");
 			return;
 		}
-			
-		logger.info("[" + owner + "/" + group +"/" + dataset + "] Building chunk.");
-		
-		try {
-			String datasetTmp = dataset + "-tmp." + System.currentTimeMillis();
 
-			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(owner, group, dataset));
+		logger.info("[" + metadata.getLocation() + "] Building chunk.");
+
+		try {
+			String locationTmp = metadata.getLocation() + "-tmp." + System.currentTimeMillis();
+
+			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(metadata.getLocation()));
 			CSVWriter writer = null;
 
 			int number = 1, counter = 0;
@@ -55,7 +55,7 @@ public class ChunkEJB {
 
 				if (counter % size == 1) {
 					String filename = "dataset-" + number + ".csv";
-					writer = new CSVWriter(Filesystem.getFileF(FOLDER_CHUNK, owner, group, datasetTmp, filename));
+					writer = new CSVWriter(Filesystem.getFileF(FOLDER_CHUNK, locationTmp, filename));
 					writer.writeHeader(parser.getHeaders());
 				}
 
@@ -71,32 +71,20 @@ public class ChunkEJB {
 			if (writer != null)
 				writer.close();
 
-			File goal = Filesystem.getFolderPathF(FOLDER_CHUNK, owner, group, dataset);
+			File goal = Filesystem.getFolderPathF(FOLDER_CHUNK, metadata.getLocation());
 			if (goal.exists())
-				delete(owner, group, dataset);
+				Filesystem.delete(FOLDER_CHUNK, metadata.getLocation());
 
-			Filesystem.getFolderPathF(FOLDER_CHUNK, owner, group, datasetTmp).renameTo(goal);
+			Filesystem.getFolderPathF(FOLDER_CHUNK, locationTmp).renameTo(goal);
 
-			if (!posts.containsKey(owner)) {
-				posts.put(owner, new HashMap<String, Map<String, Long>>());
-				pages.put(owner, new HashMap<String, Map<String, Long>>());
-			}
-			if (!posts.get(owner).containsKey(group)) {
-				posts.get(owner).put(group, new HashMap<String, Long>());
-				pages.get(owner).put(group, new HashMap<String, Long>());
-			}
-			posts.get(owner).get(group).put(dataset, (long) counter);
-			pages.get(owner).get(group).put(dataset, (long) number);
+			posts.put(metadata.getLocation(), (long) counter);
+			pages.put(metadata.getLocation(), (long) number);
 
-			Timestamp.setTimestamp(tsfile, timestamp);
+			Timestamp.setTimestamp(tsfile, metadata.getUpdated());
 		} catch (IOException e) {
 			// TODO Start sending exceptions.
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
-	}
-
-	public void delete(String owner, String group, String dataset) {
-		Filesystem.delete(FOLDER_CHUNK, owner, group, dataset);
 	}
 
 	public ArrayList<Map<String, String>> get(String owner, String group, String dataset, int number) {
@@ -118,19 +106,11 @@ public class ChunkEJB {
 		return null;
 	}
 
-	public Long getPosts(String owner, String group, String dataset) {
-		try {
-			return posts.get(owner).get(group).get(dataset);
-		} catch (Exception e) {
-			return 0L;
-		}
+	public Long getPosts(String location) {
+		return posts.containsKey(location) ? posts.get(location) : 0;
 	}
 
-	public Long getPages(String owner, String group, String dataset) {
-		try {
-			return pages.get(owner).get(group).get(dataset);
-		} catch (Exception e) {
-			return 0L;
-		}
+	public Long getPages(String location) {
+		return pages.containsKey(location) ? pages.get(location) : 0;
 	}
 }
