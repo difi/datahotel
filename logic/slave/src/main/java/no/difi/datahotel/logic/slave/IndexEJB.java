@@ -49,6 +49,8 @@ public class IndexEJB {
 		
 		logger.info("[" + owner + "/" + group +"/" + dataset + "] Building index.");
 		
+		long i = 0;
+
 		try {
 			File filename = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, DATASET_DATA);
 
@@ -60,28 +62,31 @@ public class IndexEJB {
 			writer.deleteAll();
 
 			CSVParser csv = CSVParserFactory.getCSVParser(filename);
-			long i = 0;
 			while (csv.hasNext()) {
-				i++;
-				Map<String, String> line = csv.getNextLine();
-				Document doc = new Document();
-				String searchable = "";
-				for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(owner, group, dataset)) {
-					String value = line.get(f.getShortName());
-					
-					if (value.matches("[0-9.,]+"))
-						doc.add(new Field(f.getShortName(), value, Store.YES,  Index.NOT_ANALYZED_NO_NORMS));
-					else
-						doc.add(new Field(f.getShortName(), value, Store.YES,  Index.ANALYZED));
-
-					if (f.getSearchable())
-						searchable += " " + line.get(f.getShortName());
+				try {
+					i++;
+					Map<String, String> line = csv.getNextLine();
+					Document doc = new Document();
+					String searchable = "";
+					for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(owner, group, dataset)) {
+						String value = line.get(f.getShortName());
+						
+						if (value.matches("[0-9.,]+"))
+							doc.add(new Field(f.getShortName(), value, Store.YES,  Index.NOT_ANALYZED_NO_NORMS));
+						else
+							doc.add(new Field(f.getShortName(), value, Store.YES,  Index.ANALYZED));
+	
+						if (f.getSearchable())
+							searchable += " " + line.get(f.getShortName());
+					}
+	
+					if (!searchable.trim().isEmpty())
+						doc.add(new Field("searchable", searchable.trim(), Store.NO, Index.ANALYZED));
+	
+					writer.addDocument(doc);
+				} catch (Exception e) {
+					logger.info("[" + owner + "/" + group +"/" + dataset + "] Unable to index line " + i + " (" + e.getClass().getSimpleName() + ").");
 				}
-
-				if (!searchable.trim().isEmpty())
-					doc.add(new Field("searchable", searchable.trim(), Store.NO, Index.ANALYZED));
-
-				writer.addDocument(doc);
 				
 				if (i % 10000 == 0)
 					logger.info("[" + owner + "/" + group +"/" + dataset + "] Document " + i);

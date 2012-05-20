@@ -5,7 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import no.difi.datahotel.util.bridge.MetadataLight;
+import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 
 import org.junit.Test;
@@ -15,16 +20,7 @@ public class DataFormatTest {
 
 	@Test
 	public void testGet() throws Exception {
-
-		String message = "";
-
-		try {
-			DataFormat.get("espen");
-		} catch (Exception e) {
-			message = e.getMessage();
-		}
-
-		assertEquals("MIME not supported.", message);
+		assertEquals(DataFormat.TEXT_PLAIN, DataFormat.get("espen"));
 		assertEquals(DataFormat.JSON, DataFormat.get("json"));
 	}
 
@@ -82,4 +78,39 @@ public class DataFormatTest {
 		assertEquals("Error", df.formatError("Message", null));
 	}
 
+	/**
+	 * Fast and simple testing of most types.
+	 * 
+	 * TODO Fix JSON and CSV.
+	 */
+	@Test
+	public void testSimple() {
+		List<Map<String, String>> d = new ArrayList<Map<String, String>>();
+		CSVData data = new CSVData(d);
+		HashMap<String, String> ds = new HashMap<String, String>();
+		ds.put("description", "Values");
+		ds.put("name", "Hello World!");
+		d.add(ds);
+		
+		List<MetadataLight> metadata = new ArrayList<MetadataLight>();
+		MetadataLight m = new MetadataLight();
+		metadata.add(m);
+		m.setName("Difi");
+		m.setDescription("Agency");
+		m.setUrl("http://www.difi.no/");
+		
+		for (DataFormat f : DataFormat.values()) {
+			if (f != DataFormat.TEXT_PLAIN && f != DataFormat.JSON) {
+				assertTrue(f.format(data, "").contains("World"));
+				assertTrue(f.format(data, "").contains("description"));
+
+				if (f != DataFormat.CSV && f != DataFormat.CSVCORRECT) {
+					assertTrue(f.format(metadata, "").contains("Difi"));
+					assertTrue(f.format(metadata, "").contains("escription"));
+					assertTrue(f.format(metadata, "").contains("www.difi.no"));
+				}
+			}
+		}
+	}
+	
 }

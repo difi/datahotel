@@ -21,7 +21,7 @@ public class Timestamp {
 
 			return timestamp;
 		} catch (Exception e) {
-			return 0;
+			return -1;
 		}
 	}
 	

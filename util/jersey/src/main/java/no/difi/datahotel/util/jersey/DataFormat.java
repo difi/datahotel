@@ -93,7 +93,7 @@ public enum DataFormat {
 			return cls.format(message, metadata);
 		} catch (Exception e)
 		{
-			logger.log(Level.WARNING, e.getMessage(), e);
+			logger.log(Level.WARNING, "Exception in error presenter.");
 			return "Error";
 		}
 	}

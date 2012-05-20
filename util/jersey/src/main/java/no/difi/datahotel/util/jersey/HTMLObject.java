@@ -63,7 +63,7 @@ public class HTMLObject implements FormaterInterface {
 			sb.append("<td>" + m.getShortName() + "</td>");
 			sb.append("<td>" + m.getDescription() + "</td>");
 			sb.append("<td><a href=\"" + m.getUrl() + "\" rel=\"nofollow\">" + m.getUrl() + "</a></td>");
-			sb.append("<td>" + m.getLocation() + "</td>");
+			sb.append("<td><a href=\"/api/html/" + m.getLocation() + "\">" + m.getLocation() + "</td>");
 			sb.append("<td>" + m.getUpdated() + "</td>");
 			sb.append("</tr>");
 		}

@@ -34,7 +34,7 @@ public class MetadataEJB {
 	private Map<String, Long> timestamps = new HashMap<String, Long>();
 
 	
-	@Schedule(second = "0,15,30,45", minute = "*", hour = "*")
+	@Schedule(second = "0,30", minute = "*", hour = "*")
 	public void update() {
 		try {
 			Metadata mroot = new Metadata();
@@ -78,7 +78,7 @@ public class MetadataEJB {
 			return;
 		}
 
-		if (metadata.getUpdated() == getTimestamp(metadata.getLocation()))
+		if (metadata.getUpdated().equals(getTimestamp(metadata.getLocation())))
 			return;
 
 		if (getTimestamp(metadata.getLocation()) != null && getTimestamp(metadata.getLocation()) == -1) {
