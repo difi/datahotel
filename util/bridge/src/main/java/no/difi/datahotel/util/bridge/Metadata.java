@@ -130,4 +130,11 @@ public class Metadata extends Abstract {
 
 		return metadata;
 	}
+	
+	public static String getLocation(String... dir) {
+		String location = dir[0];
+		for (int i = 1; i < dir.length; i++)
+			location += "/" + dir[i];
+		return location;
+	}
 }

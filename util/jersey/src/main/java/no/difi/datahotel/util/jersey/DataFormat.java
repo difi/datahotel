@@ -13,11 +13,13 @@ import java.util.logging.Logger;
 public enum DataFormat {
 	
 	XML("xml", "text/xml", new XMLObject()),
-	CSV("csv", "text/plain", new CSVObject()), // text/csv
+	CSV("csv", "text/plain", new CSVObject()),
+	CSVCORRECT("csvcorrect", "text/csv", new CSVObject()),
 	JSON("json", "application/json", new JSONObject()),
 	JSONP("jsonp", "application/json", new JSONPObject()),
 	YAML("yaml", "text/plain", new YAMLObject()),
-	PLAIN_TEXT("text", "text/plain", new TextObject());
+	TEXT_HTML("html", "text/html", new HTMLObject()),
+	TEXT_PLAIN("text", "text/plain", new TextObject());
 
 	private static Logger logger = Logger.getLogger(DataFormat.class.getSimpleName());
 
@@ -36,12 +38,12 @@ public enum DataFormat {
 	 * @param type Mime type (ie. json)
 	 * @return Returns a new DataFormat enum.
 	 */
-	public static DataFormat get(String type) throws Exception {
+	public static DataFormat get(String type) {
 		for (DataFormat t : DataFormat.values())
 			if (t.type.equals(type))
 				return t;
 
-		throw new Exception("MIME not supported.");
+		return TEXT_PLAIN;
 	}
 
 	/**

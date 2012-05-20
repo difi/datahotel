@@ -56,14 +56,11 @@ public class ApiService {
 	@GET
 	@Path("{type}")
 	public Response getOwnerList(@PathParam("type") String type, @QueryParam("callback") String metadata) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
-			List<MetadataLight> list = new ArrayList<MetadataLight>();
-			for (Metadata m : metadataEJB.getChildren())
-				list.add(m.light());
+			List<MetadataLight> list = metadataEJB.getChildren();
 
-			if (list.size() == 0)
+			if (list == null)
 				throw new Exception("No elements found.");
 
 			return Response.ok(dataFormat.format(list, metadata)).header("Content-Type", "")
@@ -77,10 +74,8 @@ public class ApiService {
 	@GET
 	@Path("{type}/_all")
 	public Response getAllDatasets(@PathParam("type") String type, @QueryParam("callback") String metadata) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
-			
 			List<MetadataLight> list = new ArrayList<MetadataLight>();
 			for (Metadata m : metadataEJB.getDatasets())
 				list.add(m.light());
@@ -100,9 +95,8 @@ public class ApiService {
 	@GET
 	@Path("{type}/_defs")
 	public Response getAllDefinitions(@PathParam("type") String type, @QueryParam("callback") String metadata) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
 			List<Definition> defs = fieldEJB.getDefinitions();
 			Collections.sort(defs);
 
@@ -119,20 +113,19 @@ public class ApiService {
 	@GET
 	@Path("{type}/_defs/{def}")
 	public Response getDatasetsByDefinition(@PathParam("type") String type, @PathParam("def") String def,
-			@QueryParam("callback") String metadata) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+			@QueryParam("callback") String callback) {
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
 			List<String> datasets = fieldEJB.getUsage(def);
 			Collections.sort(datasets);
 
 			if (datasets.size() == 0)
 				throw new Exception("Definition never used.");
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+			return Response.ok(dataFormat.format(datasets, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
 					.build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -150,20 +143,17 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}")
 	public Response getGroupListForOwner(@PathParam("type") String type, @PathParam("owner") String owner,
-			@QueryParam("callback") String metadata) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+			@QueryParam("callback") String callback) {
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
-			List<MetadataLight> list = new ArrayList<MetadataLight>();
-			for (Metadata m : metadataEJB.getChildren(owner))
-				list.add(m.light());
+			List<MetadataLight> list = metadataEJB.getChildren(owner);
 
-			if (list.size() == 0)
+			if (list == null)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(list, callback)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -183,13 +173,11 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}")
 	public Response getDatasetListForGroup(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @QueryParam("callback") String callback) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			List<Metadata> list = new ArrayList<Metadata>();
-			for (Metadata m : metadataEJB.getChildren(owner, group))
-				list.add(m);
-
-			if (list.size() == 0)
+			List<MetadataLight> list = metadataEJB.getChildren(owner, group);
+			
+			if (list == null)
 				throw new Exception("No elements found.");
 
 			return Response.ok(dataFormat.format(list, callback)).type(dataFormat.getMime() + ";charset=UTF-8").build();
@@ -217,9 +205,8 @@ public class ApiService {
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
 			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String callback,
 			@Context HttpServletRequest req) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
 			Metadata metadata = metadataEJB.getChild(owner, group, dataset); 
 			long timestamp = metadata.getUpdated();
 
@@ -254,9 +241,8 @@ public class ApiService {
 	@Path("csv/{owner}/{group}/{dataset}/full")
 	public Response getFullDataset(@PathParam("owner") String owner, @PathParam("group") String group,
 			@PathParam("dataset") String dataset, @Context HttpServletRequest req) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.CSVCORRECT;
 		try {
-			dataFormat = DataFormat.get("csv");
 			Metadata metadata = metadataEJB.getChild(owner, group, dataset);
 			long timestamp = metadata.getUpdated();
 
@@ -287,9 +273,8 @@ public class ApiService {
 	public Response getMetadata(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
 			@QueryParam("callback") String metadata, @Context HttpServletRequest req) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
 			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
@@ -314,11 +299,8 @@ public class ApiService {
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
 			@DefaultValue("") @QueryParam("query") String query, @QueryParam("callback") String metadata,
 			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
-			// long timestamp = structureEJB.getTimestamp(owner, group,
-			// dataset);
 			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
@@ -352,11 +334,8 @@ public class ApiService {
 			@QueryParam("callback") String metadata, @Context UriInfo uriInfo,
 			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
 
-		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
+		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			dataFormat = DataFormat.get(type);
-			// long timestamp = structureEJB.getTimestamp(owner, group,
-			// dataset);
 			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))

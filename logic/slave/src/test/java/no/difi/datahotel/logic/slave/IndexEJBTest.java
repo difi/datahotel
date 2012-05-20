@@ -92,6 +92,12 @@ public class IndexEJBTest {
 		assertEquals(1, search.find(o, g, d, "tog", 1).size());
 		assertEquals(1, search.find(o, g, d, "ark", 1).size());
 		assertEquals(2, search.find(o, g, d, "BUSS", 1).size());
+
+		assertEquals(0, search.find(o, g, d, "Energi", 2).size());
+		assertEquals(0, search.find(o, g, d, "km", 2).size());
+		assertEquals(0, search.find(o, g, d, "tog", 2).size());
+		assertEquals(0, search.find(o, g, d, "ark", 2).size());
+		assertEquals(0, search.find(o, g, d, "BUSS", 2).size());
 	}
 
 	@Test
@@ -112,18 +118,22 @@ public class IndexEJBTest {
 		query.put("kommune", "1401");
 		query.put("fylke", "14");
 		assertEquals(1, search.lookup("difi", "geo", "kommune", query, 1).size());
+		assertEquals(0, search.lookup("difi", "geo", "kommune", query, 2).size());
 
 		query.clear();
 		query.put("kommune", "1401");
 		assertEquals(1, search.lookup("difi", "geo", "kommune", query, 1).size());
+		assertEquals(0, search.lookup("difi", "geo", "kommune", query, 2).size());
 		
 		query.clear();
 		query.put("fylke", "14");
 		assertEquals(26, search.lookup("difi", "geo", "kommune", query, 1).size());
+		assertEquals(0, search.lookup("difi", "geo", "kommune", query, 2).size());
 
 		query.clear();
 		query.put("navn", "l*anger");
 		assertEquals(2, search.lookup("difi", "geo", "kommune", query, 1).size());
+		assertEquals(0, search.lookup("difi", "geo", "kommune", query, 2).size());
 
 		indexEJB.delete("difi", "geo", "kommune");
 	}

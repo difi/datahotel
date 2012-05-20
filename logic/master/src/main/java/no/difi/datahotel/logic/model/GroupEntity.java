@@ -151,9 +151,9 @@ public class GroupEntity implements JPAEntity {
 		Metadata metadata = new Metadata();
 		metadata.setName(this.getName());
 		metadata.setUrl(this.getUrl());
-		metadata.setLocation(this.getOwner().getShortName() + "/" + this.getShortName());
+		metadata.setLocation(Metadata.getLocation(getOwner().getShortName(), getShortName()));
 		metadata.save();
-		
+
 		Group group = new Group();
 		group.setName(this.getName());
 		group.setShortName(this.getShortName());

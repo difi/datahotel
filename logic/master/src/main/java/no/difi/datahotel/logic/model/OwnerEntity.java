@@ -123,17 +123,10 @@ public class OwnerEntity implements JPAEntity {
 		return this.shortName.equals(d.getShortName());
 	}
 
-	/*
-	@Override
-	public int hashCode() {
-		return shortName.hashCode();
-	}
-	*/
-
 	public void save() throws Exception {
 		Metadata metadata = new Metadata();
 		metadata.setName(this.getName());
-		metadata.setLocation(this.getShortName());
+		metadata.setLocation(Metadata.getLocation(this.getShortName()));
 		metadata.setUrl(this.getUrl());
 		metadata.save();
 

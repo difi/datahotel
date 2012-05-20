@@ -198,8 +198,8 @@ public class DatasetEntity implements JPAEntity {
 		Metadata metadata = new Metadata();
 		metadata.setName(this.getName());
 		metadata.setDescription(this.getDescription());
-		metadata.setLocation(this.getDatasetGroup().getOwner().getShortName() + "/"
-				+ this.getDatasetGroup().getShortName() + "/" + this.getShortName());
+		metadata.setLocation(Metadata.getLocation(getDatasetGroup().getOwner().getShortName(), getDatasetGroup()
+				.getShortName(), getShortName()));
 		metadata.save();
 
 		Dataset dataset = new Dataset();

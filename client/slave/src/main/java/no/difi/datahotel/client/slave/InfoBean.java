@@ -11,6 +11,7 @@ import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.bridge.MetadataLight;
 
 @ManagedBean(name = "info")
 @RequestScoped
@@ -30,15 +31,15 @@ public class InfoBean {
 	private List<Field> fields;
 	private Definition def;
 
-	public List<Metadata> getOwners() {
+	public List<MetadataLight> getOwners() {
 		return metadataEJB.getChildren();
 	}
 
-	public List<Metadata> getGroups() {
+	public List<MetadataLight> getGroups() {
 		return metadataEJB.getChildren(getOwnerShortName());
 	}
 
-	public List<Metadata> getDatasets() {
+	public List<MetadataLight> getDatasets() {
 		return metadataEJB.getChildren(getOwnerShortName(), getGroupShortName());
 	}
 

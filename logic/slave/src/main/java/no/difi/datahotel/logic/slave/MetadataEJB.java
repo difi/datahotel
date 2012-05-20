@@ -14,6 +14,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 
 import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @Singleton
@@ -72,60 +73,49 @@ public class MetadataEJB {
 
 	@Asynchronous
 	private void validate(Metadata metadata) {
-		try {
-			if (metadata.getUpdated() == null) {
-				logger.warning("[" + metadata.getLocation() + "] Missing timestamp in metadata file.");
-				return;
-			}
-
-			if (metadata.getUpdated() == getTimestamp(metadata.getLocation()))
-				return;
-
-			if (getTimestamp(metadata.getLocation()) != null && getTimestamp(metadata.getLocation()) == -1) {
-				logger.info("[" + metadata.getLocation() + "] Do not disturb.");
-				return;
-			}
-
-			setTimestamp(metadata.getLocation(), -1L);
-
-			String[] l = metadata.getLocation().split("/");
-
-			fieldEJB.update(metadata);
-			chunkEJB.update(metadata);
-			indexEJB.update(l[0], l[1], l[2], metadata.getUpdated());
-
-			logger.info("[" + metadata.getLocation() + "] Ready");
-			setTimestamp(metadata.getLocation(), metadata.getUpdated());
-		} catch (Exception e) {
-			logger.log(Level.WARNING, "[" + metadata.getLocation() + "] Exception", e);
+		if (metadata.getUpdated() == null) {
+			logger.warning("[" + metadata.getLocation() + "] Missing timestamp in metadata file.");
+			return;
 		}
+
+		if (metadata.getUpdated() == getTimestamp(metadata.getLocation()))
+			return;
+
+		if (getTimestamp(metadata.getLocation()) != null && getTimestamp(metadata.getLocation()) == -1) {
+			logger.info("[" + metadata.getLocation() + "] Do not disturb.");
+			return;
+		}
+
+		setTimestamp(metadata.getLocation(), -1L);
+
+		String[] l = metadata.getLocation().split("/");
+
+		fieldEJB.update(metadata);
+		chunkEJB.update(metadata);
+		indexEJB.update(l[0], l[1], l[2], metadata.getUpdated());
+
+		logger.info("[" + metadata.getLocation() + "] Ready");
+		setTimestamp(metadata.getLocation(), metadata.getUpdated());
 	}
 
 	private String getLocation(File f) {
 		return f.toString().substring(root.toString().length() + 1).replace(File.separator, "/");
 	}
 
-	private String getLocation(String... dir) {
-		String location = dir[0];
-		for (int i = 1; i < dir.length; i++)
-			location += "/" + dir[i];
-		return location;
-	}
-
-	public List<Metadata> getChildren(String... dir) {
-		String location = dir.length == 0 ? "" : getLocation(dir);
+	public List<MetadataLight> getChildren(String... dir) {
+		String location = dir.length == 0 ? "" : Metadata.getLocation(dir);
 		if (directory.containsKey(location)) {
-			List<Metadata> children = new ArrayList<Metadata>();
+			List<MetadataLight> children = new ArrayList<MetadataLight>();
 			for (Metadata m : directory.get(location).getChildren().values())
 				if (m.isActive())
-					children.add(m);
+					children.add(m.light());
 			return children.size() == 0 ? null : children;
 		}
 		return null;
 	}
 
 	public Metadata getChild(String... dir) {
-		String location = getLocation(dir);
+		String location = Metadata.getLocation(dir);
 		return directory.containsKey(location) ? directory.get(location) : null;
 	}
 
