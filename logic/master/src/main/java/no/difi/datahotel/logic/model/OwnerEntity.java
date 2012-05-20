@@ -15,6 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.bridge.Owner;
 
 @NamedQueries({ @NamedQuery(name = OwnerEntity.ALL, query = "SELECT o FROM Owner o"),
@@ -130,6 +131,12 @@ public class OwnerEntity implements JPAEntity {
 	*/
 
 	public void save() throws Exception {
+		Metadata metadata = new Metadata();
+		metadata.setName(this.getName());
+		metadata.setLocation(this.getShortName());
+		metadata.setUrl(this.getUrl());
+		metadata.save();
+
 		Owner owner = new Owner();
 		owner.setName(this.getName());
 		owner.setShortName(this.getShortName());

@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import no.difi.datahotel.util.bridge.Group;
+import no.difi.datahotel.util.bridge.Metadata;
 
 @NamedQueries({
 		@NamedQuery(name = GroupEntity.ALL, query = "SELECT dg FROM DatasetGroup dg ORDER BY dg.name"),
@@ -147,13 +148,18 @@ public class GroupEntity implements JPAEntity {
 	}
 
 	public void save() throws Exception {
+		Metadata metadata = new Metadata();
+		metadata.setName(this.getName());
+		metadata.setUrl(this.getUrl());
+		metadata.setLocation(this.getOwner().getShortName() + "/" + this.getShortName());
+		metadata.save();
+		
 		Group group = new Group();
 		group.setName(this.getName());
 		group.setShortName(this.getShortName());
-		// group.setDescription(this.)
+		// group.setDescripion(this.)
 		group.setUrl(this.getUrl());
 		group.setOwner(this.getOwner().getShortName());
-
 		group.save();
 	}
 }

@@ -60,6 +60,9 @@ public class MetadataEJBTest {
 		assertEquals(1, metadata2EJB.getChildren().size());
 		assertEquals("http://www.difi.no/", metadata2EJB.getChild("difi").getUrl());
 		assertEquals(4, metadata2EJB.getDatasets().size());
+		
 		assertEquals(null, metadata2EJB.getChildren("not/seen/here"));
+		
+		assertEquals(2, metadata2EJB.getChild("difi", "geo").getChildren().size());
 	}
 }

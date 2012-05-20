@@ -43,11 +43,11 @@ public class SearchEJB {
 		searcher.close();
 		dir.close();
 
-		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size() - 1);
+		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size());
 	}
 	
 	public List<Map<String, String>> lookup(String owner, String group, String dataset, Map<String, String> query, int page) throws Exception {
-		int num = 25;
+		int num = 100;
 
 		Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
 		IndexSearcher searcher = new IndexSearcher(dir);
@@ -72,7 +72,7 @@ public class SearchEJB {
 		searcher.close();
 		dir.close();
 
-		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size() - 1);
+		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size());
 	}
 
 	private ArrayList<Map<String, String>> convert(IndexSearcher searcher, TopDocs docs) throws IOException {

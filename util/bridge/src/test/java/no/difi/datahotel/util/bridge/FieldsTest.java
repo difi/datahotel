@@ -41,7 +41,7 @@ public class FieldsTest {
 		f.save("difi", "test", "people");
 		assertTrue(Filesystem.getFileF(Filesystem.FOLDER_SHARED, "difi", "test", "people", Filesystem.DATASET_FIELDS).exists());
 		
-		Fields f2 = Fields.read("difi", "test", "people");
+		Fields f2 = Fields.read("difi/test/people");
 		assertEquals(fields.size(), f2.getFields().size());
 		for (int i = 0; i < fields.size(); i++)
 			assertEquals(fields.get(i), f2.getFields().get(i));

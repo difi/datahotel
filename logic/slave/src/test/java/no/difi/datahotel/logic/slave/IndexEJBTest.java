@@ -8,6 +8,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import no.difi.datahotel.util.bridge.Metadata;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -51,7 +53,11 @@ public class IndexEJBTest {
 
 	@Test
 	public void testIndex() throws Exception {
-		fieldEJB.update(o, g, d);
+		Metadata metadata = new Metadata();
+		metadata.setLocation(o + "/" + g + "/" + d);
+		metadata.setUpdated(System.currentTimeMillis());
+		
+		fieldEJB.update(metadata);
 		indexEJB.update(o, g, d, 1);
 	}
 	
@@ -95,8 +101,12 @@ public class IndexEJBTest {
 	
 	@Test
 	public void testLookupAdv() throws Exception {
-		fieldEJB.update("difi", "geo", "kommune");
-		indexEJB.update("difi", "geo", "kommune", 3);
+		Metadata metadata = new Metadata();
+		metadata.setLocation("difi/geo/kommune");
+		metadata.setUpdated(System.currentTimeMillis());
+		
+		fieldEJB.update(metadata);
+		indexEJB.update("difi", "geo", "kommune", System.currentTimeMillis());
 		
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");

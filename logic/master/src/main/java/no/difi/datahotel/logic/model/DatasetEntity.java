@@ -21,13 +21,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import no.difi.datahotel.util.bridge.Dataset;
+import no.difi.datahotel.util.bridge.Metadata;
 
 @NamedQueries({
 		@NamedQuery(name = DatasetEntity.NQ_GET_ALL_DATASET, query = "SELECT d FROM Dataset d"),
 		@NamedQuery(name = DatasetEntity.NQ_GET_ALL_UNRESOLVED_DATASETS, query = "SELECT d FROM Dataset d"),
 		@NamedQuery(name = DatasetEntity.BY_GROUP, query = "SELECT d FROM Dataset d WHERE d.datasetGroup = :datasetGroup ORDER BY d.name"),
 		@NamedQuery(name = DatasetEntity.BY_SHORTNAME_AND_GROUP, query = "SELECT d FROM Dataset d WHERE d.shortName = :shortName AND d.datasetGroup = :datasetGroup"),
-		@NamedQuery(name = DatasetEntity.LASTUPDATED, query = "SELECT d FROM Dataset d ORDER BY d.lastUpdated DESC")})
+		@NamedQuery(name = DatasetEntity.LASTUPDATED, query = "SELECT d FROM Dataset d ORDER BY d.lastUpdated DESC") })
 @Entity(name = "Dataset")
 public class DatasetEntity implements JPAEntity {
 
@@ -54,7 +55,7 @@ public class DatasetEntity implements JPAEntity {
 	public static final String BY_SHORTNAME_AND_GROUP = "DATASET_BY_SHORTNAME_AND_GROUP";
 
 	public static final String LASTUPDATED = "LASTUPDATED";
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
@@ -194,6 +195,13 @@ public class DatasetEntity implements JPAEntity {
 	}
 
 	public void save() throws Exception {
+		Metadata metadata = new Metadata();
+		metadata.setName(this.getName());
+		metadata.setDescription(this.getDescription());
+		metadata.setLocation(this.getDatasetGroup().getOwner().getShortName() + "/"
+				+ this.getDatasetGroup().getShortName() + "/" + this.getShortName());
+		metadata.save();
+
 		Dataset dataset = new Dataset();
 		dataset.setName(this.getName());
 		dataset.setShortName(this.getShortName());

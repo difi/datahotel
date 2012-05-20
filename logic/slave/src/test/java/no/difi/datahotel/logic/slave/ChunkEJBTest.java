@@ -9,7 +9,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
-import no.difi.datahotel.util.bridge.MetadataSlave;
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 
 import org.junit.AfterClass;
@@ -57,7 +57,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdate() {
-		MetadataSlave metadata = new MetadataSlave();
+		Metadata metadata = new Metadata();
 		metadata.setLocation("difi/test/simple");
 		metadata.setShortName("simple");
 		metadata.setUpdated(System.currentTimeMillis());
@@ -70,7 +70,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testUpdateError() {
-		MetadataSlave metadata = new MetadataSlave();
+		Metadata metadata = new Metadata();
 		metadata.setLocation("difi/test/simple-not-here");
 		metadata.setShortName("simple-not-here");
 		metadata.setUpdated(System.currentTimeMillis());
@@ -83,7 +83,7 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testGet() throws Exception {
-		MetadataSlave metadata = new MetadataSlave();
+		Metadata metadata = new Metadata();
 		metadata.setLocation("difi/test/simple");
 		metadata.setShortName("simple");
 		metadata.setUpdated(System.currentTimeMillis());
@@ -103,7 +103,7 @@ public class ChunkEJBTest {
 	
 	@Test
 	public void testOneHundred() throws Exception {
-		MetadataSlave metadata = new MetadataSlave();
+		Metadata metadata = new Metadata();
 		metadata.setLocation("difi/test/hundred");
 		metadata.setShortName("hundred");
 		metadata.setUpdated(System.currentTimeMillis());
@@ -113,8 +113,11 @@ public class ChunkEJBTest {
 		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
 		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
 		
-		// assertEquals(new Long(2), chunkEJB.getPages("difi/test/hundred"));
+		assertEquals(new Long(1), chunkEJB.getPages("difi/test/hundred"));
+		assertEquals(new Long(0), chunkEJB.getPages("difi/test/hundred200"));
+		
 		assertEquals(new Long(100), chunkEJB.getPosts("difi/test/hundred"));
+		assertEquals(new Long(0), chunkEJB.getPosts("difi/test/hundred200"));
 		
 		Thread.sleep(1000);
 		
@@ -124,7 +127,7 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testNoNeed() throws Exception {
-		MetadataSlave metadata = new MetadataSlave();
+		Metadata metadata = new Metadata();
 		metadata.setLocation("difi/test/hundred");
 		metadata.setShortName("hundred");
 		metadata.setUpdated(System.currentTimeMillis());

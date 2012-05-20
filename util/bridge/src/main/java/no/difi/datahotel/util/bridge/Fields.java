@@ -31,8 +31,8 @@ public class Fields extends Abstract {
 		save(Filesystem.getFileF(Filesystem.FOLDER_SHARED, owner, group, dataset, Filesystem.DATASET_FIELDS), this);
 	}
 
-	public static Fields read(String owner, String group, String dataset) {
+	public static Fields read(String location) {
 		return (Fields) read(Fields.class,
-				Filesystem.getFileF(Filesystem.FOLDER_SHARED, owner, group, dataset, Filesystem.DATASET_FIELDS));
+				Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.DATASET_FIELDS));
 	}
 }

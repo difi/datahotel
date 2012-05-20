@@ -83,10 +83,16 @@
 			<version>1.1.0</version>
 		</dependency>
 		<dependency>
-			<artifactId>datahotel-util-jsf</artifactId>
+			<artifactId>datahotel-util-bridge</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 		</dependency>
+		<dependency>
+			<artifactId>datahotel-util-jersey</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+		</dependency>
+
 
 		<dependency>
 			<groupId>net.sourceforge.javacsv</groupId>
@@ -103,7 +109,7 @@
 		<dependency>
 			<groupId>com.ocpsoft</groupId>
 			<artifactId>prettyfaces-jsf2</artifactId>
-			<version>3.2.1</version>
+			<version>3.3.0</version>
 		</dependency>
 	</dependencies>
 

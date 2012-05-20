@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 
-import no.difi.datahotel.util.bridge.MetadataSlave;
+import no.difi.datahotel.util.bridge.Metadata;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,12 +40,12 @@ public class FieldEJBTest {
 
 	@Test
 	public void testSimple() {
-		MetadataSlave m = new MetadataSlave();
-		m.setLocation("difi/geo/fylke");
-		m.setUpdated(System.currentTimeMillis());
+		Metadata metadata = new Metadata();
+		metadata.setLocation("difi/geo/fylke");
+		metadata.setUpdated(System.currentTimeMillis());
 		
 		// Update first
-		fieldEJB.update("difi", "geo", "fylke");
+		fieldEJB.update(metadata);
 		assertEquals(2, fieldEJB.getFields("difi", "geo", "fylke").size());
 
 		assertEquals(2, fieldEJB.getDefinitions().size());
@@ -55,7 +55,7 @@ public class FieldEJBTest {
 		assertEquals(null, fieldEJB.getUsage("kommuner"));
 
 		// Update second
-		fieldEJB.update("difi", "geo", "fylke");
+		fieldEJB.update(metadata);
 		assertEquals(2, fieldEJB.getFields("difi", "geo", "fylke").size());
 
 		assertEquals(2, fieldEJB.getDefinitions().size());

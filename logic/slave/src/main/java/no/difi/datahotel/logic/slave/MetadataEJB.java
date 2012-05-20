@@ -14,7 +14,6 @@ import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 
 import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataSlave;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @Singleton
@@ -30,41 +29,49 @@ public class MetadataEJB {
 	private IndexEJB indexEJB;
 
 	private File root = Filesystem.getFolderF(Filesystem.FOLDER_SHARED);
-	private Map<String, MetadataSlave> directory = new HashMap<String, MetadataSlave>();
+	private Map<String, Metadata> directory = new HashMap<String, Metadata>();
 	private Map<String, Long> timestamps = new HashMap<String, Long>();
 
 	
 	@Schedule(second = "0,15,30,45", minute = "*", hour = "*")
 	public void update() {
-		MetadataSlave mroot = new MetadataSlave();
-		Map<String, MetadataSlave> mdir = new HashMap<String, MetadataSlave>();
-		mdir.put("", mroot);
-
-		updateRec(mroot, mdir, root);
-
-		directory = mdir;
+		try {
+			Metadata mroot = new Metadata();
+			Map<String, Metadata> mdir = new HashMap<String, Metadata>();
+			mdir.put("", mroot);
+	
+			updateRecursive(mroot, mdir, root);
+	
+			directory = mdir;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Unable to update metadata", e);
+		}
 	}
 
-	private void updateRec(MetadataSlave metadata, Map<String, MetadataSlave> mdir, File folder) {
+	private void updateRecursive(Metadata parent, Map<String, Metadata> directory, File folder) {
 		for (File f : folder.listFiles()) {
 			if (f.isDirectory()) {
-				File fm = Filesystem.getFileF(f, Filesystem.METADATA);
-				if (fm.exists()) {
-					MetadataSlave m = Metadata.read(getLocation(f));
-					metadata.getChildren().put(f.getName(), m);
-					mdir.put(m.getLocation(), m);
+				if (Filesystem.getFileF(f, Filesystem.METADATA).exists()) {
+					// Read metadata
+					Metadata m = Metadata.read(getLocation(f));
 
+					// Do the recursion
+					updateRecursive(m, directory, f);
+					
+					// Register metadata
+					parent.addChild(m);
+					directory.put(m.getLocation(), m);
+
+					// Make data available
 					if (m.isDataset())
 						validate(m);
-
-					updateRec(m, mdir, f);
 				}
 			}
 		}
 	}
 
 	@Asynchronous
-	private void validate(MetadataSlave metadata) {
+	private void validate(Metadata metadata) {
 		try {
 			if (metadata.getUpdated() == null) {
 				logger.warning("[" + metadata.getLocation() + "] Missing timestamp in metadata file.");
@@ -83,7 +90,7 @@ public class MetadataEJB {
 
 			String[] l = metadata.getLocation().split("/");
 
-			fieldEJB.update(l[0], l[1], l[2]);
+			fieldEJB.update(metadata);
 			chunkEJB.update(metadata);
 			indexEJB.update(l[0], l[1], l[2], metadata.getUpdated());
 
@@ -98,7 +105,7 @@ public class MetadataEJB {
 		return f.toString().substring(root.toString().length() + 1).replace(File.separator, "/");
 	}
 
-	public String getLocation(String... dir) {
+	private String getLocation(String... dir) {
 		String location = dir[0];
 		for (int i = 1; i < dir.length; i++)
 			location += "/" + dir[i];
@@ -109,7 +116,7 @@ public class MetadataEJB {
 		String location = dir.length == 0 ? "" : getLocation(dir);
 		if (directory.containsKey(location)) {
 			List<Metadata> children = new ArrayList<Metadata>();
-			for (MetadataSlave m : directory.get(location).getChildren().values())
+			for (Metadata m : directory.get(location).getChildren().values())
 				if (m.isActive())
 					children.add(m);
 			return children.size() == 0 ? null : children;
@@ -117,14 +124,14 @@ public class MetadataEJB {
 		return null;
 	}
 
-	public MetadataSlave getChild(String... dir) {
+	public Metadata getChild(String... dir) {
 		String location = getLocation(dir);
 		return directory.containsKey(location) ? directory.get(location) : null;
 	}
 
 	public List<Metadata> getDatasets() {
 		List<Metadata> datasets = new ArrayList<Metadata>();
-		for (MetadataSlave m : directory.values())
+		for (Metadata m : directory.values())
 			if (m.isDataset() && m.isActive())
 				datasets.add(m);
 		return datasets;

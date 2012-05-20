@@ -36,12 +36,12 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<artifactId>datahotel-util-jsf</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.ocpsoft</groupId>

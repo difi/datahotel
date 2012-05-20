@@ -25,7 +25,7 @@ import no.difi.datahotel.logic.slave.SearchEJB;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataSlave;
+import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 
@@ -59,9 +59,11 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Metadata> list = metadataEJB.getChildren();
+			List<MetadataLight> list = new ArrayList<MetadataLight>();
+			for (Metadata m : metadataEJB.getChildren())
+				list.add(m.light());
 
-			if (list == null)
+			if (list.size() == 0)
 				throw new Exception("No elements found.");
 
 			return Response.ok(dataFormat.format(list, metadata)).header("Content-Type", "")
@@ -78,9 +80,16 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Metadata> datasets = metadataEJB.getDatasets();
+			
+			List<MetadataLight> list = new ArrayList<MetadataLight>();
+			for (Metadata m : metadataEJB.getDatasets())
+				list.add(m.light());
 
-			return Response.ok(dataFormat.format(datasets, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+			if (list.size() == 0)
+				throw new Exception("No elements found.");
+
+
+			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
 					.build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
@@ -145,9 +154,11 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			List<Metadata> list = metadataEJB.getChildren(owner);
+			List<MetadataLight> list = new ArrayList<MetadataLight>();
+			for (Metadata m : metadataEJB.getChildren(owner))
+				list.add(m.light());
 
-			if (list == null)
+			if (list.size() == 0)
 				throw new Exception("No elements found.");
 
 			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
@@ -171,18 +182,19 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}/{group}")
 	public Response getDatasetListForGroup(@PathParam("type") String type, @PathParam("owner") String owner,
-			@PathParam("group") String group, @QueryParam("callback") String metadata) {
+			@PathParam("group") String group, @QueryParam("callback") String callback) {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
-			dataFormat = DataFormat.get(type);
-			List<Metadata> list = metadataEJB.getChildren(owner, group);
+			List<Metadata> list = new ArrayList<Metadata>();
+			for (Metadata m : metadataEJB.getChildren(owner, group))
+				list.add(m);
 
-			if (list == null)
+			if (list.size() == 0)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(list, callback)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -208,10 +220,8 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get(type);
-			MetadataSlave metadata = metadataEJB.getChild(owner, group, dataset); 
+			Metadata metadata = metadataEJB.getChild(owner, group, dataset); 
 			long timestamp = metadata.getUpdated();
-			// long timestamp = structureEJB.getTimestamp(owner, group,
-			// dataset);
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -247,7 +257,7 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.PLAIN_TEXT;
 		try {
 			dataFormat = DataFormat.get("csv");
-			MetadataSlave metadata = metadataEJB.getChild(owner, group, dataset);
+			Metadata metadata = metadataEJB.getChild(owner, group, dataset);
 			long timestamp = metadata.getUpdated();
 
 			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))

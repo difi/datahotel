@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Singleton;
 
-import no.difi.datahotel.util.bridge.MetadataSlave;
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
@@ -34,7 +34,7 @@ public class ChunkEJB {
 		return Filesystem.getFileF(FOLDER_SHARED, location, Filesystem.DATASET_DATA);
 	}
 	
-	public void update(MetadataSlave metadata) {
+	public void update(Metadata metadata) {
 		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp");
 		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
 			logger.info("[" + metadata.getLocation() + "] Chunk up to date.");
@@ -49,11 +49,12 @@ public class ChunkEJB {
 			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(metadata.getLocation()));
 			CSVWriter writer = null;
 
-			int number = 1, counter = 0;
+			int number = 0, counter = 0;
 			while (parser.hasNext()) {
 				counter++;
 
 				if (counter % size == 1) {
+					number++;
 					String filename = "dataset-" + number + ".csv";
 					writer = new CSVWriter(Filesystem.getFileF(FOLDER_CHUNK, locationTmp, filename));
 					writer.writeHeader(parser.getHeaders());
@@ -64,10 +65,9 @@ public class ChunkEJB {
 				if (counter % size == 0) {
 					writer.close();
 					writer = null;
-					number++;
 				}
 			}
-
+			
 			if (writer != null)
 				writer.close();
 
