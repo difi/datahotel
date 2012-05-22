@@ -32,7 +32,6 @@ import org.apache.lucene.util.Version;
 @Stateless
 public class IndexEJB {
 
-	private static Logger logger = Logger.getLogger(IndexEJB.class.getSimpleName());
 	private CSVParserFactory csvParserFactory = new CSVParserFactory();
 	
 	@EJB
@@ -43,24 +42,22 @@ public class IndexEJB {
 	}
 
 	public void update(Metadata metadata) {
-		update(metadata.getLocation(), metadata.getUpdated());
-	}
-	
-	public void update(String location, long timestamp) {
-		File tsfile = Filesystem.getFileF(FOLDER_INDEX, location, "timestamp");
-		if (timestamp == Timestamp.getTimestamp(tsfile)) {
-			logger.info("[" + location + "] Index up to date.");
+		Logger logger = metadata.getLogger();
+		
+		File tsfile = Filesystem.getFileF(FOLDER_INDEX, metadata.getLocation(), "timestamp");
+		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
+			logger.info("Index up to date.");
 			return;
 		}
 		
-		logger.info("[" + location + "] Building index.");
+		logger.info("Building index.");
 		
 		long i = 0;
 
 		try {
-			File filename = Filesystem.getFileF(FOLDER_SHARED, location, DATASET_DATA);
+			File filename = Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), DATASET_DATA);
 
-			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, location));
+			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, metadata.getLocation()));
 			
 			IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_33, new StandardAnalyzer(Version.LUCENE_33));
 			IndexWriter writer = new IndexWriter(dir, writerConfig);
@@ -74,7 +71,7 @@ public class IndexEJB {
 					Map<String, String> line = csv.getNextLine();
 					Document doc = new Document();
 					String searchable = "";
-					for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(location)) {
+					for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(metadata)) {
 						String value = line.get(f.getShortName());
 						
 						if (value.matches("[0-9.,]+"))
@@ -91,11 +88,11 @@ public class IndexEJB {
 	
 					writer.addDocument(doc);
 				} catch (Exception e) {
-					logger.info("[" + location + "] [" + e.getClass().getSimpleName() + "] Unable to index line " + i + ". (" + String.valueOf(e.getMessage()) + ")");
+					logger.info("[" + e.getClass().getSimpleName() + "] Unable to index line " + i + ". (" + String.valueOf(e.getMessage()) + ")");
 				}
 				
 				if (i % 10000 == 0)
-					logger.info("[" + location + "] Document " + i);
+					logger.info("Document " + i);
 			}
 
 			writer.optimize();
@@ -103,7 +100,7 @@ public class IndexEJB {
 			writer.close();
 			dir.close();
 			
-			Timestamp.setTimestamp(tsfile, timestamp);
+			Timestamp.setTimestamp(tsfile, metadata.getUpdated());
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}

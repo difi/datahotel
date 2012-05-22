@@ -70,12 +70,17 @@ public class IndexEJBTest {
 		metadata.setUpdated(System.currentTimeMillis());
 
 		fieldEJB.update(metadata);
-		indexEJB.update(metadata.getLocation(), 1);
+		indexEJB.update(metadata);
 	}
 
 	@Test
 	public void testNoSource() {
-		indexEJB.update(Metadata.getLocation(o, g, "no-exists"), 2);
+		Metadata metadata = new Metadata();
+		metadata.setLocation(Metadata.getLocation(o, g, "no-exists"));
+		metadata.setUpdated(System.currentTimeMillis());
+		
+		
+		indexEJB.update(metadata);
 	}
 
 	@Test
@@ -120,7 +125,7 @@ public class IndexEJBTest {
 		metadata.setUpdated(System.currentTimeMillis());
 
 		fieldEJB.update(metadata);
-		indexEJB.update("difi/geo/kommune", System.currentTimeMillis());
+		indexEJB.update(metadata);
 
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");
@@ -154,9 +159,6 @@ public class IndexEJBTest {
 		settingsFieldField.set(indexEJB, fieldEJB);
 
 		Logger logger = Mockito.mock(Logger.class);
-		Field settingsLoggerField = IndexEJB.class.getDeclaredField("logger");
-		settingsLoggerField.setAccessible(true);
-		settingsLoggerField.set(indexEJB, logger);
 
 		CSVParserFactory csvParserFactory = Mockito.mock(CSVParserFactory.class);
 		Field settingsFactoryField = IndexEJB.class.getDeclaredField("csvParserFactory");
@@ -168,6 +170,7 @@ public class IndexEJBTest {
 		Metadata metadata = new Metadata();
 		metadata.setLocation("whoknows");
 		metadata.setUpdated(10L);
+		metadata.setLogger(logger);
 
 		File filename = Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), DATASET_DATA);
 
@@ -182,18 +185,18 @@ public class IndexEJBTest {
 		line.put("field1", "value");
 		
 		when(csvParserFactory.get(filename)).thenReturn(parser);
-		when(fieldEJB.getFields(metadata.getLocation())).thenReturn(fields);
+		when(fieldEJB.getFields(metadata)).thenReturn(fields);
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
-		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation() + "] Document 20000");
+		doThrow(new RuntimeException()).when(logger).info("Document 20000");
 		
 		indexEJB.update(metadata);
 		
 		verify(parser, times(20000)).getNextLine();
 		
-		verify(logger).info("[" + metadata.getLocation() + "] Building index.");
-		verify(logger).info("[" + metadata.getLocation() + "] Document 10000");
-		verify(logger).info("[" + metadata.getLocation() + "] Document 20000");
+		verify(logger).info("Building index.");
+		verify(logger).info("Document 10000");
+		verify(logger).info("Document 20000");
 	}
 
 	@Test
@@ -204,9 +207,6 @@ public class IndexEJBTest {
 		settingsFieldField.set(indexEJB, fieldEJB);
 
 		Logger logger = Mockito.mock(Logger.class);
-		Field settingsLoggerField = IndexEJB.class.getDeclaredField("logger");
-		settingsLoggerField.setAccessible(true);
-		settingsLoggerField.set(indexEJB, logger);
 
 		CSVParserFactory csvParserFactory = Mockito.mock(CSVParserFactory.class);
 		Field settingsFactoryField = IndexEJB.class.getDeclaredField("csvParserFactory");
@@ -218,6 +218,7 @@ public class IndexEJBTest {
 		Metadata metadata = new Metadata();
 		metadata.setLocation("whoknows2");
 		metadata.setUpdated(10L);
+		metadata.setLogger(logger);
 
 		File filename = Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), DATASET_DATA);
 
@@ -232,15 +233,33 @@ public class IndexEJBTest {
 		line.put("field2", "value");
 		
 		when(csvParserFactory.get(filename)).thenReturn(parser);
-		when(fieldEJB.getFields(metadata.getLocation())).thenReturn(fields);
+		when(fieldEJB.getFields(metadata)).thenReturn(fields);
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
-		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation() + "] Document 10000");
-		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation()  + "] [NullPointerException] Unable to index line 1. (null)");
+		doThrow(new RuntimeException()).when(logger).info("Document 10000");
+		doThrow(new RuntimeException()).when(logger).info("[NullPointerException] Unable to index line 1. (null)");
 		
 		indexEJB.update(metadata);
 		
 		verify(parser, times(1)).getNextLine();
-		verify(logger).info("[" + metadata.getLocation() + "] Building index.");
+		verify(logger).info("Building index.");
+	}
+	
+	@Test
+	public void testUpToDate() {
+		Logger logger = Mockito.mock(Logger.class);
+
+		Metadata metadata = new Metadata();
+		metadata.setLocation("difi/geo/kommune");
+		metadata.setUpdated(System.currentTimeMillis());
+		metadata.setLogger(logger);
+		
+		indexEJB.update(metadata);
+		
+		verify(logger).info("Building index.");
+		
+		indexEJB.update(metadata);
+		
+		verify(logger).info("Index up to date.");
 	}
 }

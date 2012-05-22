@@ -15,14 +15,14 @@ import no.difi.datahotel.util.bridge.Metadata;
 @Stateless
 public class FieldEJB {
 	
-	private static Logger logger = Logger.getLogger(FieldEJB.class.getSimpleName());
-	
 	private HashMap<String, List<Field>> fields = new HashMap<String, List<Field>>();
 	private HashMap<String, Definition> definitions = new HashMap<String, Definition>();
 	private HashMap<String, List<String>> defUsage = new HashMap<String, List<String>>();
 	
 	public void update(Metadata metadata) {
-		logger.info("[" + metadata.getLocation() + "] Reading fields.");
+		Logger logger = metadata.getLogger();
+
+		logger.info("Reading fields.");
 		
 		if (fields.containsKey(metadata.getLocation())) {
 			for (Field f : fields.get(metadata.getLocation())) {
@@ -45,8 +45,8 @@ public class FieldEJB {
 		}
 	}
 	
-	public List<Field> getFields(String location) {
-		return fields.get(location);
+	public List<Field> getFields(Metadata metadata) {
+		return fields.get(metadata.getLocation());
 	}
 	
 	public List<Definition> getDefinitions() {

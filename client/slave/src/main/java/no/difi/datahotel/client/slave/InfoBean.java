@@ -76,8 +76,11 @@ public class InfoBean {
 	}
 
 	public void setDatasetShortName(String dataset) {
+		Metadata metadata = new Metadata();
+		metadata.setLocation(getOwnerShortName() + "/" + getGroupShortName() + "/" + dataset);
+		
 		this.dataset = dataEJB.getChild(getOwnerShortName(), getGroupShortName(), dataset);
-		this.fields = fieldEJB.getFields(getOwnerShortName() + "/" + getGroupShortName() + "/" + dataset);
+		this.fields = fieldEJB.getFields(metadata);
 		this.datasetShortName = dataset;
 	}
 

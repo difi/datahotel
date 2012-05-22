@@ -1,6 +1,7 @@
 package no.difi.datahotel.logic.slave;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -30,7 +31,7 @@ public class UpdateEJBTest {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		realHome = System.getProperty("user.home");
-		System.setProperty("user.home", new File(ChunkEJBTest.class.getResource("/").toURI()).toString());
+		System.setProperty("user.home", new File(UpdateEJBTest.class.getResource("/").toURI()).toString());
 	}
 
 	@AfterClass
@@ -43,17 +44,15 @@ public class UpdateEJBTest {
 	{
 		updateEJB = getUpdateEJB();
 
+		logger = Mockito.mock(Logger.class);
+		
 		metadata = new Metadata();
 		metadata.setLocation("difi/geo/fylke");
+		metadata.setLogger(logger);
 	}
 	
 	public static UpdateEJB getUpdateEJB() throws Exception {
 		UpdateEJB c = new UpdateEJB();
-		
-		logger = Mockito.mock(Logger.class);
-		Field rField = UpdateEJB.class.getDeclaredField("logger");
-		rField.setAccessible(true);
-		rField.set(c, logger);
 		
 		fieldEJB = Mockito.mock(FieldEJB.class);
 		Field settingsFieldField = UpdateEJB.class.getDeclaredField("fieldEJB");
@@ -70,7 +69,7 @@ public class UpdateEJBTest {
 		settingsIndexField.setAccessible(true);
 		settingsIndexField.set(c, indexEJB);
 		
-		dataEJB = DataEJBTest.getDataEJB();
+		dataEJB = new DataEJB();
 		Field settingsDataField = UpdateEJB.class.getDeclaredField("dataEJB");
 		settingsDataField.setAccessible(true);
 		settingsDataField.set(c, dataEJB);
@@ -82,7 +81,7 @@ public class UpdateEJBTest {
 	public void testTriggerMissingTimestamp() {
 		updateEJB.validate(metadata);
 		
-		verify(logger).warning("[" + metadata.getLocation() + "] Missing timestamp in metadata file.");
+		verify(logger).warning("Missing timestamp in metadata file.");
 	}
 	
 	@Test
@@ -92,7 +91,7 @@ public class UpdateEJBTest {
 
 		updateEJB.validate(metadata);
 
-		verify(logger).info("[" + metadata.getLocation() + "] Do not disturb.");
+		verify(logger).info("Do not disturb.");
 	}
 
 	@Test
@@ -114,7 +113,7 @@ public class UpdateEJBTest {
 		verify(fieldEJB).update(metadata);
 		verify(chunkEJB).update(metadata);
 		verify(indexEJB).update(metadata);
-		verify(logger).info("[" + metadata.getLocation() + "] Ready");
+		verify(logger).info("Ready");
 	}
 
 	@Test
@@ -127,7 +126,7 @@ public class UpdateEJBTest {
 		verify(fieldEJB).update(metadata);
 		verify(chunkEJB).update(metadata);
 		verify(indexEJB).update(metadata);
-		verify(logger).info("[" + metadata.getLocation() + "] Ready");
+		verify(logger).info("Ready");
 	}
 
 	@Test
@@ -140,6 +139,6 @@ public class UpdateEJBTest {
 		verify(fieldEJB).update(metadata);
 		verify(chunkEJB).update(metadata);
 		verify(indexEJB).update(metadata);
-		verify(logger).info("[" + metadata.getLocation() + "] Ready");
+		verify(logger).info("Ready");
 	}
 }

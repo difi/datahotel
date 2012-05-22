@@ -2,7 +2,6 @@ package no.difi.datahotel.logic.slave;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -10,8 +9,6 @@ import no.difi.datahotel.util.bridge.Metadata;
 
 @Stateless
 public class UpdateEJB {
-
-	private static Logger logger = Logger.getLogger(UpdateEJB.class.getSimpleName());
 
 	@EJB
 	private FieldEJB fieldEJB;
@@ -22,10 +19,12 @@ public class UpdateEJB {
 	@EJB
 	private DataEJB dataEJB;
 
-	@Asynchronous
+	// TODO How to make this @Asynchronous?
 	public void validate(Metadata metadata) {
+		Logger logger = metadata.getLogger();
+		
 		if (metadata.getUpdated() == null) {
-			logger.warning("[" + metadata.getLocation() + "] Missing timestamp in metadata file.");
+			logger.warning("Missing timestamp in metadata file.");
 			return;
 		}
 
@@ -33,7 +32,7 @@ public class UpdateEJB {
 			return;
 
 		if (dataEJB.getTimestamp(metadata.getLocation()) != null && dataEJB.getTimestamp(metadata.getLocation()) == -1) {
-			logger.info("[" + metadata.getLocation() + "] Do not disturb.");
+			logger.info("Do not disturb.");
 			return;
 		}
 
@@ -43,7 +42,7 @@ public class UpdateEJB {
 		chunkEJB.update(metadata);
 		indexEJB.update(metadata);
 
-		logger.info("[" + metadata.getLocation() + "] Ready");
+		logger.info("Ready");
 		dataEJB.setTimestamp(metadata.getLocation(), metadata.getUpdated());
 	}
 }

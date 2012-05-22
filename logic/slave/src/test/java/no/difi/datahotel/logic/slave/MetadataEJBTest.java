@@ -1,19 +1,28 @@
 package no.difi.datahotel.logic.slave;
 
+import static org.mockito.Mockito.verify;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import no.difi.datahotel.util.shared.Filesystem;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class MetadataEJBTest {
 
 	private MetadataEJB metadataEJB;
 	private DataEJB dataEJB;
+	private Logger logger;
 	
 	private static String realHome;
 
@@ -36,11 +45,16 @@ public class MetadataEJBTest {
 	
 	public MetadataEJB getMetadata2EJB() throws Exception {
 		MetadataEJB m = new MetadataEJB();
-		
-		dataEJB = DataEJBTest.getDataEJB();
+
+		dataEJB = new DataEJB();
 		Field settingsDataField = MetadataEJB.class.getDeclaredField("dataEJB");
 		settingsDataField.setAccessible(true);
 		settingsDataField.set(m, dataEJB);
+
+		logger = Mockito.mock(Logger.class);
+		Field settingsLoggerField = MetadataEJB.class.getDeclaredField("logger");
+		settingsLoggerField.setAccessible(true);
+		settingsLoggerField.set(m, logger);
 
 		UpdateEJB updateEJB = UpdateEJBTest.getUpdateEJB();
 		Field settingsUpdateField = MetadataEJB.class.getDeclaredField("updateEJB");
@@ -60,5 +74,22 @@ public class MetadataEJBTest {
 		assertEquals(null, dataEJB.getChildren("not/seen/here"));
 		
 		assertEquals(2, dataEJB.getChild("difi", "geo").getChildren().size());
+	}
+	
+	@Test
+	public void testError() throws IOException {
+		File folder = Filesystem.getFolderF(Filesystem.FOLDER_SHARED, "google");
+		File file = Filesystem.getFileF(folder, "meta.xml");
+
+		FileWriter fileWriter = new FileWriter(file);
+		fileWriter.append("ERROR!");
+		fileWriter.close();
+
+		metadataEJB.update();
+
+		verify(logger).log(Level.WARNING, "Error while reading google");
+		
+		file.delete();
+		folder.delete();
 	}
 }

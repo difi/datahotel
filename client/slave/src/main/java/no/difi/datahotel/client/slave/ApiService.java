@@ -210,7 +210,7 @@ public class ApiService {
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			CSVData csvData = new CSVData(chunkEJB.get(metadata.getLocation(), page));
+			CSVData csvData = new CSVData(chunkEJB.get(metadata, page));
 
 			return Response.ok(dataFormat.format(csvData, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
 					.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", page)
@@ -276,7 +276,7 @@ public class ApiService {
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			List<Field> fields = fieldEJB.getFields(metadata.getLocation());
+			List<Field> fields = fieldEJB.getFields(metadata);
 
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
@@ -307,7 +307,7 @@ public class ApiService {
 			if (!query.trim().isEmpty())
 				results = new CSVData(searchEJB.find(owner, group, dataset, query, page));
 			else {
-				List<Field> fields = fieldEJB.getFields(metadata.getLocation());
+				List<Field> fields = fieldEJB.getFields(metadata);
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)
 					if (f.getSearchable())
@@ -338,7 +338,7 @@ public class ApiService {
 				return returnNotModified();
 
 			Map<String, String> query = new HashMap<String, String>();
-			List<Field> fields = fieldEJB.getFields(metadata.getLocation());
+			List<Field> fields = fieldEJB.getFields(metadata);
 
 			for (Field f : fields)
 				if (f.getGroupable())

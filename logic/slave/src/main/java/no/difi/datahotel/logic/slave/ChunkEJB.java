@@ -22,8 +22,6 @@ import no.difi.datahotel.util.shared.Timestamp;
 @Singleton
 public class ChunkEJB {
 
-	private static Logger logger = Logger.getLogger(ChunkEJB.class.getSimpleName());
-
 	private Map<String, Long> posts = new HashMap<String, Long>();
 	private Map<String, Long> pages = new HashMap<String, Long>();
 
@@ -34,13 +32,15 @@ public class ChunkEJB {
 	}
 	
 	public void update(Metadata metadata) {
+		Logger logger = metadata.getLogger();
+		
 		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp");
 		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
-			logger.info("[" + metadata.getLocation() + "] Chunk up to date.");
+			logger.info("Chunk up to date.");
 			return;
 		}
 
-		logger.info("[" + metadata.getLocation() + "] Building chunk.");
+		logger.info("Building chunk.");
 
 		try {
 			String locationTmp = metadata.getLocation() + "-tmp." + System.currentTimeMillis();
@@ -86,8 +86,10 @@ public class ChunkEJB {
 		}
 	}
 
-	public ArrayList<Map<String, String>> get(String location, int number) {
-		File source = Filesystem.getFileF(FOLDER_CHUNK, location, "dataset-" + number + ".csv");
+	public ArrayList<Map<String, String>> get(Metadata metadata, int number) {
+		Logger logger = metadata.getLogger();
+		
+		File source = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "dataset-" + number + ".csv");
 
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		try {

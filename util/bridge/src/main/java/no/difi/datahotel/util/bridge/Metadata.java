@@ -3,6 +3,7 @@ package no.difi.datahotel.util.bridge;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -16,6 +17,7 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 	private List<Metadata> children = new ArrayList<Metadata>();
 	private boolean active;
 	private boolean dataset;
+	private Logger logger = Logger.getAnonymousLogger();
 
 	// Values for users
 	private String shortName;
@@ -71,6 +73,7 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 
 	public void setLocation(String location) {
 		this.location = location;
+		this.logger = Logger.getLogger(location);
 	}
 
 	@XmlTransient
@@ -102,6 +105,15 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 
 	public void setDataset(boolean dataset) {
 		this.dataset = dataset;
+	}
+	
+	public Logger getLogger() {
+		return logger;
+	}
+	
+	@XmlTransient
+	public void setLogger(Logger logger) {
+		this.logger = logger;
 	}
 
 	public MetadataLight light() {
