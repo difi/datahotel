@@ -12,7 +12,8 @@ import org.junit.Test;
 
 public class MetadataEJBTest {
 
-	private MetadataEJB metadata2EJB;
+	private MetadataEJB metadataEJB;
+	private DataEJB dataEJB;
 	
 	private static String realHome;
 
@@ -30,39 +31,34 @@ public class MetadataEJBTest {
 	@Before
 	public void before() throws Exception
 	{
-		metadata2EJB = getMetadata2EJB();
+		metadataEJB = getMetadata2EJB();
 	}
 	
 	public MetadataEJB getMetadata2EJB() throws Exception {
 		MetadataEJB m = new MetadataEJB();
 		
-		FieldEJB fieldEJB = new FieldEJB();
-		Field settingsFieldField = MetadataEJB.class.getDeclaredField("fieldEJB");
-		settingsFieldField.setAccessible(true);
-		settingsFieldField.set(m, fieldEJB);
+		dataEJB = DataEJBTest.getDataEJB();
+		Field settingsDataField = MetadataEJB.class.getDeclaredField("dataEJB");
+		settingsDataField.setAccessible(true);
+		settingsDataField.set(m, dataEJB);
 
-		ChunkEJB chunkEJB = new ChunkEJB();
-		Field settingsChunkField = MetadataEJB.class.getDeclaredField("chunkEJB");
-		settingsChunkField.setAccessible(true);
-		settingsChunkField.set(m, chunkEJB);
-
-		IndexEJB indexEJB = new IndexEJB();
-		Field settingsIndexField = MetadataEJB.class.getDeclaredField("indexEJB");
-		settingsIndexField.setAccessible(true);
-		settingsIndexField.set(m, indexEJB);
+		UpdateEJB updateEJB = UpdateEJBTest.getUpdateEJB();
+		Field settingsUpdateField = MetadataEJB.class.getDeclaredField("updateEJB");
+		settingsUpdateField.setAccessible(true);
+		settingsUpdateField.set(m, updateEJB);
 		
 		return m;
 	}
 
 	@Test
 	public void testReading() {
-		metadata2EJB.update();
-		assertEquals(1, metadata2EJB.getChildren().size());
-		assertEquals("http://www.difi.no/", metadata2EJB.getChild("difi").getUrl());
-		assertEquals(4, metadata2EJB.getDatasets().size());
+		metadataEJB.update();
+		assertEquals(1, dataEJB.getChildren().size());
+		assertEquals("http://www.difi.no/", dataEJB.getChild("difi").getUrl());
+		assertEquals(4, dataEJB.getDatasets().size());
 		
-		assertEquals(null, metadata2EJB.getChildren("not/seen/here"));
+		assertEquals(null, dataEJB.getChildren("not/seen/here"));
 		
-		assertEquals(2, metadata2EJB.getChild("difi", "geo").getChildren().size());
+		assertEquals(2, dataEJB.getChild("difi", "geo").getChildren().size());
 	}
 }

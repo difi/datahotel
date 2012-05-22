@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.shared.Filesystem;
@@ -32,7 +33,8 @@ import org.apache.lucene.util.Version;
 public class IndexEJB {
 
 	private static Logger logger = Logger.getLogger(IndexEJB.class.getSimpleName());
-
+	private CSVParserFactory csvParserFactory = new CSVParserFactory();
+	
 	@EJB
 	private FieldEJB fieldEJB;
 	
@@ -40,35 +42,39 @@ public class IndexEJB {
 		Filesystem.delete(FOLDER_INDEX, owner, group, dataset);
 	}
 
-	public void update(String owner, String group, String dataset, long timestamp) {
-		File tsfile = Filesystem.getFileF(FOLDER_INDEX, owner, group, dataset, "timestamp");
+	public void update(Metadata metadata) {
+		update(metadata.getLocation(), metadata.getUpdated());
+	}
+	
+	public void update(String location, long timestamp) {
+		File tsfile = Filesystem.getFileF(FOLDER_INDEX, location, "timestamp");
 		if (timestamp == Timestamp.getTimestamp(tsfile)) {
-			logger.info("[" + owner + "/" + group +"/" + dataset + "] Index up to date.");
+			logger.info("[" + location + "] Index up to date.");
 			return;
 		}
 		
-		logger.info("[" + owner + "/" + group +"/" + dataset + "] Building index.");
+		logger.info("[" + location + "] Building index.");
 		
 		long i = 0;
 
 		try {
-			File filename = Filesystem.getFileF(FOLDER_SHARED, owner, group, dataset, DATASET_DATA);
+			File filename = Filesystem.getFileF(FOLDER_SHARED, location, DATASET_DATA);
 
-			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
+			Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, location));
 			
 			IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_33, new StandardAnalyzer(Version.LUCENE_33));
 			IndexWriter writer = new IndexWriter(dir, writerConfig);
 
 			writer.deleteAll();
 
-			CSVParser csv = CSVParserFactory.getCSVParser(filename);
+			CSVParser csv = csvParserFactory.get(filename);
 			while (csv.hasNext()) {
 				try {
 					i++;
 					Map<String, String> line = csv.getNextLine();
 					Document doc = new Document();
 					String searchable = "";
-					for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(owner, group, dataset)) {
+					for (no.difi.datahotel.util.bridge.Field f : fieldEJB.getFields(location)) {
 						String value = line.get(f.getShortName());
 						
 						if (value.matches("[0-9.,]+"))
@@ -85,11 +91,11 @@ public class IndexEJB {
 	
 					writer.addDocument(doc);
 				} catch (Exception e) {
-					logger.info("[" + owner + "/" + group +"/" + dataset + "] Unable to index line " + i + " (" + e.getClass().getSimpleName() + ").");
+					logger.info("[" + location + "] [" + e.getClass().getSimpleName() + "] Unable to index line " + i + ". (" + String.valueOf(e.getMessage()) + ")");
 				}
 				
 				if (i % 10000 == 0)
-					logger.info("[" + owner + "/" + group +"/" + dataset + "] Document " + i);
+					logger.info("[" + location + "] Document " + i);
 			}
 
 			writer.optimize();

@@ -30,8 +30,8 @@ public class ChunkEJB {
 
 	private int size = 100;
 
-	public File getFullDataset(String location) {
-		return Filesystem.getFileF(FOLDER_SHARED, location, Filesystem.DATASET_DATA);
+	public File getFullDataset(Metadata metadata) {
+		return Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), Filesystem.DATASET_DATA);
 	}
 	
 	public void update(Metadata metadata) {
@@ -46,10 +46,10 @@ public class ChunkEJB {
 		try {
 			String locationTmp = metadata.getLocation() + "-tmp." + System.currentTimeMillis();
 
-			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(metadata.getLocation()));
+			CSVParser parser = CSVParserFactory.getCSVParser(getFullDataset(metadata));
 			CSVWriter writer = null;
 
-			int number = 0, counter = 0;
+			long number = 0, counter = 0;
 			while (parser.hasNext()) {
 				counter++;
 
@@ -77,18 +77,18 @@ public class ChunkEJB {
 
 			Filesystem.getFolderPathF(FOLDER_CHUNK, locationTmp).renameTo(goal);
 
-			posts.put(metadata.getLocation(), (long) counter);
-			pages.put(metadata.getLocation(), (long) number);
+			posts.put(metadata.getLocation(), counter);
+			pages.put(metadata.getLocation(), number);
 
 			Timestamp.setTimestamp(tsfile, metadata.getUpdated());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Start sending exceptions.
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}
 	}
 
-	public ArrayList<Map<String, String>> get(String owner, String group, String dataset, int number) {
-		File source = Filesystem.getFileF(FOLDER_CHUNK, owner, group, dataset, "dataset-" + number + ".csv");
+	public ArrayList<Map<String, String>> get(String location, int number) {
+		File source = Filesystem.getFileF(FOLDER_CHUNK, location, "dataset-" + number + ".csv");
 
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		try {

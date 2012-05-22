@@ -90,13 +90,13 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);
 		
-		assertEquals(100, chunkEJB.get("difi", "test", "simple", 1).size());
-		assertEquals(19, chunkEJB.get("difi", "test", "simple", 2).size());
+		assertEquals(100, chunkEJB.get(metadata.getLocation(), 1).size());
+		assertEquals(19, chunkEJB.get(metadata.getLocation(), 2).size());
 		
-		assertNull(chunkEJB.get("difi", "test", "simple", 3));
-		assertNull(chunkEJB.get("difi", "test", "simple2", 1));
+		assertNull(chunkEJB.get(metadata.getLocation(), 3));
+		assertNull(chunkEJB.get("difi/test/simple2", 1));
 		
-		Thread.sleep(1000);
+		// Thread.sleep(1000);
 		
 		// chunkEJB.delete("difi", "test", "simple2");
 	}
@@ -110,8 +110,8 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);		
 
-		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
-		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
+		assertEquals(100, chunkEJB.get(metadata.getLocation(), 1).size());
+		assertNull(chunkEJB.get(metadata.getLocation(), 2));
 		
 		assertEquals(new Long(1), chunkEJB.getPages("difi/test/hundred"));
 		assertEquals(new Long(0), chunkEJB.getPages("difi/test/hundred200"));
@@ -134,8 +134,8 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);		
 
-		assertEquals(100, chunkEJB.get("difi", "test", "hundred", 1).size());
-		assertNull(chunkEJB.get("difi", "test", "hundred", 2));
+		assertEquals(100, chunkEJB.get(metadata.getLocation(), 1).size());
+		assertNull(chunkEJB.get(metadata.getLocation(), 2));
 		long ts = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp").lastModified();
 		
 		Thread.sleep(1000);

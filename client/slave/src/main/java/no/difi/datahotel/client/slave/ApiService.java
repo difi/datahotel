@@ -19,8 +19,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import no.difi.datahotel.logic.slave.ChunkEJB;
+import no.difi.datahotel.logic.slave.DataEJB;
 import no.difi.datahotel.logic.slave.FieldEJB;
-import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.logic.slave.SearchEJB;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
@@ -38,7 +38,7 @@ import no.difi.datahotel.util.jersey.DataFormat;
 public class ApiService {
 
 	@EJB
-	private MetadataEJB metadataEJB;
+	private DataEJB dataEJB;
 	@EJB
 	private FieldEJB fieldEJB;
 	@EJB
@@ -58,7 +58,7 @@ public class ApiService {
 	public Response getOwnerList(@PathParam("type") String type, @QueryParam("callback") String metadata) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			List<MetadataLight> list = metadataEJB.getChildren();
+			List<MetadataLight> list = dataEJB.getChildren();
 
 			if (list == null)
 				throw new Exception("No elements found.");
@@ -77,15 +77,13 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
 			List<MetadataLight> list = new ArrayList<MetadataLight>();
-			for (Metadata m : metadataEJB.getDatasets())
+			for (Metadata m : dataEJB.getDatasets())
 				list.add(m.light());
 
 			if (list.size() == 0)
 				throw new Exception("No elements found.");
 
-
-			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, metadata)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -146,7 +144,7 @@ public class ApiService {
 			@QueryParam("callback") String callback) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			List<MetadataLight> list = metadataEJB.getChildren(owner);
+			List<MetadataLight> list = dataEJB.getChildren(owner);
 
 			if (list == null)
 				throw new Exception("No elements found.");
@@ -175,8 +173,8 @@ public class ApiService {
 			@PathParam("group") String group, @QueryParam("callback") String callback) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			List<MetadataLight> list = metadataEJB.getChildren(owner, group);
-			
+			List<MetadataLight> list = dataEJB.getChildren(owner, group);
+
 			if (list == null)
 				throw new Exception("No elements found.");
 
@@ -207,16 +205,15 @@ public class ApiService {
 			@Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			Metadata metadata = metadataEJB.getChild(owner, group, dataset); 
-			long timestamp = metadata.getUpdated();
+			Metadata metadata = dataEJB.getChild(owner, group, dataset);
 
-			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			CSVData csvData = new CSVData(chunkEJB.get(owner, group, dataset, page));
+			CSVData csvData = new CSVData(chunkEJB.get(metadata.getLocation(), page));
 
 			return Response.ok(dataFormat.format(csvData, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp).header("X-Datahotel-Page", page)
+					.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", page)
 					.header("X-Datahotel-Total-Pages", chunkEJB.getPages(metadata.getLocation()))
 					.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(metadata.getLocation())).build();
 		} catch (Exception e) {
@@ -243,14 +240,13 @@ public class ApiService {
 			@PathParam("dataset") String dataset, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.CSVCORRECT;
 		try {
-			Metadata metadata = metadataEJB.getChild(owner, group, dataset);
-			long timestamp = metadata.getUpdated();
+			Metadata metadata = dataEJB.getChild(owner, group, dataset);
 
-			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			return Response.ok(chunkEJB.getFullDataset(metadata.getLocation()))
-					.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", timestamp).build();
+			return Response.ok(chunkEJB.getFullDataset(metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)
 					.build();
@@ -265,30 +261,30 @@ public class ApiService {
 	 * @param owner
 	 * @param group
 	 * @param dataset
-	 * @param metadata
+	 * @param callback
 	 * @return
 	 */
 	@GET
 	@Path("{type}/{owner}/{group}/{dataset}/fields")
 	public Response getMetadata(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String metadata, @Context HttpServletRequest req) {
+			@QueryParam("callback") String callback, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			Metadata metadata = dataEJB.getChild(owner, group, dataset);
 
-			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			List<Field> fields = fieldEJB.getFields(owner, group, dataset);
+			List<Field> fields = fieldEJB.getFields(metadata.getLocation());
 
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
 
-			return Response.ok(dataFormat.format(fields, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(fields, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -297,13 +293,13 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/search")
 	public Response getSearch(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@DefaultValue("") @QueryParam("query") String query, @QueryParam("callback") String metadata,
+			@DefaultValue("") @QueryParam("query") String query, @QueryParam("callback") String callback,
 			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			Metadata metadata = dataEJB.getChild(owner, group, dataset);
 
-			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
 			Object results;
@@ -311,7 +307,7 @@ public class ApiService {
 			if (!query.trim().isEmpty())
 				results = new CSVData(searchEJB.find(owner, group, dataset, query, page));
 			else {
-				List<Field> fields = fieldEJB.getFields(owner, group, dataset);
+				List<Field> fields = fieldEJB.getFields(metadata.getLocation());
 				List<Field> res = new ArrayList<Field>();
 				for (Field f : fields)
 					if (f.getSearchable())
@@ -319,10 +315,10 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(results, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -331,18 +327,18 @@ public class ApiService {
 	@Path("{type}/{owner}/{group}/{dataset}/lookup")
 	public Response getLookupMulti(@PathParam("type") String type, @PathParam("owner") String owner,
 			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String metadata, @Context UriInfo uriInfo,
+			@QueryParam("callback") String callback, @Context UriInfo uriInfo,
 			@DefaultValue("1") @QueryParam("page") Integer page, @Context HttpServletRequest req) {
 
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
-			long timestamp = metadataEJB.getChild(owner, group, dataset).getUpdated();
+			Metadata metadata = dataEJB.getChild(owner, group, dataset);
 
-			if (String.valueOf(timestamp).equals(req.getHeader("If-None-Match")))
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
 			Map<String, String> query = new HashMap<String, String>();
-			List<Field> fields = fieldEJB.getFields(owner, group, dataset);
+			List<Field> fields = fieldEJB.getFields(metadata.getLocation());
 
 			for (Field f : fields)
 				if (f.getGroupable())
@@ -361,10 +357,10 @@ public class ApiService {
 				results = res;
 			}
 
-			return Response.ok(dataFormat.format(results, metadata)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.header("ETag", timestamp).build();
+			return Response.ok(dataFormat.format(results, callback)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}

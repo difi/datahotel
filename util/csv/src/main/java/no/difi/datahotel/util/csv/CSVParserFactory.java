@@ -19,6 +19,16 @@ public class CSVParserFactory {
 	}
 	
 	/**
+	 * Makes users testable.
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public CSVParser get(File file) throws IOException {
+		return new CSVParserImpl(file, new CSVMetainfo(';', true, true));
+	}
+	
+	/**
 	 * Creates a new CSVParser object based on the file you provide, this method
 	 * will try to find the delimiter used in the file, as long as it is one of the
 	 * following: ';' ',' ':' or tab

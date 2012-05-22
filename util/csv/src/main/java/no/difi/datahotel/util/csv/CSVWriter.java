@@ -13,7 +13,6 @@ import com.csvreader.CsvWriter;
 public class CSVWriter {
 
 	private CsvWriter writer;
-	private int line = 1;
 
 	/**
 	 * Initializes the object and supplies the file to be written.  
@@ -52,7 +51,6 @@ public class CSVWriter {
 	public void write(String[] values) throws IOException
 	{
 		writer.writeRecord(values);
-		line++;
 	}
 
 	public void close()

@@ -46,7 +46,7 @@ public class FieldEJBTest {
 		
 		// Update first
 		fieldEJB.update(metadata);
-		assertEquals(2, fieldEJB.getFields("difi", "geo", "fylke").size());
+		assertEquals(2, fieldEJB.getFields("difi/geo/fylke").size());
 
 		assertEquals(2, fieldEJB.getDefinitions().size());
 		assertEquals("Navn", fieldEJB.getDefinition("navn").getName());
@@ -56,7 +56,7 @@ public class FieldEJBTest {
 
 		// Update second
 		fieldEJB.update(metadata);
-		assertEquals(2, fieldEJB.getFields("difi", "geo", "fylke").size());
+		assertEquals(2, fieldEJB.getFields("difi/geo/fylke").size());
 
 		assertEquals(2, fieldEJB.getDefinitions().size());
 		assertEquals("Navn", fieldEJB.getDefinition("navn").getName());

@@ -6,8 +6,8 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
+import no.difi.datahotel.logic.slave.DataEJB;
 import no.difi.datahotel.logic.slave.FieldEJB;
-import no.difi.datahotel.logic.slave.MetadataEJB;
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Metadata;
@@ -18,7 +18,7 @@ import no.difi.datahotel.util.bridge.MetadataLight;
 public class InfoBean {
 
 	@EJB
-	private MetadataEJB metadataEJB;
+	private DataEJB dataEJB;
 	@EJB
 	private FieldEJB fieldEJB;
 
@@ -32,15 +32,15 @@ public class InfoBean {
 	private Definition def;
 
 	public List<MetadataLight> getOwners() {
-		return metadataEJB.getChildren();
+		return dataEJB.getChildren();
 	}
 
 	public List<MetadataLight> getGroups() {
-		return metadataEJB.getChildren(getOwnerShortName());
+		return dataEJB.getChildren(getOwnerShortName());
 	}
 
 	public List<MetadataLight> getDatasets() {
-		return metadataEJB.getChildren(getOwnerShortName(), getGroupShortName());
+		return dataEJB.getChildren(getOwnerShortName(), getGroupShortName());
 	}
 
 	public List<Definition> getDefinitions() {
@@ -58,7 +58,7 @@ public class InfoBean {
 	}
 
 	public void setOwnerShortName(String owner) {
-		this.owner = metadataEJB.getChild(owner);
+		this.owner = dataEJB.getChild(owner);
 		this.ownerShortName = owner;
 	}
 
@@ -67,7 +67,7 @@ public class InfoBean {
 	}
 
 	public void setGroupShortName(String group) {
-		this.group = metadataEJB.getChild(getOwnerShortName(), group);
+		this.group = dataEJB.getChild(getOwnerShortName(), group);
 		this.groupShortName = group;
 	}
 
@@ -76,8 +76,8 @@ public class InfoBean {
 	}
 
 	public void setDatasetShortName(String dataset) {
-		this.dataset = metadataEJB.getChild(getOwnerShortName(), getGroupShortName(), dataset);
-		this.fields = fieldEJB.getFields(getOwnerShortName(), getGroupShortName(), dataset);
+		this.dataset = dataEJB.getChild(getOwnerShortName(), getGroupShortName(), dataset);
+		this.fields = fieldEJB.getFields(getOwnerShortName() + "/" + getGroupShortName() + "/" + dataset);
 		this.datasetShortName = dataset;
 	}
 

@@ -45,8 +45,7 @@ public class FieldEJB {
 		}
 	}
 	
-	public List<Field> getFields(String owner, String group, String dataset) {
-		String location = owner + "/" + group + "/" + dataset;
+	public List<Field> getFields(String location) {
 		return fields.get(location);
 	}
 	
