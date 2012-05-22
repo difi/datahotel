@@ -71,8 +71,7 @@ public class ChunkEJB {
 				writer.close();
 
 			File goal = Filesystem.getFolderPathF(FOLDER_CHUNK, metadata.getLocation());
-			if (goal.exists())
-				Filesystem.delete(FOLDER_CHUNK, metadata.getLocation());
+			Filesystem.delete(FOLDER_CHUNK, metadata.getLocation());
 
 			Filesystem.getFolderPathF(FOLDER_CHUNK, locationTmp).renameTo(goal);
 
