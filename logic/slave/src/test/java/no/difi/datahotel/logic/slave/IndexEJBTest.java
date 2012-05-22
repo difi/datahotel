@@ -235,7 +235,8 @@ public class IndexEJBTest {
 		when(fieldEJB.getFields(metadata.getLocation())).thenReturn(fields);
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
-		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation()  + "] Unable to index line 1 (NullPointerException).");
+		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation() + "] Document 10000");
+		doThrow(new RuntimeException()).when(logger).info("[" + metadata.getLocation()  + "] [NullPointerException] Unable to index line 1. (null)");
 		
 		indexEJB.update(metadata);
 		

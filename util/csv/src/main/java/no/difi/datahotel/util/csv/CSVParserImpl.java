@@ -104,11 +104,15 @@ public class CSVParserImpl implements CSVParser {
 	 * @throws IOException
 	 */
 	@Override
-	public Map<String, String> getNextLine() {
+	public Map<String, String> getNextLine() throws Exception {
 		Map<String, String> res = new HashMap<String, String>();
 
-		for (int i = 0; i < line.length; i++)
-			res.put(headers[i], line[i]);
+		try {
+			for (int i = 0; i < line.length; i++)
+				res.put(headers[i], line[i]);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(String.valueOf(res));
+		}
 
 		return res;
 	}

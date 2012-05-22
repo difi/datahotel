@@ -10,7 +10,7 @@ public interface CSVParser {
 	
 	public List<String[]> getTwoFirstLines() throws IOException;
 	
-	public Map<String, String> getNextLine();
+	public Map<String, String> getNextLine() throws Exception;
 	
 	public String[] getNextLineArray();
 	

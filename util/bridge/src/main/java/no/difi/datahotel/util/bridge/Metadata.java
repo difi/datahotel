@@ -1,8 +1,8 @@
 package no.difi.datahotel.util.bridge;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -10,10 +10,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @XmlRootElement
-public class Metadata extends Abstract {
+public class Metadata extends Abstract implements Comparable<Metadata> {
 
 	private String location;
-	private Map<String, Metadata> children = new HashMap<String, Metadata>();
+	private List<Metadata> children = new ArrayList<Metadata>();
 	private boolean active;
 	private boolean dataset;
 
@@ -74,12 +74,12 @@ public class Metadata extends Abstract {
 	}
 
 	@XmlTransient
-	public Map<String, Metadata> getChildren() {
+	public List<Metadata> getChildren() {
 		return children;
 	}
 
 	public void addChild(Metadata child) {
-		this.children.put(child.getShortName(), child);
+		this.children.add(child);
 
 		if (child.isActive() && child.updated != null)
 			if (this.updated == null || this.updated < child.updated)
@@ -136,5 +136,10 @@ public class Metadata extends Abstract {
 		for (int i = 1; i < dir.length; i++)
 			location += "/" + dir[i];
 		return location;
+	}
+
+	@Override
+	public int compareTo(Metadata other) {
+		return String.valueOf(name).compareTo(String.valueOf(other.name));
 	}
 }

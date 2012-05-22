@@ -4,7 +4,6 @@ import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CHUNK;
 import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SHARED;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -100,7 +99,7 @@ public class ChunkEJB {
 			parser.close();
 
 			return result;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage());
 		}
 		return null;
