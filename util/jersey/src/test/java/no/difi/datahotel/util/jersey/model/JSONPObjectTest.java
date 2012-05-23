@@ -13,10 +13,10 @@ public class JSONPObjectTest {
 		JSONPObject formater = new JSONPObject();
 		String result;
 
-		result = formater.format("Hello", null);
+		result = formater.format("Hello", null, null);
 		assertTrue(result.startsWith("callback("));
 
-		result = formater.format("Hello", "difi");
+		result = formater.format("Hello", "difi", null);
 		assertTrue(result.startsWith("difi("));
 	}
 }

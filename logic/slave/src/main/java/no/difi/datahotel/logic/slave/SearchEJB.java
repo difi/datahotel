@@ -10,16 +10,13 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Fieldable;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
@@ -31,44 +28,22 @@ public class SearchEJB {
 
 	private static QueryParser parser = new QueryParser(Version.LUCENE_33, "searchable", new StandardAnalyzer(Version.LUCENE_33));
 
-	public List<Map<String, String>> find(String owner, String group, String dataset, String q, int page) throws Exception {
-		int num = 25;
-		
-		Directory dir = FSDirectory.open(Filesystem.getFolderPathF(FOLDER_INDEX, owner, group, dataset));
-		IndexSearcher searcher = new IndexSearcher(dir);
-
-		TopDocs docs = searcher.search(parser.parse(q), num * page);
-		List<Map<String, String>> result = convert(searcher, docs);
-		
-		searcher.close();
-		dir.close();
-
-		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size());
-	}
-	
-	public List<Map<String, String>> lookup(String owner, String group, String dataset, Map<String, String> query, int page) throws Exception {
+	public List<Map<String, String>> find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
 		int num = 100;
 
-		Directory dir = FSDirectory.open(Filesystem.getFolderF(FOLDER_INDEX, owner, group, dataset));
+		StringBuilder query = new StringBuilder();
+		if (lookup != null)
+			for (String key : lookup.keySet())
+				query.append(query.length() == 0 ? "" : " AND ").append("+").append(key).append(":").append(lookup.get(key));
+		if (q != null && !q.equals(""))
+			query.append(query.length() == 0 ? "" : " AND ").append(q);
+		
+		Directory dir = FSDirectory.open(Filesystem.getFolderPathF(FOLDER_INDEX, metadata.getLocation()));
 		IndexSearcher searcher = new IndexSearcher(dir);
-		
-		String[] values = new String[query.size()];
-		String[] keys = new String[query.size()];
-		Occur[] occurs = new BooleanClause.Occur[query.size()];
-		
-		for (int i = 0; i < query.size(); i++)
-		{
-			String key = (String) query.keySet().toArray()[i];
-			values[i] = query.get(key);
-			keys[i] = key;
-			occurs[i] = Occur.MUST;
-		}
-		
-		Query q = MultiFieldQueryParser.parse(Version.LUCENE_33, values, keys, occurs, new StandardAnalyzer(Version.LUCENE_33));
-		
-		TopDocs docs = searcher.search(q, num * page);
-		List<Map<String, String>> result = convert(searcher, docs);
 
+		TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
+		List<Map<String, String>> result = convert(searcher, docs);
+		
 		searcher.close();
 		dir.close();
 

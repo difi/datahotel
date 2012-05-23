@@ -1,8 +1,11 @@
 package no.difi.datahotel.util.jersey;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import no.difi.datahotel.util.bridge.Field;
 
 
 /**
@@ -68,10 +71,10 @@ public enum DataFormat {
 	 * @param metadata Metadata.
 	 * @return Returns a string representation of the object supplied.
 	 */
-	public String format(Object object, String metadata) {
+	public String format(Object object, String metadata, List<Field> fields) {
 		try
 		{
-			return cls.format(object, metadata);
+			return cls.format(object, metadata, fields);
 		} catch (Exception e)
 		{
 			return formatError(e.getMessage(), metadata);
@@ -90,7 +93,7 @@ public enum DataFormat {
 			HashMap<String, String> message = new HashMap<String, String>();
 			message.put("error", error);
 
-			return cls.format(message, metadata);
+			return cls.format(message, metadata, null);
 		} catch (Exception e)
 		{
 			logger.log(Level.WARNING, "Exception in error presenter.");

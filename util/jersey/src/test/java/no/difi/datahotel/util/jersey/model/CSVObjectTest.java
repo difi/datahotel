@@ -27,7 +27,7 @@ public class CSVObjectTest {
 		data.add(element);
 
 		CSVObject parser = new CSVObject();
-		String result = parser.format(new CSVData(data), null);
+		String result = parser.format(new CSVData(data), null, null);
 
 		assertEquals(4, result.split(";").length);
 		assertEquals(3, result.split("\n").length);
@@ -36,6 +36,6 @@ public class CSVObjectTest {
 	@Test(expected = Exception.class)
 	public void testNull() throws Exception {
 		CSVObject parser = new CSVObject();
-		parser.format(null, null);
+		parser.format(null, null, null);
 	}
 }

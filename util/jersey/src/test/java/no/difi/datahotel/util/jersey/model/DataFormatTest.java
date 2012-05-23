@@ -32,7 +32,7 @@ public class DataFormatTest {
 		data.add("Espen");
 		data.add("Epson");
 
-		assertEquals(JSON.defaultJSON().forValue(data), df.format(data, null));
+		assertEquals(JSON.defaultJSON().forValue(data), df.format(data, null, null));
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class DataFormatTest {
 
 		// TODO Ta over logger.
 
-		assertEquals("Error", df.format("Message", null));
+		assertEquals("Error", df.format("Message", null, null));
 	}
 
 	@Test
@@ -92,6 +92,20 @@ public class DataFormatTest {
 		ds.put("name", "Hello World!");
 		d.add(ds);
 		
+		List<no.difi.datahotel.util.bridge.Field> fields = new ArrayList<no.difi.datahotel.util.bridge.Field>();
+		no.difi.datahotel.util.bridge.Field field;
+		field = new no.difi.datahotel.util.bridge.Field();
+		field.setColumnNumber(1);
+		field.setName("Name");
+		field.setShortName("name");
+		fields.add(field);
+		
+		field = new no.difi.datahotel.util.bridge.Field();
+		field.setColumnNumber(2);
+		field.setName("Description");
+		field.setShortName("description");
+		fields.add(field);
+
 		List<MetadataLight> metadata = new ArrayList<MetadataLight>();
 		MetadataLight m = new MetadataLight();
 		metadata.add(m);
@@ -101,13 +115,13 @@ public class DataFormatTest {
 		
 		for (DataFormat f : DataFormat.values()) {
 			if (f != DataFormat.TEXT_PLAIN && f != DataFormat.JSON) {
-				assertTrue(f.format(data, "").contains("World"));
-				assertTrue(f.format(data, "").contains("description"));
+				assertTrue(f.format(data, "", fields).contains("World"));
+				assertTrue(f.format(data, "", fields).contains("escription"));
 
 				if (f != DataFormat.CSV && f != DataFormat.CSVCORRECT) {
-					assertTrue(f.format(metadata, "").contains("Difi"));
-					assertTrue(f.format(metadata, "").contains("escription"));
-					assertTrue(f.format(metadata, "").contains("www.difi.no"));
+					assertTrue(f.format(metadata, "", null).contains("Difi"));
+					assertTrue(f.format(metadata, "", null).contains("escription"));
+					assertTrue(f.format(metadata, "", null).contains("www.difi.no"));
 				}
 			}
 		}

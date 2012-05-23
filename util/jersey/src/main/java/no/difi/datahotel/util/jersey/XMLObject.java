@@ -16,6 +16,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import no.difi.datahotel.util.bridge.Field;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -169,7 +171,7 @@ public class XMLObject implements FormaterInterface {
 	}
 
 	@Override
-	public String format(Object object, String metadata) {
+	public String format(Object object, String metadata, List<Field> fields) {
 		XMLObject x = new XMLObject();
 		x.forData(object, metadata);
 		return x.getData();
