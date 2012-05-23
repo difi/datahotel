@@ -1,9 +1,5 @@
 package no.difi.datahotel.util.jersey;
 
-import java.util.List;
-
-import no.difi.datahotel.util.bridge.Field;
-
 import org.svenson.JSON;
 
 /**
@@ -11,7 +7,7 @@ import org.svenson.JSON;
  */
 public class JSONObject implements FormaterInterface {
 
-	public String format(Object object, String metadata, List<Field> fields) {
+	public String format(Object object, RequestContext context) {
 		return JSON.defaultJSON().forValue(object);
 	}
 }

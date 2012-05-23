@@ -1,12 +1,9 @@
 package no.difi.datahotel.util.jersey;
 
-import java.util.List;
-
-import no.difi.datahotel.util.bridge.Field;
 
 public class TextObject implements FormaterInterface {
 	
-	public String format(Object object, String metadata, List<Field> fields) {
+	public String format(Object object, RequestContext context) {
 		return String.valueOf(object);
 	}
 }

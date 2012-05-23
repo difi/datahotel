@@ -12,7 +12,7 @@ public class TextObjectTest {
 	{
 		TextObject formater = new TextObject();
 		
-		assertEquals("Message", formater.format("Message", null, null));
+		assertEquals("Message", formater.format("Message", null));
 	}
 	
 	@Test
@@ -20,6 +20,6 @@ public class TextObjectTest {
 	{
 		TextObject formater = new TextObject();
 		
-		assertEquals("null", formater.format("null", null, null));
+		assertEquals("null", formater.format("null", null));
 	}
 }

@@ -20,8 +20,8 @@ public class YAMLObjectTest {
 		
 		YAMLObject yo = new YAMLObject();
 		
-		System.out.println(yo.format(values, null, null));
-		System.out.println(yo.format(new YAMLObjectTest(), null, null));
+		System.out.println(yo.format(values, null));
+		System.out.println(yo.format(new YAMLObjectTest(), null));
 	}
 	
 }

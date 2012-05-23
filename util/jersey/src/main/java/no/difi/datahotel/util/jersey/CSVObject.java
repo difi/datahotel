@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.csv.CSVWriter;
 
 /**
@@ -12,7 +11,7 @@ import no.difi.datahotel.util.csv.CSVWriter;
  */
 public class CSVObject implements FormaterInterface {
 
-	public String format(Object object, String metadata, List<Field> fields) throws Exception {
+	public String format(Object object, RequestContext context) throws Exception {
 		if (object instanceof CSVData) {
 			List<Map<String, String>> data = ((CSVData) object).getEntries();
 
@@ -27,7 +26,7 @@ public class CSVObject implements FormaterInterface {
 
 			return baos.toString("UTF-8");
 		}
-		
+
 		throw new Exception("Unable to parse content.");
 	}
 }

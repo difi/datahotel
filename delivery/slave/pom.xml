@@ -92,7 +92,11 @@
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 		</dependency>
-
+		<dependency>
+			<artifactId>datahotel-util-csv</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>net.sourceforge.javacsv</groupId>

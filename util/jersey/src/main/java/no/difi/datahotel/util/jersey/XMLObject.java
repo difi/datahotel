@@ -16,8 +16,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import no.difi.datahotel.util.bridge.Field;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -28,7 +26,7 @@ public class XMLObject implements FormaterInterface {
 	
 	private StringBuilder builder = new StringBuilder();
 	
-	public void forData(Object object, String metadata) {
+	public void forData(Object object) {
 		
 		if(object instanceof CSVData){
 			parseCSVData((CSVData)object);
@@ -171,9 +169,9 @@ public class XMLObject implements FormaterInterface {
 	}
 
 	@Override
-	public String format(Object object, String metadata, List<Field> fields) {
+	public String format(Object object, RequestContext context) {
 		XMLObject x = new XMLObject();
-		x.forData(object, metadata);
+		x.forData(object);
 		return x.getData();
 	}
 }

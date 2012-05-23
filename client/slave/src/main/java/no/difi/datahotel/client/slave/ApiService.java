@@ -2,20 +2,16 @@ package no.difi.datahotel.client.slave;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -30,6 +26,7 @@ import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
+import no.difi.datahotel.util.jersey.RequestContext;
 
 /**
  * The DataHotelService produces content based on the paths it receives and
@@ -59,27 +56,31 @@ public class ApiService {
 	 */
 	@GET
 	@Path("{type}")
-	public Response getOwnerList(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+	public Response getOwnerList(@PathParam("type") String type, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		RequestContext context = new RequestContext(uriInfo);
+
 		try {
 			List<MetadataLight> list = dataEJB.getChildren();
 
 			if (list == null)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, metadata, null)).header("Content-Type", "")
+			return Response.ok(dataFormat.format(list, context)).header("Content-Type", "")
 					.type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
 
 	@GET
 	@Path("{type}/_all")
-	public Response getAllDatasets(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+	public Response getAllDatasets(@PathParam("type") String type, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		RequestContext context = new RequestContext(uriInfo);
+
 		try {
 			List<MetadataLight> list = new ArrayList<MetadataLight>();
 			for (Metadata m : dataEJB.getDatasets())
@@ -88,19 +89,20 @@ public class ApiService {
 			if (list.size() == 0)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, metadata, null)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
 
 	@GET
 	@Path("{type}/_defs")
-	public Response getAllDefinitions(@PathParam("type") String type, @QueryParam("callback") String metadata) {
+	public Response getAllDefinitions(@PathParam("type") String type, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		RequestContext context = new RequestContext(uriInfo);
+
 		try {
 			List<Definition> defs = fieldEJB.getDefinitions();
 			Collections.sort(defs);
@@ -108,11 +110,10 @@ public class ApiService {
 			if (defs.size() == 0)
 				throw new Exception("No fields available.");
 
-			return Response.ok(dataFormat.format(defs, metadata, null)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(defs, context)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), metadata)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -120,8 +121,10 @@ public class ApiService {
 	@GET
 	@Path("{type}/_defs/{def}")
 	public Response getDatasetsByDefinition(@PathParam("type") String type, @PathParam("def") String def,
-			@QueryParam("callback") String callback) {
+			@Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		RequestContext context = new RequestContext(uriInfo);
+
 		try {
 			List<String> datasets = fieldEJB.getUsage(def);
 			Collections.sort(datasets);
@@ -129,11 +132,11 @@ public class ApiService {
 			if (datasets.size() == 0)
 				throw new Exception("Definition never used.");
 
-			return Response.ok(dataFormat.format(datasets, callback, null))
-					.type(dataFormat.getMime() + ";charset=UTF-8").build();
+			return Response.ok(dataFormat.format(datasets, context)).type(dataFormat.getMime() + ";charset=UTF-8")
+					.build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -151,10 +154,12 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}")
 	public Response getGroupListForOwner(@PathParam("type") String type, @PathParam("owner") String owner,
-			@QueryParam("callback") String callback) {
+			@Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		Metadata metadata = dataEJB.getChild(owner);
+		RequestContext context = new RequestContext(uriInfo, metadata, null);
+
 		try {
-			Metadata metadata = dataEJB.getChild(owner);
 			if (metadata == null)
 				throw new Exception("Group not found.");
 
@@ -163,11 +168,10 @@ public class ApiService {
 			if (list == null)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, callback, null)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -186,10 +190,12 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}/{group}")
 	public Response getDatasetListForGroup(@PathParam("type") String type, @PathParam("owner") String owner,
-			@PathParam("group") String group, @QueryParam("callback") String callback) {
+			@PathParam("group") String group, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
+		Metadata metadata = dataEJB.getChild(owner, group);
+		RequestContext context = new RequestContext(uriInfo, metadata, null);
+
 		try {
-			Metadata metadata = dataEJB.getChild(owner, group);
 			if (metadata == null)
 				throw new Exception("Group not found.");
 
@@ -198,11 +204,10 @@ public class ApiService {
 			if (list == null)
 				throw new Exception("No elements found.");
 
-			return Response.ok(dataFormat.format(list, callback, null)).type(dataFormat.getMime() + ";charset=UTF-8")
-					.build();
+			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime() + ";charset=UTF-8").build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -222,9 +227,7 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}/{group}/{dataset}")
 	public Response getDataset(@PathParam("type") String type, @PathParam("owner") String owner,
-			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@DefaultValue("1") @QueryParam("page") Integer page, @QueryParam("callback") String callback,
-			@DefaultValue("") @QueryParam("query") String query, @Context HttpServletRequest req,
+			@PathParam("group") String group, @PathParam("dataset") String dataset, @Context HttpServletRequest req,
 			@Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
@@ -240,34 +243,32 @@ public class ApiService {
 				if (list == null)
 					throw new Exception("No elements found.");
 
-				return Response.ok(dataFormat.format(list, callback, null)).header("Content-Type", "")
+				RequestContext context = new RequestContext(uriInfo, metadata, null);
+
+				return Response.ok(dataFormat.format(list, context)).header("Content-Type", "")
 						.type(dataFormat.getMime() + ";charset=UTF-8").build();
 			}
 
 			List<Field> fields = fieldEJB.getFields(metadata);
+			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
-			// Look for fields for lookup
-			Map<String, String> lookup = new HashMap<String, String>();
-			for (Field f : fields)
-				if (f.getGroupable())
-					if (uriInfo.getQueryParameters().containsKey(f.getShortName()))
-						lookup.put(f.getShortName(), uriInfo.getQueryParameters().get(f.getShortName()).get(0));
-
-			if ("".equals(query) && lookup.size() == 0) {
-				return Response.ok(dataFormat.format(new CSVData(chunkEJB.get(metadata, page)), callback, fields))
+			if (context.isSearch()) {
+				return Response
+						.ok(dataFormat.format(
+								new CSVData(searchEJB.find(metadata, context.getQuery(), context.getLookup(),
+										context.getPage())), context)).type(dataFormat.getMime() + ";charset=UTF-8")
+						.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", context.getPage()).build();
+			} else {
+				return Response.ok(dataFormat.format(new CSVData(chunkEJB.get(metadata, context.getPage())), context))
 						.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", metadata.getUpdated())
-						.header("X-Datahotel-Page", page)
+						.header("X-Datahotel-Page", context.getPage())
 						.header("X-Datahotel-Total-Pages", chunkEJB.getPages(metadata.getLocation()))
 						.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(metadata.getLocation())).build();
-			} else {
-				return Response.ok(dataFormat.format(new CSVData(searchEJB.find(metadata, query, lookup, page)), callback, fields))
-						.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", metadata.getUpdated())
-						.header("X-Datahotel-Page", page).build();
 			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
-					.build();
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		}
 	}
 
@@ -290,6 +291,8 @@ public class ApiService {
 		DataFormat dataFormat = DataFormat.CSVCORRECT;
 		try {
 			Metadata metadata = dataEJB.getChild(owner, group, dataset);
+			if (metadata == null)
+				throw new Exception("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -317,25 +320,28 @@ public class ApiService {
 	@GET
 	@Path("{type}/{owner}/{group}/{dataset}/fields")
 	public Response getMetadata(@PathParam("type") String type, @PathParam("owner") String owner,
-			@PathParam("group") String group, @PathParam("dataset") String dataset,
-			@QueryParam("callback") String callback, @Context HttpServletRequest req) {
+			@PathParam("group") String group, @PathParam("dataset") String dataset, @Context UriInfo uriInfo,
+			@Context HttpServletRequest req) {
 		DataFormat dataFormat = DataFormat.get(type);
 		try {
 			Metadata metadata = dataEJB.getChild(owner, group, dataset);
+			if (metadata == null)
+				throw new Exception("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
 			List<Field> fields = fieldEJB.getFields(metadata);
+			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
 			if (fields == null)
 				throw new Exception("Metadata with that name could not be found.");
 
-			return Response.ok(dataFormat.format(fields, callback, fields))
+			return Response.ok(dataFormat.format(fields, context))
 					.type(dataFormat.getMime() + ";charset=UTF-8").header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), callback)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}

@@ -1,10 +1,6 @@
 package no.difi.datahotel.util.jersey;
 
 
-import java.util.List;
-
-import no.difi.datahotel.util.bridge.Field;
-
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
@@ -20,7 +16,7 @@ public class YAMLObject implements FormaterInterface {
 		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
 	}
 
-	public String format(Object object, String metadata, List<Field> fields) {
+	public String format(Object object, RequestContext context) {
 		return new Yaml(options).dump(object);
 	}
 }

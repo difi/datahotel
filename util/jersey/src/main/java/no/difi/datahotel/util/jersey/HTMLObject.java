@@ -10,16 +10,29 @@ import no.difi.datahotel.util.bridge.MetadataLight;
 
 public class HTMLObject implements FormaterInterface {
 
-	String style = "body, html { margin: 0; padding: 0; } th { text-align: left; } table { border-collapse: collapse; width: 100%; } tr.head { background-color: #4682B4; color: #fff; } tr.even { background-color: #E0DFDB; } td, th { padding: 3pt; } a { color: #00688B; } div.error { padding: 15; margin: 30pt; background-color: #B22222; color: #fff; font-weight: bold; }";
-	SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static String style = "";
+	private static SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	static {
+		style += "body, html, form { margin: 0; padding: 0; }";
+		style += "th { text-align: left; }";
+		style += "table { border-collapse: collapse; width: 100%; }";
+		style += "tr.head { background-color: #4682B4; color: #fff; }";
+		style += "tr.even { background-color: #E0DFDB; }";
+		style += "td, th, input { padding: 4pt; }";
+		style += "a { color: #00688B; }";
+		style += "div.error { padding: 15; margin: 30pt; background-color: #B22222; color: #fff; font-weight: bold; }";
+		style += "div.top { padding: 10pt; background-color: #4682B4; color: #fff; font-size: 19pt; }";
+		style += "form { float: right; }";
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public String format(Object object, String metadata, List<Field> fields) throws Exception {
+	public String format(Object object, RequestContext context) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<html></head>");
 
-		if (!"nostyle".equals(metadata))
+		if (!"nostyle".equals(context.getCallback()))
 			sb.append("<style>" + style + "</style>");
 
 		sb.append("</head><body>");
@@ -29,19 +42,15 @@ public class HTMLObject implements FormaterInterface {
 			for (String key : values.keySet())
 				sb.append("<div class=\"").append(key).append("\">").append(values.get(key)).append("</div>");
 		} else {
-			sb.append("<table>");
-
 			if (object instanceof CSVData) {
-				sb.append(formatCSVData((CSVData) object, fields));
+				sb.append(formatCSVData((CSVData) object, context));
 			} else if (object instanceof List<?>) {
 				List list = (List) object;
 				if (list.size() > 0) {
 					if (list.get(0) instanceof MetadataLight)
-						sb.append(formatMetadata((List<MetadataLight>) list));
+						sb.append(formatMetadata((List<MetadataLight>) list, context));
 				}
 			}
-
-			sb.append("</table>");
 		}
 
 		sb.append("</body></html>");
@@ -49,14 +58,22 @@ public class HTMLObject implements FormaterInterface {
 		return sb.toString();
 	}
 
-	private String formatCSVData(CSVData data, List<Field> fields) {
+	private String formatCSVData(CSVData data, RequestContext context) {
 		if (data.getEntries().size() == 0)
 			return "";
 
 		StringBuilder sb = new StringBuilder();
 
+		sb.append("<div class=\"top\"><form action=\"/api/html/").append(context.getMetadata().getLocation())
+				.append("\" method=\"get\"><input type=\"text\" name=\"query\" value=\"")
+				.append(context.getQuery() == null ? "" : context.getQuery())
+				.append("\" /><input type=\"submit\" value=\"Search\" /></form>")
+				.append(context.getMetadata().getLocation()).append("</div>");
+
+		sb.append("<table>");
+
 		sb.append("<tr class=\"head\">");
-		for (Field field : fields)
+		for (Field field : context.getFields())
 			sb.append("<th class=\"").append(field.getShortName()).append("\"><span title=\"")
 					.append(field.getContent()).append("\">").append(field.getName()).append("</span></th>");
 		sb.append("</tr>");
@@ -65,30 +82,43 @@ public class HTMLObject implements FormaterInterface {
 		for (Map<String, String> row : data.getEntries()) {
 			i++;
 			sb.append("<tr class=\"").append(i % 2 == 1 ? "odd" : "even").append("\">");
-			for (Field field : fields)
+			for (Field field : context.getFields())
 				sb.append("<td class=\"").append(field.getShortName()).append("\">")
 						.append(row.get(field.getShortName())).append("</td>");
 			sb.append("</tr>");
 		}
 
+		sb.append("</table>");
+
 		return sb.toString();
 	}
 
-	private String formatMetadata(List<MetadataLight> list) {
+	private String formatMetadata(List<MetadataLight> list, RequestContext context) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<tr class=\"head\"><th>Name (Short)</th><th>Description</th><th>Url</th><th>Updated</th></tr>");
+
+		if (context.getMetadata() != null)
+			sb.append("<div class=\"top\">").append(context.getMetadata().getLocation()).append("</div>");
+
+		sb.append("<table>");
+		sb.append("<tr class=\"head\"><th>Name</th><th>Description</th><th>Url</th><th>Updated</th></tr>");
 		int i = 0;
 		for (MetadataLight m : list) {
 			i++;
 			sb.append("<tr class=\"").append(i % 2 == 1 ? "odd" : "even").append("\">");
 			sb.append("<td><a href=\"/api/html/").append(m.getLocation()).append("\">").append(m.getName())
-					.append("</a> (").append(m.getShortName()).append(")</td>");
+					.append("</a>").append("</td>");
 			sb.append("<td>").append(m.getDescription() == null ? "-" : m.getDescription()).append("</td>");
-			sb.append("<td><a href=\"").append(m.getUrl()).append("\" rel=\"nofollow\">").append(m.getUrl())
-					.append("</a></td>");
+
+			if (m.getUrl() == null)
+				sb.append("<td>-</td>");
+			else
+				sb.append("<td><a href=\"").append(m.getUrl()).append("\" rel=\"nofollow\">").append(m.getUrl())
+						.append("</a></td>");
+
 			sb.append("<td>").append(date.format(new Date(m.getUpdated() * 1000))).append("</td>");
 			sb.append("</tr>");
 		}
+		sb.append("</table>");
 
 		return sb.toString();
 	}
