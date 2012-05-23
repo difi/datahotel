@@ -5,14 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
 import no.difi.datahotel.util.bridge.Fields;
 import no.difi.datahotel.util.bridge.Metadata;
 
-@Stateless
+@Singleton
 public class FieldEJB {
 	
 	private HashMap<String, List<Field>> fields = new HashMap<String, List<Field>>();
