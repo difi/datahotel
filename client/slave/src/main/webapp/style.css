@@ -6,6 +6,12 @@ a {
 	color: #00688B;
 }
 
+h2, h2 a {
+	color: #fff;
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
 h3 {
 	margin: 0px;
 	padding: 0 0 5pt 0;

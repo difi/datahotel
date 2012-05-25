@@ -12,14 +12,14 @@ import java.util.logging.Logger;
  */
 public enum DataFormat {
 	
-	XML("xml", "text/xml", new XMLObject()),
-	CSV("csv", "text/plain", new CSVObject()),
-	CSVCORRECT(null, "text/csv", new CSVObject()),
-	JSON("json", "application/json", new JSONObject()),
-	JSONP("jsonp", "application/json", new JSONPObject()),
-	YAML("yaml", "text/plain", new YAMLObject()),
-	TEXT_HTML("html", "text/html", new HTMLObject()),
-	TEXT_PLAIN(null, "text/plain", new TextObject());
+	XML("xml", "text/xml;charset=UTF-8", new XMLObject()),
+	CSV("csv", "text/plain;charset=UTF-8", new CSVObject()),
+	CSVCORRECT(null, "text/csv;charset=UTF-8", new CSVObject()),
+	JSON("json", "application/json;charset=UTF-8", new JSONObject()),
+	JSONP("jsonp", "application/json;charset=UTF-8", new JSONPObject()),
+	YAML("yaml", "text/plain;charset=UTF-8", new YAMLObject()),
+	TEXT_HTML("html", "text/html;charset=UTF-8", new HTMLObject()),
+	TEXT_PLAIN(null, "text/plain;charset=UTF-8", new TextObject());
 
 	private static Logger logger = Logger.getLogger(DataFormat.class.getSimpleName());
 
@@ -74,6 +74,7 @@ public enum DataFormat {
 			return cls.format(object, context);
 		} catch (Exception e)
 		{
+			logger.log(Level.WARNING, "Exception in error presenter.", e);
 			return formatError(e.getMessage(), context);
 		}
 	}

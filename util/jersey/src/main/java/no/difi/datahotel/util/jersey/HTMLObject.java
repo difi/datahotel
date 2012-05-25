@@ -7,11 +7,14 @@ import java.util.Map;
 
 import no.difi.datahotel.util.bridge.Definition;
 import no.difi.datahotel.util.bridge.Field;
+import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.bridge.MetadataLight;
 
 public class HTMLObject implements FormaterInterface {
 
-	private static Tab[] tabs = new Tab[] { new Tab("Data", "/"), new Tab("Definition", "/_defs") };
+	private static Tab[] tabs = new Tab[] { //new Tab("Home", "/"),
+		new Tab("Data", "/api/html"), new Tab("Definition", "/api/html/_defs") //, new Tab("API", "/api")
+		};
 	private static SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -55,11 +58,26 @@ public class HTMLObject implements FormaterInterface {
 
 		sb.append(getTabs("Data"));
 
-		sb.append("<div class=\"top\"><form action=\"/api/html/").append(context.getMetadata().getLocation())
+		sb.append("<div class=\"top\">");
+
+		sb.append("<form action=\"/api/html/").append(context.getMetadata().getLocation())
 				.append("\" method=\"get\"><input type=\"text\" name=\"query\" value=\"")
 				.append(context.getQuery() == null ? "" : context.getQuery())
-				.append("\" /><input type=\"submit\" value=\"Search\" /></form>")
-				.append(context.getMetadata().getLocation()).append("</div>");
+				.append("\" /><input type=\"submit\" value=\"Search\" /></form>");
+
+		sb.append("<h2>");
+		sb.append("<a href=\"/api/html\">Data</a>");
+
+		String l = "";
+		Metadata m = context.getMetadata();
+		while (m.getLocation() != null) {
+			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + (l.equals("") ? m.getName() : m.getShortName())
+					+ "</a>" + l;
+			m = m.getParent();
+		}
+		sb.append(l);
+
+		sb.append("</h2></div>");
 
 		if (data.getEntries().size() == 0)
 			return sb.toString();
@@ -92,8 +110,21 @@ public class HTMLObject implements FormaterInterface {
 
 		sb.append(getTabs("Data"));
 
-		sb.append("<div class=\"top\">");
-		sb.append(context.getMetadata() != null ? context.getMetadata().getLocation() : "Home");
+		sb.append("<div class=\"top\"><h2>");
+		sb.append("<a href=\"/api/html\">Data</a>");
+
+		if (context.getMetadata() != null) {
+			String l = "";
+			Metadata md = context.getMetadata();
+			while (md.getLocation() != null) {
+				l = " / <a href=\"/api/html/" + md.getLocation() + "\">"
+						+ (l.equals("") ? md.getName() : md.getShortName()) + "</a>" + l;
+				md = md.getParent();
+			}
+			sb.append(l);
+		}
+
+		sb.append("</h2></div>");
 		sb.append("</div>");
 
 		int i = 0;
@@ -127,8 +158,16 @@ public class HTMLObject implements FormaterInterface {
 		sb.append(getTabs("Data"));
 
 		sb.append("<div class=\"top\">");
-		sb.append(context.getMetadata() != null ? context.getMetadata().getLocation() : "Home");
-		sb.append("</div>");
+		sb.append("<a href=\"/api/html\">Data</a>");
+
+		String l = "";
+		Metadata m = context.getMetadata();
+		while (m.getLocation() != null) {
+			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + m.getShortName() + "</a>" + l;
+			m = m.getParent();
+		}
+
+		sb.append(l).append(" / Fields</div>");
 
 		sb.append("<table>");
 		sb.append("<tr class=\"head\"><th>Name</th><th>Short</th><th>Definition</th><th>Description</th><th>Groupable</th><th>Searchable</th></tr>");
@@ -179,7 +218,7 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<li class=\"meta\"><a href=\"https://github.com/difi/datahotel\">Code</a></li>");
 
 		for (Tab t : tabs)
-			sb.append("<li class=\"").append(t.name.equals(tab) ? "tab active" : "tab").append("\"><a href=\"/api/html")
+			sb.append("<li class=\"").append(t.name.equals(tab) ? "tab active" : "tab").append("\"><a href=\"")
 					.append(t.location).append("\">").append(t.name).append("</a></li>");
 
 		sb.append("</ul>");
