@@ -17,6 +17,7 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 	private List<Metadata> children = new ArrayList<Metadata>();
 	private boolean active;
 	private boolean dataset;
+	private Metadata parent;
 	private Logger logger = Logger.getAnonymousLogger();
 
 	// Values for users
@@ -83,6 +84,7 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 
 	public void addChild(Metadata child) {
 		this.children.add(child);
+		child.parent = this;
 
 		if (child.isActive() && child.updated != null)
 			if (this.updated == null || this.updated < child.updated)
@@ -106,14 +108,23 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 	public void setDataset(boolean dataset) {
 		this.dataset = dataset;
 	}
-	
+
+	@XmlTransient
 	public Logger getLogger() {
 		return logger;
 	}
-	
-	@XmlTransient
+
 	public void setLogger(Logger logger) {
 		this.logger = logger;
+	}
+
+	@XmlTransient
+	public Metadata getParent() {
+		return parent;
+	}
+
+	public void setParent(Metadata parent) {
+		this.parent = parent;
 	}
 
 	public MetadataLight light() {
@@ -142,7 +153,7 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 
 		return metadata;
 	}
-	
+
 	public static String getLocation(String... dir) {
 		String location = dir[0];
 		for (int i = 1; i < dir.length; i++)

@@ -60,17 +60,17 @@
 		
 		<p>Det er to måter å hente ut spesifikke data på. Den første måten er å søke. Du kan for eksempel søke på fylker som har ordet «Agder» i seg, og få resultatet ut i json, på denne måten:</p>
 		
-		<p><a href="/api/json/difi/geo/fylke/search?query=agder">http://hotell.difi.no/api/json/difi/geo/fylke/search?query=agder</a></p>
+		<p><a href="/api/json/difi/geo/fylke?query=agder">http://hotell.difi.no/api/json/difi/geo/fylke?query=agder</a></p>
 		
 		<p>Når man gjør et slikt søk søker man i alle felt som er satt som søkbare (at et felt er søkbart betyr at det i feltdefinisjonen må stå at searchable = True). </p>
 		
 		<p>Den andre måten å hente ut spesifikke data på er å gjøre oppslag. Man kan kun gjøre oppslag i felt der groupable = True. Det er ingen grupperbare felt i listen over fylker. Det er det derimot i datasettet til Difis miljøkalkulator. Kallet settes opp på denne måten:</p>
 		
-		<p>url-til-datasett/lookup?feltnavn=søkestreng</p>
+		<p>url-til-datasett?feltnavn=søkestreng</p>
 		
 		<p>Hvis jeg ønsker å hente ned alle poster som har kategorien «transport» kan jeg derfor gjøre det ved å hente data fra denne URLen:</p>
 		
-		<p><a href="/api/json/difi/miljo/kalkulator/lookup?kategori=transport">http://hotell.difi.no/api/json/difi/miljo/kalkulator/lookup?kategori=transport</a></p>
+		<p><a href="/api/json/difi/miljo/kalkulator?kategori=transport">http://hotell.difi.no/api/json/difi/miljo/kalkulator?kategori=transport</a></p>
 		
 		
 		<h3>Teknisk beskrivelse av APIet i XML-format</h3>

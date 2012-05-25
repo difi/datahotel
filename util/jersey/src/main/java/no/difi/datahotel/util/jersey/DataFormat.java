@@ -14,12 +14,12 @@ public enum DataFormat {
 	
 	XML("xml", "text/xml", new XMLObject()),
 	CSV("csv", "text/plain", new CSVObject()),
-	CSVCORRECT("csvcorrect", "text/csv", new CSVObject()),
+	CSVCORRECT(null, "text/csv", new CSVObject()),
 	JSON("json", "application/json", new JSONObject()),
 	JSONP("jsonp", "application/json", new JSONPObject()),
 	YAML("yaml", "text/plain", new YAMLObject()),
 	TEXT_HTML("html", "text/html", new HTMLObject()),
-	TEXT_PLAIN("text", "text/plain", new TextObject());
+	TEXT_PLAIN(null, "text/plain", new TextObject());
 
 	private static Logger logger = Logger.getLogger(DataFormat.class.getSimpleName());
 
@@ -40,7 +40,7 @@ public enum DataFormat {
 	 */
 	public static DataFormat get(String type) {
 		for (DataFormat t : DataFormat.values())
-			if (t.type.equals(type))
+			if (type.equals(t.type))
 				return t;
 
 		return TEXT_PLAIN;

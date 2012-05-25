@@ -37,13 +37,20 @@ public class RequestContext {
 			for (Field f : fields)
 				if (f.getGroupable())
 					if (parameters.containsKey(f.getShortName()))
-						lookup.put(f.getShortName(), parameters.getFirst(f.getShortName()));
+						if (!"".equals(parameters.getFirst(f.getShortName())))
+							lookup.put(f.getShortName(), parameters.getFirst(f.getShortName()));
 
 		if (parameters.containsKey("query"))
-			query = parameters.getFirst("query");
+			if (!"".equals(parameters.getFirst("query")))
+				query = parameters.getFirst("query");
+
+		if (parameters.containsKey("callback"))
+			if (!"".equals(parameters.getFirst("callback")))
+				query = parameters.getFirst("callback");
 
 		if (parameters.containsKey("page"))
-			page = Integer.parseInt(parameters.getFirst("page"));
+			if (!"".equals(parameters.getFirst("page")))
+				page = Integer.parseInt(parameters.getFirst("page"));
 	}
 
 	public int getPage() {

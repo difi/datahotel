@@ -161,7 +161,7 @@ public class ApiService {
 
 		try {
 			if (metadata == null)
-				throw new Exception("Group not found.");
+				throw new Exception("Folder not found.");
 
 			List<MetadataLight> list = dataEJB.getChildren(owner);
 
@@ -197,7 +197,7 @@ public class ApiService {
 
 		try {
 			if (metadata == null)
-				throw new Exception("Group not found.");
+				throw new Exception("Folder not found.");
 
 			List<MetadataLight> list = dataEJB.getChildren(owner, group);
 
@@ -239,7 +239,7 @@ public class ApiService {
 				return returnNotModified();
 
 			if (!metadata.isDataset()) {
-				List<MetadataLight> list = dataEJB.getChildren();
+				List<MetadataLight> list = dataEJB.getChildren(owner, group, dataset);
 				if (list == null)
 					throw new Exception("No elements found.");
 

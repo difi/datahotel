@@ -1,6 +1,6 @@
 package no.difi.datahotel.util.jersey;
 
-import org.svenson.JSON;
+import com.google.gson.Gson;
 
 /**
  * Class representing JSON.
@@ -8,6 +8,6 @@ import org.svenson.JSON;
 public class JSONObject implements FormaterInterface {
 
 	public String format(Object object, RequestContext context) {
-		return JSON.defaultJSON().forValue(object);
+		return new Gson().toJson(object);
 	}
 }

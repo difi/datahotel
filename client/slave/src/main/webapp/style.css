@@ -1,0 +1,97 @@
+body, html {
+	margin: 0;
+	padding: 0;
+}
+a {
+	color: #00688B;
+}
+
+h3 {
+	margin: 0px;
+	padding: 0 0 5pt 0;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+tr.head {
+	background-color: #4682B4;
+	color: #fff;
+}
+tr.even, div.even {
+	background-color: #E0DFDB;
+}
+td, th {
+	text-align: left;
+	padding: 4pt;
+}
+
+form {
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+input {
+	padding: 4pt;
+}
+
+ul.tabs {
+	margin: 0;
+	padding: 3pt;
+}
+ul.tabs li {
+	display: inline;
+	list-style-type: none;
+	margin: 0;
+	padding: 3pt;
+}
+ul.tabs li.meta {
+	float: right;
+	margin: -3pt 4pt 0 4pt;
+}
+ul.tabs li.meta a {
+	color: #00688B !important;
+	text-decoration: underline;
+}
+ul.tabs a {
+	color: #fff;
+	margin: 0px;
+	padding: 4pt 8pt 4pt 8pt;
+	text-decoration: none;
+}
+ul.tabs li.tab a {
+	background-color: #2B547E;
+}
+ul.tabs li.active a {
+	background-color: #4682B4;
+}
+
+div.error {
+	padding: 15pt;
+	margin: 30pt;
+	background-color: #B22222;
+	color: #fff;
+	font-weight: bold;
+}
+div.top {
+	padding: 25pt 10pt 10pt 10pt;
+	background-color: #4682B4;
+	border-bottom: 1px solid #fff;
+	color: #fff;
+	font-size: 19pt;
+}
+div.metadata {
+	margin: 0 auto 0 auto;
+	padding: 10pt;
+	max-width: 600pt;
+}
+div.description{
+	margin: 4pt 0 0 0;
+}
+div.meta {
+	font-size: 10pt;
+}
+div.meta span {
+	margin-right: 10pt;
+}
