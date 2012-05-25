@@ -16,7 +16,8 @@ import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
 
 import org.junit.Test;
-import org.svenson.JSON;
+
+import com.google.gson.Gson;
 
 public class DataFormatTest {
 
@@ -34,7 +35,7 @@ public class DataFormatTest {
 		data.add("Espen");
 		data.add("Epson");
 
-		assertEquals(JSON.defaultJSON().forValue(data), df.format(data, null));
+		assertEquals(new Gson().toJson(data), df.format(data, null));
 	}
 
 	@Test
