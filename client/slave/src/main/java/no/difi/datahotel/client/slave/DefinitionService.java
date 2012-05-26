@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import no.difi.datahotel.logic.slave.FieldEJB;
-import no.difi.datahotel.util.bridge.Definition;
+import no.difi.datahotel.util.bridge.DefinitionLight;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
 
@@ -35,7 +35,7 @@ public class DefinitionService extends BaseService {
 		RequestContext context = new RequestContext(uriInfo);
 
 		try {
-			List<Definition> defs = fieldEJB.getDefinitions();
+			List<DefinitionLight> defs = fieldEJB.getDefinitions();
 			Collections.sort(defs);
 
 			if (defs.size() == 0)

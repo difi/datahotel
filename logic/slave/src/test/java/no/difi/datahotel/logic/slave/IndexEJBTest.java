@@ -1,7 +1,7 @@
 package no.difi.datahotel.logic.slave;
 
-import static no.difi.datahotel.util.shared.Filesystem.DATASET_DATA;
-import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SHARED;
+import static no.difi.datahotel.util.shared.Filesystem.FILE_DATASET;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doThrow;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import no.difi.datahotel.util.bridge.FieldLight;
 import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
@@ -168,14 +169,14 @@ public class IndexEJBTest {
 		metadata.setUpdated(10L);
 		metadata.setLogger(logger);
 
-		File filename = Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), DATASET_DATA);
+		File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
 
-		List<no.difi.datahotel.util.bridge.Field> fields = new ArrayList<no.difi.datahotel.util.bridge.Field>();
+		List<FieldLight> fields = new ArrayList<FieldLight>();
 		no.difi.datahotel.util.bridge.Field field;
 		field = new no.difi.datahotel.util.bridge.Field();
 		field.setShortName("field1");
 		field.setSearchable(false);
-		fields.add(field);
+		fields.add(field.light());
 
 		Map<String, String> line = new HashMap<String, String>();
 		line.put("field1", "value");
@@ -216,14 +217,14 @@ public class IndexEJBTest {
 		metadata.setUpdated(10L);
 		metadata.setLogger(logger);
 
-		File filename = Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), DATASET_DATA);
+		File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
 
-		List<no.difi.datahotel.util.bridge.Field> fields = new ArrayList<no.difi.datahotel.util.bridge.Field>();
+		List<FieldLight> fields = new ArrayList<FieldLight>();
 		no.difi.datahotel.util.bridge.Field field;
 		field = new no.difi.datahotel.util.bridge.Field();
 		field.setShortName("field1");
 		field.setSearchable(false);
-		fields.add(field);
+		fields.add(field.light());
 
 		Map<String, String> line = new HashMap<String, String>();
 		line.put("field2", "value");

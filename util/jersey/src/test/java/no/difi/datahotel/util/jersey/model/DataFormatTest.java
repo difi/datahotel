@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.difi.datahotel.util.bridge.FieldLight;
 import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
@@ -95,27 +96,29 @@ public class DataFormatTest {
 		ds.put("name", "Hello World!");
 		d.add(ds);
 		
-		List<no.difi.datahotel.util.bridge.Field> fields = new ArrayList<no.difi.datahotel.util.bridge.Field>();
+		List<FieldLight> fields = new ArrayList<FieldLight>();
 		no.difi.datahotel.util.bridge.Field field;
 		field = new no.difi.datahotel.util.bridge.Field();
 		field.setColumnNumber(1);
 		field.setName("Name");
 		field.setShortName("name");
-		fields.add(field);
+		fields.add(field.light());
 		
 		field = new no.difi.datahotel.util.bridge.Field();
 		field.setColumnNumber(2);
 		field.setName("Description");
 		field.setShortName("description");
-		fields.add(field);
+		fields.add(field.light());
 
 		List<MetadataLight> metadata = new ArrayList<MetadataLight>();
-		MetadataLight m = new MetadataLight();
+		Metadata mp = new Metadata();
+		mp.setName("Difi");
+		mp.setDescription("Agency");
+		mp.setUrl("http://www.difi.no/");
+		mp.setUpdated(System.currentTimeMillis());
+		
+		MetadataLight m = mp.light();
 		metadata.add(m);
-		m.setName("Difi");
-		m.setDescription("Agency");
-		m.setUrl("http://www.difi.no/");
-		m.setUpdated(System.currentTimeMillis());
 		
 		Metadata meta = new Metadata();
 		meta.setLocation("somewhere");

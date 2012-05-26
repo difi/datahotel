@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * The class creates a Field object that represent the fields in the dataset, in
@@ -12,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
-public class Field {
+public class Field implements Light<FieldLight> {
 	@XmlElement
 	private String name;
 
@@ -36,6 +37,10 @@ public class Field {
 
 	@XmlElement
 	private Definition definition;
+	
+	private String defShort;
+	
+	private Metadata metadata;
 
 	public Field() {
 
@@ -94,10 +99,20 @@ public class Field {
 		return indexPrimaryKey;
 	}
 
-	public void setDefinition(Definition definition) {
-		this.definition = definition;
+	public String getDefShort() {
+		return defShort;
 	}
 
+	public void setDefShort(String defShort) {
+		this.defShort = defShort;
+	}
+
+	public void setDefinition(Definition definition) {
+		this.definition = definition;
+		definition.addField(this);
+	}
+
+	@XmlTransient
 	public Definition getDefinition() {
 		return definition;
 	}
@@ -108,6 +123,15 @@ public class Field {
 
 	public String getShortName() {
 		return shortName;
+	}
+
+	@XmlTransient
+	public Metadata getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Metadata metadata) {
+		this.metadata = metadata;
 	}
 
 	@Override
@@ -125,5 +149,10 @@ public class Field {
 		// TODO Make better
 
 		return true;
+	}
+
+	@Override
+	public FieldLight light() {
+		return new FieldLight(this);
 	}
 }

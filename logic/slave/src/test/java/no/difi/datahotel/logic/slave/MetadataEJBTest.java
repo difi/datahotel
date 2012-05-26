@@ -78,8 +78,8 @@ public class MetadataEJBTest {
 	
 	@Test
 	public void testError() throws IOException {
-		File folder = Filesystem.getFolderF(Filesystem.FOLDER_SHARED, "google");
-		File file = Filesystem.getFileF(folder, "meta.xml");
+		File folder = Filesystem.getFolder(Filesystem.FOLDER_SLAVE, "google");
+		File file = Filesystem.getFile(folder, "meta.xml");
 
 		FileWriter fileWriter = new FileWriter(file);
 		fileWriter.append("ERROR!");

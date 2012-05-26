@@ -33,7 +33,7 @@ public class FindCsvErrorsTest {
 	@Test(expected=InvalidAttributesException.class)
 	public void testFindErrorInCSVFile() throws Exception{
 		
-		csvFile = Filesystem.getFileF("..", "ANSII_csv_ERROR.csv");
+		csvFile = Filesystem.getFile("..", "ANSII_csv_ERROR.csv");
 
 		try {
 			FindCsvErrors.findErrorInCSV(csvFile);
@@ -46,7 +46,7 @@ public class FindCsvErrorsTest {
 	
 	@Test(expected=InvalidAttributesException.class)
 	public void testFindErrorInCSVFile2() throws Exception {
-		csvFile = Filesystem.getFileF("..", "dataset_headers_UTF-8.csv");
+		csvFile = Filesystem.getFile("..", "dataset_headers_UTF-8.csv");
 
 		try {
 			FindCsvErrors.findErrorInCSV(csvFile);
@@ -59,14 +59,14 @@ public class FindCsvErrorsTest {
 	
 	@Test
 	public void testNoError1() throws Exception {
-		csvFile = Filesystem.getFileF("..", "simple-komma.csv");
+		csvFile = Filesystem.getFile("..", "simple-komma.csv");
 
 		FindCsvErrors.findErrorInCSV(csvFile);
 	}
 	
 	@Test
 	public void testNoError2() throws Exception {
-		csvFile = Filesystem.getFileF("..", "simple-semikolon.csv");
+		csvFile = Filesystem.getFile("..", "simple-semikolon.csv");
 
 		FindCsvErrors.findErrorInCSV(csvFile);
 	}

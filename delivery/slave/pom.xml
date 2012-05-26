@@ -37,6 +37,11 @@
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/</contextRoot>
 						</webModule>
+						<webModule>
+							<artifactId>datahotel-client-admin</artifactId>
+							<groupId>no.difi.datahotel</groupId>
+							<contextRoot>/admin</contextRoot>
+						</webModule>
 
 						<ejbModule>
 							<artifactId>datahotel-logic-slave</artifactId>
@@ -63,6 +68,12 @@
 		<!-- WAR -->
 		<dependency>
 			<artifactId>datahotel-client-slave</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<artifactId>datahotel-client-admin</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>

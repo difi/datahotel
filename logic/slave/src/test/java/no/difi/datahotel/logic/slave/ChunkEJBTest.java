@@ -1,6 +1,6 @@
 package no.difi.datahotel.logic.slave;
 
-import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CHUNK;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CACHE_CHUNK;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -63,8 +63,8 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);
 
-		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-1.csv").exists());
-		assertTrue(Filesystem.getFileF("chunk", "difi", "test", "simple", "dataset-2.csv").exists());
+		assertTrue(Filesystem.getFile(FOLDER_CACHE_CHUNK, "difi", "test", "simple", "dataset-1.csv").exists());
+		assertTrue(Filesystem.getFile(FOLDER_CACHE_CHUNK, "difi", "test", "simple", "dataset-2.csv").exists());
 	}
 	
 	@Test
@@ -129,12 +129,12 @@ public class ChunkEJBTest {
 
 		assertEquals(100, chunkEJB.get(metadata, 1).size());
 		assertNull(chunkEJB.get(metadata, 2));
-		long ts = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp").lastModified();
+		long ts = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp").lastModified();
 		
 		Thread.sleep(1000);
 		
 		chunkEJB.update(metadata);
-		long ts2 = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp").lastModified();
+		long ts2 = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp").lastModified();
 		assertEquals(ts, ts2);
 		
 		// chunkEJB.delete("difi", "test", "hundred");
@@ -143,7 +143,7 @@ public class ChunkEJBTest {
 
 	@Test
 	public void testReplaceGoal() throws Exception {
-		File folder = Filesystem.getFolderF(Filesystem.FOLDER_CHUNK, "difi/test/hundred", "secret");
+		File folder = Filesystem.getFolder(Filesystem.FOLDER_CACHE_CHUNK, "difi/test/hundred", "secret");
 		assertTrue(folder.exists());
 		
 		metadata.setLocation("difi/test/hundred");

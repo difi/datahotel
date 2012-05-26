@@ -14,47 +14,23 @@
 	<packaging>war</packaging>
 	<name>Data Hotel :: Client :: Admin</name>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ejb-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<ejbVersion>3.0</ejbVersion>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
 		<dependency>
-			<artifactId>datahotel-logic-master</artifactId>
+			<artifactId>datahotel-util-bridge</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<artifactId>datahotel-util-jsf</artifactId>
+			<artifactId>datahotel-util-csv</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>com.ocpsoft</groupId>
-			<artifactId>prettyfaces-jsf2</artifactId>
-			<version>3.3.0</version>
+			<artifactId>datahotel-util-shared</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

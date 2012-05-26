@@ -20,7 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import no.difi.datahotel.util.bridge.Dataset;
 import no.difi.datahotel.util.bridge.Metadata;
 
 @NamedQueries({
@@ -74,7 +73,6 @@ public class DatasetEntity implements JPAEntity {
 	private long lastUpdated;
 
 	@OneToOne
-	// (mappedBy="dataset")
 	@JoinColumn(name = "currentVersion")
 	private VersionEntity currentVersion;
 
@@ -201,14 +199,5 @@ public class DatasetEntity implements JPAEntity {
 		metadata.setLocation(Metadata.getLocation(getDatasetGroup().getOwner().getShortName(), getDatasetGroup()
 				.getShortName(), getShortName()));
 		metadata.save();
-
-		Dataset dataset = new Dataset();
-		dataset.setName(this.getName());
-		dataset.setShortName(this.getShortName());
-		dataset.setDescription(this.getDescription());
-		dataset.setGroup(this.getDatasetGroup().getShortName());
-		dataset.setOwner(this.getDatasetGroup().getOwner().getShortName());
-
-		dataset.save();
 	}
 }

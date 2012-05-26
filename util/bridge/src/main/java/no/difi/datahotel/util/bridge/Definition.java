@@ -1,5 +1,8 @@
 package no.difi.datahotel.util.bridge;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Definition implements Comparable<Definition> {
+public class Definition extends Abstract implements Comparable<Definition>, Light<DefinitionLight> {
 	@XmlElement
 	private String name;
 	
@@ -20,6 +23,8 @@ public class Definition implements Comparable<Definition> {
 
 	@XmlElement
 	private String description;
+	
+	private List<Field> fields = new ArrayList<Field>();
 
 	public String getName() {
 		return name;
@@ -44,7 +49,19 @@ public class Definition implements Comparable<Definition> {
 	public String getShortName() {
 		return shortName;
 	}
+	
+	public List<Field> getFields() {
+		return fields;
+	}
+	
+	public void addField(Field field) {
+		fields.add(field);
+	}
 
+	public DefinitionLight light() {
+		return new DefinitionLight(this);
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == this) 

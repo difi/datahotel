@@ -19,7 +19,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import no.difi.datahotel.util.bridge.Group;
 import no.difi.datahotel.util.bridge.Metadata;
 
 @NamedQueries({
@@ -153,13 +152,5 @@ public class GroupEntity implements JPAEntity {
 		metadata.setUrl(this.getUrl());
 		metadata.setLocation(Metadata.getLocation(getOwner().getShortName(), getShortName()));
 		metadata.save();
-
-		Group group = new Group();
-		group.setName(this.getName());
-		group.setShortName(this.getShortName());
-		// group.setDescripion(this.)
-		group.setUrl(this.getUrl());
-		group.setOwner(this.getOwner().getShortName());
-		group.save();
 	}
 }

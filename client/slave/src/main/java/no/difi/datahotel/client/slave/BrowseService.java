@@ -19,7 +19,7 @@ import no.difi.datahotel.logic.slave.ChunkEJB;
 import no.difi.datahotel.logic.slave.DataEJB;
 import no.difi.datahotel.logic.slave.FieldEJB;
 import no.difi.datahotel.logic.slave.SearchEJB;
-import no.difi.datahotel.util.bridge.Field;
+import no.difi.datahotel.util.bridge.FieldLight;
 import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
@@ -107,7 +107,7 @@ public class BrowseService extends BaseService {
 				return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime()).build();
 			}
 
-			List<Field> fields = fieldEJB.getFields(metadata);
+			List<FieldLight> fields = fieldEJB.getFields(metadata);
 			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
 			if (context.isSearch()) {
@@ -150,7 +150,7 @@ public class BrowseService extends BaseService {
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
 
-			List<Field> fields = fieldEJB.getFields(metadata);
+			List<FieldLight> fields = fieldEJB.getFields(metadata);
 			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
 			if (fields == null)

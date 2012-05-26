@@ -11,11 +11,11 @@ import javax.xml.bind.annotation.XmlTransient;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @XmlRootElement
-public class Metadata extends Abstract implements Comparable<Metadata> {
+public class Metadata extends Abstract implements Comparable<Metadata>, Light<MetadataLight> {
 
 	private String location;
 	private List<Metadata> children = new ArrayList<Metadata>();
-	private boolean active;
+	private boolean active = false;
 	private boolean dataset;
 	private Metadata parent;
 	private Logger logger = Logger.getAnonymousLogger();
@@ -91,7 +91,6 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 				this.updated = child.updated;
 	}
 
-	@XmlTransient
 	public boolean isActive() {
 		return active;
 	}
@@ -128,28 +127,20 @@ public class Metadata extends Abstract implements Comparable<Metadata> {
 	}
 
 	public MetadataLight light() {
-		MetadataLight m = new MetadataLight();
-		m.setName(name);
-		m.setShortName(shortName);
-		m.setDescription(description);
-		m.setUpdated(updated);
-		m.setLocation(location);
-		m.setUrl(url);
-
-		return m;
+		return new MetadataLight(this);
 	}
 
 	public void save() throws Exception {
-		save(Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.METADATA), this);
+		save(Filesystem.getFile(Filesystem.FOLDER_SLAVE, location, Filesystem.FILE_METADATA), this);
 	}
 
 	public static Metadata read(String location) {
-		File folder = Filesystem.getFolderF(Filesystem.FOLDER_SHARED, location);
-		Metadata metadata = (Metadata) read(Metadata.class, Filesystem.getFileF(folder, Filesystem.METADATA));
+		File folder = Filesystem.getFolder(Filesystem.FOLDER_SLAVE, location);
+		Metadata metadata = (Metadata) read(Metadata.class, Filesystem.getFile(folder, Filesystem.FILE_METADATA));
 		metadata.setLocation(location);
 		metadata.setShortName(folder.getName());
-		metadata.setActive(!Filesystem.getFileF(folder, Filesystem.INACTIVE).exists());
-		metadata.setDataset(Filesystem.getFileF(folder, Filesystem.DATASET_DATA).exists());
+		metadata.setActive(!Filesystem.getFile(folder, Filesystem.INACTIVE).exists());
+		metadata.setDataset(Filesystem.getFile(folder, Filesystem.FILE_DATASET).exists());
 
 		return metadata;
 	}

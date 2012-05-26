@@ -6,8 +6,14 @@ a {
 	color: #00688B;
 }
 
+h1 {
+	font-size: 28pt;
+	margin: 0 0 5pt 0;
+	padding: 0;
+}
 h2, h2 a {
 	color: #fff;
+	font-size: 12pt;
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
@@ -36,7 +42,7 @@ td, th {
 form {
 	float: right;
 	margin: 0;
-	padding: 0;
+	padding: 10pt 0 10pt 0;
 }
 input {
 	padding: 4pt;
@@ -81,16 +87,15 @@ div.error {
 	font-weight: bold;
 }
 div.top {
-	padding: 25pt 10pt 10pt 10pt;
+	padding: 5pt 0 5pt 0;
 	background-color: #4682B4;
 	border-bottom: 1px solid #fff;
 	color: #fff;
 	font-size: 19pt;
 }
-div.metadata {
+div.list > div {
 	margin: 0 auto 0 auto;
 	padding: 10pt;
-	max-width: 600pt;
 }
 div.description{
 	margin: 4pt 0 0 0;
@@ -100,4 +105,9 @@ div.meta {
 }
 div.meta span {
 	margin-right: 10pt;
+}
+div.holder {
+	margin: 0 auto 0 auto;
+	max-width: 600pt;
+	padding: 0 10pt 0 10pt;
 }

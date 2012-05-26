@@ -1,6 +1,6 @@
 package no.difi.datahotel.logic.slave;
 
-import static no.difi.datahotel.util.shared.Filesystem.FOLDER_INDEX;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CACHE_INDEX;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class SearchEJB {
 		if (q != null && !q.equals(""))
 			query.append(query.length() == 0 ? "" : " AND ").append(q);
 		
-		Directory dir = FSDirectory.open(Filesystem.getFolderPathF(FOLDER_INDEX, metadata.getLocation()));
+		Directory dir = FSDirectory.open(Filesystem.getFolderPath(FOLDER_CACHE_INDEX, metadata.getLocation()));
 		IndexSearcher searcher = new IndexSearcher(dir);
 
 		TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);

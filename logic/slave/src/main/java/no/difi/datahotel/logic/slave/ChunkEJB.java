@@ -1,7 +1,7 @@
 package no.difi.datahotel.logic.slave;
 
-import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CHUNK;
-import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SHARED;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_CACHE_CHUNK;
+import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,13 +28,13 @@ public class ChunkEJB {
 	private int size = 100;
 
 	public File getFullDataset(Metadata metadata) {
-		return Filesystem.getFileF(FOLDER_SHARED, metadata.getLocation(), Filesystem.DATASET_DATA);
+		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_DATASET);
 	}
 	
 	public void update(Metadata metadata) {
 		Logger logger = metadata.getLogger();
 		
-		File tsfile = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "timestamp");
+		File tsfile = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
 		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
 			logger.info("Chunk up to date.");
 			return;
@@ -55,7 +55,7 @@ public class ChunkEJB {
 				if (counter % size == 1) {
 					number++;
 					String filename = "dataset-" + number + ".csv";
-					writer = new CSVWriter(Filesystem.getFileF(FOLDER_CHUNK, locationTmp, filename));
+					writer = new CSVWriter(Filesystem.getFile(FOLDER_CACHE_CHUNK, locationTmp, filename));
 					writer.writeHeader(parser.getHeaders());
 				}
 
@@ -70,10 +70,10 @@ public class ChunkEJB {
 			if (writer != null)
 				writer.close();
 
-			File goal = Filesystem.getFolderPathF(FOLDER_CHUNK, metadata.getLocation());
-			Filesystem.delete(FOLDER_CHUNK, metadata.getLocation());
+			File goal = Filesystem.getFolderPath(FOLDER_CACHE_CHUNK, metadata.getLocation());
+			Filesystem.delete(FOLDER_CACHE_CHUNK, metadata.getLocation());
 
-			Filesystem.getFolderPathF(FOLDER_CHUNK, locationTmp).renameTo(goal);
+			Filesystem.getFolderPath(FOLDER_CACHE_CHUNK, locationTmp).renameTo(goal);
 
 			posts.put(metadata.getLocation(), counter);
 			pages.put(metadata.getLocation(), number);
@@ -88,7 +88,7 @@ public class ChunkEJB {
 	public ArrayList<Map<String, String>> get(Metadata metadata, int number) {
 		Logger logger = metadata.getLogger();
 		
-		File source = Filesystem.getFileF(FOLDER_CHUNK, metadata.getLocation(), "dataset-" + number + ".csv");
+		File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + number + ".csv");
 
 		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		try {

@@ -32,7 +32,7 @@ public class VersionEJB extends AbstractJPAHandler {
 		version.setVersion(new Date().getTime());
 		save(version);
 
-		File filename = Filesystem.getFileF(Filesystem.FOLDER_ARCHIVE, String.valueOf(dataset.getId()),
+		File filename = Filesystem.getFile(Filesystem.FOLDER_MASTER, String.valueOf(dataset.getId()),
 				String.valueOf(version.getVersion()) + "-original.csv");
 
 		// http://stackoverflow.com/questions/1477269/write-a-binary-downloaded-file-to-disk-in-java
@@ -82,7 +82,7 @@ public class VersionEJB extends AbstractJPAHandler {
 	 * @throws Exception
 	 */
 	public List<String[]> getTop(VersionEntity version) throws Exception {
-		File filename = Filesystem.getFileF(Filesystem.FOLDER_ARCHIVE, String.valueOf(version.getDataset().getId()),
+		File filename = Filesystem.getFile(Filesystem.FOLDER_MASTER, String.valueOf(version.getDataset().getId()),
 				String.valueOf(version.getVersion()) + "-original.csv");
 
 		CSVParser parser = CSVParserFactory.getCSVParserSmart(filename);
@@ -92,11 +92,11 @@ public class VersionEJB extends AbstractJPAHandler {
 	}
 
 	public void saveFile(VersionEntity version) throws Exception {
-		File original = Filesystem.getFileF(Filesystem.FOLDER_ARCHIVE, String.valueOf(version.getDataset().getId()),
+		File original = Filesystem.getFile(Filesystem.FOLDER_MASTER, String.valueOf(version.getDataset().getId()),
 				String.valueOf(version.getVersion()) + "-original.csv");
-		File target = Filesystem.getFileF(Filesystem.FOLDER_SHARED, version.getDataset().getDatasetGroup().getOwner()
+		File target = Filesystem.getFile(Filesystem.FOLDER_SLAVE, version.getDataset().getDatasetGroup().getOwner()
 				.getShortName(), version.getDataset().getDatasetGroup().getShortName(), version.getDataset()
-				.getShortName(), Filesystem.DATASET_DATA);
+				.getShortName(), Filesystem.FILE_DATASET);
 
 		CSVParser parser = CSVParserFactory.getCSVParserSmart(original);
 		CSVWriter writer = new CSVWriter(target);

@@ -40,23 +40,23 @@ public class FilesystemTest {
 	public void testFolder() {
 		String sep = File.separator;
 		Assert.assertEquals(Filesystem.getHome().replace(File.separator + File.separator, File.separator) + "test"
-				+ sep + "folder", Filesystem.getFolderF("test", "folder").toString());
+				+ sep + "folder", Filesystem.getFolder("test", "folder").toString());
 	}
 
 	@Test
 	public void testFile() {
 		String sep = File.separator;
 		Assert.assertEquals(Filesystem.getHome().replace(File.separator + File.separator, File.separator) + "test"
-				+ sep + "file", Filesystem.getFileF("test", "file").toString());
+				+ sep + "file", Filesystem.getFile("test", "file").toString());
 	}
 
 	@Test
 	public void testDeleteAdvanced() throws IOException {
 
-		File dir1 = Filesystem.getFolderF("test", "owner1", "group1", "dataset1");
-		File dir2 = Filesystem.getFolderF("test", "owner1", "group1", "dataset2");
-		Filesystem.getFolderF("test", "owner1", "group2", "dataset1");
-		File file = Filesystem.getFileF("test", "owner1", "group1", "dataset1", "test");
+		File dir1 = Filesystem.getFolder("test", "owner1", "group1", "dataset1");
+		File dir2 = Filesystem.getFolder("test", "owner1", "group1", "dataset2");
+		Filesystem.getFolder("test", "owner1", "group2", "dataset1");
+		File file = Filesystem.getFile("test", "owner1", "group1", "dataset1", "test");
 
 		assertTrue(file.createNewFile());
 
@@ -66,9 +66,9 @@ public class FilesystemTest {
 
 		Filesystem.delete("test", "owner1", "group1", "dataset2");
 		assertFalse(dir2.exists());
-		assertTrue(Filesystem.getFolderPathF("test", "owner1").exists());
+		assertTrue(Filesystem.getFolderPath("test", "owner1").exists());
 
 		Filesystem.delete("test", "owner1", "group2", "dataset1");
-		assertFalse(Filesystem.getFolderPathF("test", "owner1").exists());
+		assertFalse(Filesystem.getFolderPath("test", "owner1").exists());
 	}
 }

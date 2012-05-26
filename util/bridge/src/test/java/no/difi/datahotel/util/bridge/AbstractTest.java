@@ -16,7 +16,7 @@ public class AbstractTest {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
 		realHome = System.getProperty("user.home");
-		System.setProperty("user.home", new File(DatasetTest.class.getResource("/").toURI()).toString());
+		System.setProperty("user.home", new File(DefinitionTest.class.getResource("/").toURI()).toString());
 	}
 
 	@AfterClass
@@ -36,11 +36,11 @@ public class AbstractTest {
 
 	public class AbstractClass extends Abstract {
 		public void save() throws Exception {
-			super.save(Filesystem.getFileF("failSave.xml"), null);
+			super.save(Filesystem.getFile("failSave.xml"), null);
 		}
 
 		public AbstractClass read() {
-			return (AbstractClass) read(AbstractClass.class, Filesystem.getFileF("failRead.xml"));
+			return (AbstractClass) read(AbstractClass.class, Filesystem.getFile("failRead.xml"));
 		}
 	}
 

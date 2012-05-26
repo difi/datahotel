@@ -3,65 +3,65 @@ package no.difi.datahotel.util.shared;
 import java.io.File;
 
 public class Filesystem {
-	
-	public static final String STRUCTURE = "datasetStructure.xml";
-	public static final String OWNER_METADATA = "owner.xml";
-	public static final String GROUP_METADATA = "datasetGroup.xml";
-	public static final String DATASET_DATA = "dataset.csv";
-	public static final String DATASET_FIELDS = "fields.xml";
-	public static final String DATASET_METADATA = "metadata.xml";
-	public static final String METADATA = "meta.xml";
-	public static final String INACTIVE = "inactive";
-	
-	private static final String FOLDER_DATAHOTEL = "datahotel";
 
-	public static final String FOLDER_ARCHIVE = "archive";
-	public static final String FOLDER_CHUNK = "chunk";
-	public static final String FOLDER_INDEX = "index";
-	public static final String FOLDER_SHARED = "import";
-	
+	private static final String HOME = "datahotel";
+
+	public static final String FOLDER_MASTER = "master";
+	public static final String FOLDER_MASTER_DEFINITION = FOLDER_MASTER + File.separator + "definition";
+	public static final String FOLDER_SLAVE = "slave";
+	public static final String FOLDER_CACHE = "cache";
+	public static final String FOLDER_CACHE_CHUNK = FOLDER_CACHE + File.separator + "chunk";
+	public static final String FOLDER_CACHE_INDEX = FOLDER_CACHE + File.separator + "index";
+
+	public static final String FILE_DATASET = "dataset.csv";
+	public static final String FILE_FIELDS = "fields.xml";
+	public static final String FILE_DEFINITIONS = "definitions.xml";
+	public static final String FILE_METADATA = "meta.xml";
+	@Deprecated
+	public static final String INACTIVE = "inactive";
+
 	public static String getHome() {
 		String dir = System.getProperty("user.home");
 		dir = String.valueOf(dir + File.separator).replace(File.separator, File.separator + File.separator);
-		dir += FOLDER_DATAHOTEL + File.separator;
+		dir += HOME + File.separator;
 		new File(dir).mkdirs();
 		return dir;
 	}
 
-	public static File getFolderPathF(String... folder) {
+	public static File getFolderPath(String... folder) {
 		String dir = getHome();
 		for (String f : folder)
 			dir += f.replace("/", File.separator) + File.separator;
 		return new File(dir);
 	}
-	
-	public static File getFolderF(String... folder) {
-		File dir = getFolderPathF(folder);
 
-		if(!dir.exists())
+	public static File getFolder(String... folder) {
+		File dir = getFolderPath(folder);
+
+		if (!dir.exists())
 			dir.mkdirs();
 
 		return dir;
 	}
-	
-	public static File getFileF(String... uri) {
+
+	public static File getFile(String... uri) {
 		String[] dir = new String[uri.length - 1];
 		for (int i = 0; i < uri.length - 1; i++)
 			dir[i] = uri[i];
 
-		return new File(getFolderF(dir).toString() + File.separator + uri[uri.length - 1]);
+		return new File(getFolder(dir).toString() + File.separator + uri[uri.length - 1]);
 	}
 
-	public static File getFileF(File folder, String... uri) {
-		String path = folder.toString(); 
+	public static File getFile(File folder, String... uri) {
+		String path = folder.toString();
 		for (int i = 0; i < uri.length - 1; i++)
 			path += uri[i].replace("/", File.separator) + File.separator;
-		
+
 		return new File(path + File.separator + uri[uri.length - 1]);
 	}
-	
+
 	public static void delete(String folder, String owner, String group, String dataset) {
-		File target = Filesystem.getFolderF(folder, owner, group, dataset);
+		File target = Filesystem.getFolder(folder, owner, group, dataset);
 		for (File f : target.listFiles())
 			f.delete();
 		target.delete();
@@ -74,9 +74,23 @@ public class Filesystem {
 				parentOwner.delete();
 		}
 	}
-	
+
 	public static void delete(String folder, String location) {
 		String[] l = location.split("/");
 		delete(folder, l[0], l[1], l[2]);
+	}
+
+	public static void delete(String folder) {
+		delete(getFolder(folder));
+	}
+
+	public static void delete(File folder) {
+		for (File f : folder.listFiles()) {
+			if (f.isDirectory())
+				delete(f);
+			else
+				f.delete();
+		}
+		folder.delete();
 	}
 }

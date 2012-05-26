@@ -28,11 +28,11 @@ public class Fields extends Abstract {
 	}
 
 	public void save(String owner, String group, String dataset) throws Exception {
-		save(Filesystem.getFileF(Filesystem.FOLDER_SHARED, owner, group, dataset, Filesystem.DATASET_FIELDS), this);
+		save(Filesystem.getFile(Filesystem.FOLDER_SLAVE, owner, group, dataset, Filesystem.FILE_FIELDS), this);
 	}
 
 	public static Fields read(String location) {
 		return (Fields) read(Fields.class,
-				Filesystem.getFileF(Filesystem.FOLDER_SHARED, location, Filesystem.DATASET_FIELDS));
+				Filesystem.getFile(Filesystem.FOLDER_SLAVE, location, Filesystem.FILE_FIELDS));
 	}
 }

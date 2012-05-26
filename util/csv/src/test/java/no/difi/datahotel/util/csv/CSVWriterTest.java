@@ -28,7 +28,7 @@ public class CSVWriterTest {
 	
 	@Test
 	public void testSimple() throws Exception {
-		File file = Filesystem.getFileF("testing1.csv");
+		File file = Filesystem.getFile("testing1.csv");
 
 		CSVWriter writer = new CSVWriter(file);
 		writer.writeHeader(new String[] { "id", "name", "age" });
@@ -38,7 +38,7 @@ public class CSVWriterTest {
 
 	@Test
 	public void testReadAndWrite() throws Exception {
-		File file = Filesystem.getFileF("testing2.csv");
+		File file = Filesystem.getFile("testing2.csv");
 		System.out.println(file);
 
 		CSVMetainfo metainfo = new CSVMetainfo(',', true, true);
@@ -52,7 +52,7 @@ public class CSVWriterTest {
 	
 	@Test
 	public void testReadAndWriteSmart1() throws Exception {
-		File file = Filesystem.getFileF("testing3.csv");
+		File file = Filesystem.getFile("testing3.csv");
 
 		File fileR = new File(this.getClass().getResource("/simple-smart1.csv").getFile());
 		CSVParser parser = CSVParserFactory.getCSVParserSmart(fileR);
@@ -64,7 +64,7 @@ public class CSVWriterTest {
 
 	@Test
 	public void testReadAndWriteSmart2() throws Exception {
-		File file = Filesystem.getFileF("testing4.csv");
+		File file = Filesystem.getFile("testing4.csv");
 
 		File fileR = new File(this.getClass().getResource("/simple-smart2.csv").getFile());
 		CSVParser parser = CSVParserFactory.getCSVParserSmart(fileR);

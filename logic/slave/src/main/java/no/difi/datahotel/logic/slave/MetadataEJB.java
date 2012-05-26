@@ -24,7 +24,7 @@ public class MetadataEJB {
 	@EJB
 	private DataEJB dataEJB;
 
-	private File root = Filesystem.getFolderF(Filesystem.FOLDER_SHARED);
+	private File root = Filesystem.getFolder(Filesystem.FOLDER_SLAVE);
 
 	@Schedule(second = "0,30", minute = "*", hour = "*")
 	public void update() {
@@ -40,7 +40,7 @@ public class MetadataEJB {
 	private void updateRecursive(Metadata parent, Map<String, Metadata> directory, File folder) {
 		for (File f : folder.listFiles()) {
 			if (f.isDirectory()) {
-				if (Filesystem.getFileF(f, Filesystem.METADATA).exists()) {
+				if (Filesystem.getFile(f, Filesystem.FILE_METADATA).exists()) {
 					try {
 						// Read metadata
 						Metadata m = Metadata.read(getLocation(f));

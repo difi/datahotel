@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import no.difi.datahotel.util.bridge.Field;
+import no.difi.datahotel.util.bridge.FieldLight;
 import no.difi.datahotel.util.bridge.Metadata;
 
 public class RequestContext {
@@ -16,7 +16,7 @@ public class RequestContext {
 	private String query = null;
 	private Map<String, String> lookup = new HashMap<String, String>();
 	private String callback;
-	private List<Field> fields;
+	private List<FieldLight> fields;
 	private Metadata metadata;
 
 	public RequestContext() {
@@ -27,14 +27,14 @@ public class RequestContext {
 		this(uriInfo, null, null);
 	}
 
-	public RequestContext(UriInfo uriInfo, Metadata metadata, List<Field> fields) {
+	public RequestContext(UriInfo uriInfo, Metadata metadata, List<FieldLight> fields) {
 		this.fields = fields;
 		this.metadata = metadata;
 
 		MultivaluedMap<String, String> parameters = uriInfo.getQueryParameters();
 
 		if (fields != null)
-			for (Field f : fields)
+			for (FieldLight f : fields)
 				if (f.getGroupable())
 					if (parameters.containsKey(f.getShortName()))
 						if (!"".equals(parameters.getFirst(f.getShortName())))
@@ -85,11 +85,11 @@ public class RequestContext {
 		this.callback = callback;
 	}
 
-	public List<Field> getFields() {
+	public List<FieldLight> getFields() {
 		return fields;
 	}
 
-	public void setFields(List<Field> fields) {
+	public void setFields(List<FieldLight> fields) {
 		this.fields = fields;
 	}
 
