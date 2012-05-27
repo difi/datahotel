@@ -15,7 +15,7 @@
 	<name>Data Hotel :: Client</name>
 
 	<modules>
-		<module>admin</module>
+		<module>master</module>
 		<module>slave</module>
 		<module>login</module>
 		<module>wizard</module>

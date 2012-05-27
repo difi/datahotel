@@ -23,14 +23,7 @@
 		</dependency>
 
 		<dependency>
-			<artifactId>datahotel-util-shared</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<artifactId>datahotel-util-jsf</artifactId>
+			<artifactId>datahotel-util</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<scope>provided</scope>

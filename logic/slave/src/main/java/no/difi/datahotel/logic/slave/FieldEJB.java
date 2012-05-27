@@ -59,9 +59,10 @@ public class FieldEJB {
 		Fields fresh = Fields.read(metadata.getLocation());
 		
 		fields.put(metadata.getLocation(), fresh.getFields());
-		/*for (Field f : fresh.getFields()) {
-			Definition d = f.getDefinition();
-		}*/
+		for (Field f : fresh.getFields()) {
+			f.setMetadata(metadata);
+			// Definition d = f.getDefinition();
+		}
 	}
 	
 	public List<FieldLight> getFields(Metadata metadata) {

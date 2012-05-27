@@ -9,26 +9,18 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>datahotel-client-slave</artifactId>
+	<artifactId>datahotel-client-master</artifactId>
 	<groupId>no.difi.datahotel</groupId>
 	<packaging>war</packaging>
-	<name>Data Hotel :: Client :: Slave</name>
+	<name>Data Hotel :: Client :: Master</name>
 
 	<dependencies>
-		<dependency>
-			<artifactId>datahotel-logic-slave</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
 		<dependency>
 			<artifactId>datahotel-util</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>
