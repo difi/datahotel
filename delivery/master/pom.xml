@@ -15,7 +15,7 @@
 	<name>Data Hotel :: Delivery :: Master</name>
 
 	<build>
-		<finalName>datahotel-master</finalName>
+		<finalName>datahotel</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-ear-plugin</artifactId>
@@ -24,16 +24,25 @@
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<modules>
 						<webModule>
-							<artifactId>datahotel-client-master</artifactId>
+							<artifactId>datahotel-master</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/master</contextRoot>
+						</webModule>
+						<webModule>
+							<artifactId>datahotel-slave</artifactId>
+							<groupId>no.difi.datahotel</groupId>
+							<contextRoot>/</contextRoot>
 						</webModule>
 						<webModule>
 							<artifactId>datahotel-client-wizard</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/wizard</contextRoot>
 						</webModule>
-
+						<webModule>
+							<artifactId>datahotel-client-login</artifactId>
+							<groupId>no.difi.datahotel</groupId>
+							<contextRoot>/login</contextRoot>
+						</webModule>
 
 						<ejbModule>
 							<artifactId>datahotel-logic-master</artifactId>
@@ -59,13 +68,25 @@
 
 		<!-- WAR -->
 		<dependency>
-			<artifactId>datahotel-client-master</artifactId>
+			<artifactId>datahotel-master</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<artifactId>datahotel-slave</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<artifactId>datahotel-client-wizard</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<artifactId>datahotel-client-login</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>
@@ -87,21 +108,22 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.sourceforge.javacsv</groupId>
-			<artifactId>javacsv</artifactId>
-			<version>${javacsv-version}</version>
+			<groupId>org.apache.myfaces.tomahawk</groupId>
+			<artifactId>tomahawk20</artifactId>
+			<version>1.1.10</version>
 		</dependency>
 
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging-api</artifactId>
-			<version>1.1</version>
+			<groupId>org.scribe</groupId>
+			<artifactId>scribe</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.sun.jersey</groupId> <artifactId>jersey-server</artifactId> <version>1.13-b01</version> 
-			</dependency> -->
-
-		<!-- <dependency> <groupId>com.ocpsoft</groupId> <artifactId>prettyfaces-jsf2</artifactId> <version>3.2.1</version> </dependency> -->
+		<dependency>
+			<groupId>com.ocpsoft</groupId>
+			<artifactId>prettyfaces-jsf2</artifactId>
+			<version>3.3.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

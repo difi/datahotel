@@ -13,6 +13,8 @@
 		<module>client</module>
 		<module>delivery</module>
 		<module>logic</module>
+		<module>master</module>
+		<module>slave</module>
 		<module>util</module>
 	</modules>
 

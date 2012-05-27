@@ -9,14 +9,18 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>datahotel-client</artifactId>
+	<artifactId>datahotel-master</artifactId>
 	<groupId>no.difi.datahotel</groupId>
-	<packaging>pom</packaging>
-	<name>Data Hotel :: Client</name>
+	<packaging>war</packaging>
+	<name>Data Hotel :: Master</name>
 
-	<modules>
-		<module>login</module>
-		<module>wizard</module>
-	</modules>
+	<dependencies>
+		<dependency>
+			<artifactId>datahotel-util</artifactId>
+			<groupId>no.difi.datahotel</groupId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
 </project>

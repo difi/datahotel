@@ -33,20 +33,15 @@
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<modules>
 						<webModule>
-							<artifactId>datahotel-client-slave</artifactId>
+							<artifactId>datahotel-slave</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/</contextRoot>
 						</webModule>
 						<webModule>
-							<artifactId>datahotel-client-master</artifactId>
+							<artifactId>datahotel-master</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/master</contextRoot>
 						</webModule>
-
-						<ejbModule>
-							<artifactId>datahotel-logic-slave</artifactId>
-							<groupId>no.difi.datahotel</groupId>
-						</ejbModule>
 					</modules>
 					<displayName>Data Hotel</displayName>
 					<generateApplicationXml>true</generateApplicationXml>
@@ -67,33 +62,23 @@
 
 		<!-- WAR -->
 		<dependency>
-			<artifactId>datahotel-client-slave</artifactId>
+			<artifactId>datahotel-slave</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>
 		</dependency>
 		<dependency>
-			<artifactId>datahotel-client-master</artifactId>
+			<artifactId>datahotel-master</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>
 		</dependency>
 
-		<!-- Logic -->
-		<dependency>
-			<artifactId>datahotel-logic-slave</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<type>ejb</type>
-		</dependency>
-
-		<!-- Libs -->
 		<dependency>
 			<artifactId>datahotel-util</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

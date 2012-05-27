@@ -15,7 +15,6 @@
 	<name>Data Hotel :: Delivery</name>
 
 	<modules>
-		<module>full</module>
 		<module>master</module>
 		<module>slave</module>
 	</modules>

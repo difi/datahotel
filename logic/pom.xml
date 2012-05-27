@@ -16,7 +16,6 @@
 
 	<modules>
 		<module>master</module>
-		<module>slave</module>
 	</modules>
 
 </project>
