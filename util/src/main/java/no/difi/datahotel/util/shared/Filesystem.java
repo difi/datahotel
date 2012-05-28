@@ -31,7 +31,8 @@ public class Filesystem {
 	public static File getFolderPath(String... folder) {
 		String dir = getHome();
 		for (String f : folder)
-			dir += f.replace("/", File.separator) + File.separator;
+			if (!"".equals(f))
+				dir += f.replace("/", File.separator) + File.separator;
 		return new File(dir);
 	}
 

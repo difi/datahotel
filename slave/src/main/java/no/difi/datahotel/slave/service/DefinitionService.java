@@ -15,9 +15,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import no.difi.datahotel.slave.logic.FieldEJB;
-import no.difi.datahotel.util.bridge.DefinitionLight;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
+import no.difi.datahotel.util.model.DefinitionLight;
 
 @Path("/api/{type}/_defs/")
 @Stateless

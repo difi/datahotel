@@ -12,14 +12,14 @@ import java.util.logging.Logger;
 
 import javax.ejb.Singleton;
 
-import no.difi.datahotel.util.bridge.Definition;
-import no.difi.datahotel.util.bridge.DefinitionLight;
-import no.difi.datahotel.util.bridge.Definitions;
-import no.difi.datahotel.util.bridge.Disk;
-import no.difi.datahotel.util.bridge.Field;
-import no.difi.datahotel.util.bridge.FieldLight;
-import no.difi.datahotel.util.bridge.Fields;
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Definition;
+import no.difi.datahotel.util.model.DefinitionLight;
+import no.difi.datahotel.util.model.Definitions;
+import no.difi.datahotel.util.model.Disk;
+import no.difi.datahotel.util.model.Field;
+import no.difi.datahotel.util.model.FieldLight;
+import no.difi.datahotel.util.model.Fields;
+import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @Singleton
@@ -42,7 +42,7 @@ public class FieldEJB {
 			defUpdated = f.lastModified();
 		}
 	}
-	
+
 	public void update(Metadata metadata) {
 		updateDefinitions();
 		
@@ -64,27 +64,27 @@ public class FieldEJB {
 			// Definition d = f.getDefinition();
 		}
 	}
-	
+
 	public List<FieldLight> getFields(Metadata metadata) {
 		List<FieldLight> result = new ArrayList<FieldLight>();
 		for (Field f : fields.get(metadata.getLocation()))
 			result.add(f.light());
 		return result;
 	}
-	
+
 	public List<DefinitionLight> getDefinitions() {
 		List<DefinitionLight> result = new ArrayList<DefinitionLight>();
 		for (Definition d : definitions.values())
 			result.add(d.light());
 		return result;
 	}
-	
+
 	public DefinitionLight getDefinition(String def) {
 		if (definitions.containsKey(def))
 			return definitions.get(def).light();
 		return null;
 	}
-	
+
 	public List<String> getUsage(String definition) {
 		// TODO Fix me
 		return null;

@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 
 import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
-import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.jersey.DataFormat;
+import no.difi.datahotel.util.model.Metadata;
 
 @Path("/download/")
 @Stateless

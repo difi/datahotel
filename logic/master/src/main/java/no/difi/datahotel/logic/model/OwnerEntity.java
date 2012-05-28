@@ -15,7 +15,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Metadata;
 
 @NamedQueries({ @NamedQuery(name = OwnerEntity.ALL, query = "SELECT o FROM Owner o"),
 		@NamedQuery(name = OwnerEntity.BY_SHORTNAME, query = "SELECT o FROM Owner o WHERE o.shortName = :shortName"),

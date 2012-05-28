@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
-import no.difi.datahotel.util.bridge.FieldLight;
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.FieldLight;
+import no.difi.datahotel.util.model.Metadata;
 
 public class RequestContext {
 

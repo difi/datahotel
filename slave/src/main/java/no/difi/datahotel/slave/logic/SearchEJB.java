@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;

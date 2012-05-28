@@ -19,7 +19,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Metadata;
 
 @NamedQueries({
 		@NamedQuery(name = GroupEntity.ALL, query = "SELECT dg FROM DatasetGroup dg ORDER BY dg.name"),

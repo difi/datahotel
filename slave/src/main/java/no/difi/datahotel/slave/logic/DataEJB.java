@@ -7,8 +7,8 @@ import java.util.Map;
 
 import javax.ejb.Singleton;
 
-import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataLight;
+import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.model.MetadataLight;
 
 @Singleton
 public class DataEJB {

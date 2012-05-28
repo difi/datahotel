@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import no.difi.datahotel.util.bridge.DefinitionLight;
-import no.difi.datahotel.util.bridge.FieldLight;
-import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataLight;
+import no.difi.datahotel.util.model.DefinitionLight;
+import no.difi.datahotel.util.model.FieldLight;
+import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.model.MetadataLight;
 
 public class HTMLObject implements FormaterInterface {
 

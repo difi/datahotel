@@ -8,9 +8,9 @@ import javax.ejb.Stateless;
 import no.difi.datahotel.logic.model.DatasetEntity;
 import no.difi.datahotel.logic.model.FieldEntity;
 import no.difi.datahotel.logic.model.VersionEntity;
-import no.difi.datahotel.util.bridge.Definition;
-import no.difi.datahotel.util.bridge.Field;
-import no.difi.datahotel.util.bridge.Fields;
+import no.difi.datahotel.util.model.Definition;
+import no.difi.datahotel.util.model.Field;
+import no.difi.datahotel.util.model.Fields;
 
 /**
  * {@code XmlEJB} handles the I/O of {@code XML} files. It utilizes {@code JAXB}

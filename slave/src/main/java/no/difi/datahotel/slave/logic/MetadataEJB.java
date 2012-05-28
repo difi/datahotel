@@ -1,8 +1,10 @@
 package no.difi.datahotel.slave.logic;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,8 +13,9 @@ import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
+import no.difi.datahotel.util.shared.Part;
 
 @Stateless
 public class MetadataEJB {
@@ -62,6 +65,32 @@ public class MetadataEJB {
 			}
 		}
 		Collections.sort(parent.getChildren());
+	}
+
+	public List<Metadata> getChildren(Part part, String location) {
+		List<Metadata> result = new ArrayList<Metadata>();
+		File folder = Filesystem.getFolder(part.toString(), location);
+		for (File f : folder.listFiles()) {
+			if (f.isDirectory()) {
+				if (Filesystem.getFile(f, Filesystem.FILE_METADATA).exists()) {
+					Metadata m = getChild(part, location + "/" + f.getName());
+					if (m != null)
+						result.add(m);
+				}
+			}
+		}
+		Collections.sort(result);
+		return result;
+	}
+	
+	public Metadata getChild(Part part, String location) {
+		try {
+			// Read metadata
+			return Metadata.read(location);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Error while reading " + location);
+			return null;
+		}
 	}
 
 	private String getLocation(File f) {

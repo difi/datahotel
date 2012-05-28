@@ -19,12 +19,12 @@ import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
 import no.difi.datahotel.slave.logic.FieldEJB;
 import no.difi.datahotel.slave.logic.SearchEJB;
-import no.difi.datahotel.util.bridge.FieldLight;
-import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
+import no.difi.datahotel.util.model.FieldLight;
+import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.model.MetadataLight;
 
 @Path("/api/{type}/")
 @Stateless

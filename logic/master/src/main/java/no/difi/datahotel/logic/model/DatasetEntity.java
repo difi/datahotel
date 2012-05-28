@@ -20,7 +20,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
-import no.difi.datahotel.util.bridge.Metadata;
+import no.difi.datahotel.util.model.Metadata;
 
 @NamedQueries({
 		@NamedQuery(name = DatasetEntity.NQ_GET_ALL_DATASET, query = "SELECT d FROM Dataset d"),

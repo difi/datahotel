@@ -12,10 +12,10 @@ import java.util.logging.Logger;
 
 import javax.ejb.Singleton;
 
-import no.difi.datahotel.util.bridge.Metadata;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
+import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 import no.difi.datahotel.util.shared.Timestamp;
 

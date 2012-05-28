@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import no.difi.datahotel.util.bridge.FieldLight;
-import no.difi.datahotel.util.bridge.Metadata;
-import no.difi.datahotel.util.bridge.MetadataLight;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
+import no.difi.datahotel.util.model.FieldLight;
+import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.model.MetadataLight;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -99,14 +99,14 @@ public class DataFormatTest {
 		d.add(ds);
 		
 		List<FieldLight> fields = new ArrayList<FieldLight>();
-		no.difi.datahotel.util.bridge.Field field;
-		field = new no.difi.datahotel.util.bridge.Field();
+		no.difi.datahotel.util.model.Field field;
+		field = new no.difi.datahotel.util.model.Field();
 		field.setColumnNumber(1);
 		field.setName("Name");
 		field.setShortName("name");
 		fields.add(field.light());
 		
-		field = new no.difi.datahotel.util.bridge.Field();
+		field = new no.difi.datahotel.util.model.Field();
 		field.setColumnNumber(2);
 		field.setName("Description");
 		field.setShortName("description");
