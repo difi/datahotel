@@ -31,27 +31,56 @@ public class FieldLight {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
 	public Boolean getGroupable() {
 		return groupable;
 	}
 
-	public String getDescription() {
-		return description;
+	public void setGroupable(Boolean groupable) {
+		this.groupable = groupable;
 	}
 
 	public Boolean getSearchable() {
 		return searchable;
 	}
 
+	public void setSearchable(Boolean searchable) {
+		this.searchable = searchable;
+	}
+
 	public Boolean getIndexPrimaryKey() {
 		return indexPrimaryKey;
+	}
+
+	public void setIndexPrimaryKey(Boolean indexPrimaryKey) {
+		this.indexPrimaryKey = indexPrimaryKey;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getDefinition() {
 		return definition;
 	}
 
-	public String getShortName() {
-		return shortName;
+	public void setDefinition(String definition) {
+		this.definition = definition;
 	}
+
 }

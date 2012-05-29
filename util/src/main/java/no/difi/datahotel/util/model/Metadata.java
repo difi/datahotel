@@ -3,7 +3,6 @@ package no.difi.datahotel.util.model;
 import static no.difi.datahotel.util.shared.Filesystem.FILE_DATASET;
 import static no.difi.datahotel.util.shared.Filesystem.FILE_METADATA;
 import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
-import static no.difi.datahotel.util.shared.Filesystem.INACTIVE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -142,8 +141,6 @@ public class Metadata extends Abstract implements Comparable<Metadata>, Light<Me
 		Metadata metadata = (Metadata) read(Metadata.class, Filesystem.getFile(folder, FILE_METADATA));
 		metadata.setLocation(location);
 		metadata.setShortName(folder.getName());
-		if (Filesystem.getFile(folder, INACTIVE).exists())
-			metadata.setActive(false);
 		metadata.setDataset(Filesystem.getFile(folder, FILE_DATASET).exists());
 
 		return metadata;

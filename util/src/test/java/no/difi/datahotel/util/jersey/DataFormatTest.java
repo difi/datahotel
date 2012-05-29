@@ -8,16 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
-import no.difi.datahotel.util.jersey.CSVData;
-import no.difi.datahotel.util.jersey.DataFormat;
-import no.difi.datahotel.util.jersey.RequestContext;
 import no.difi.datahotel.util.model.FieldLight;
 import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.model.MetadataLight;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.google.gson.Gson;
 
@@ -65,7 +63,9 @@ public class DataFormatTest {
 		rField.setAccessible(true);
 		rField.set(df, null);
 
-		// TODO Ta over logger.
+		rField = DataFormat.class.getDeclaredField("logger");
+		rField.setAccessible(true);
+		rField.set(df, Mockito.mock(Logger.class));
 
 		assertEquals("Error", df.format("Message", null));
 	}
@@ -78,7 +78,9 @@ public class DataFormatTest {
 		rField.setAccessible(true);
 		rField.set(df, null);
 
-		// TODO Ta over logger.
+		rField = DataFormat.class.getDeclaredField("logger");
+		rField.setAccessible(true);
+		rField.set(df, Mockito.mock(Logger.class));
 
 		assertEquals("Error", df.formatError("Message", null));
 	}
@@ -89,7 +91,6 @@ public class DataFormatTest {
 	 * TODO Fix JSON and CSV.
 	 */
 	@Test
-	@Ignore
 	public void testSimple() {
 		List<Map<String, String>> d = new ArrayList<Map<String, String>>();
 		CSVData data = new CSVData(d);
@@ -131,12 +132,11 @@ public class DataFormatTest {
 		context.setFields(fields);
 		
 		for (DataFormat f : DataFormat.values()) {
-			if (f != DataFormat.TEXT_PLAIN && f != DataFormat.JSON) {
+			if (f != DataFormat.TEXT_HTML && f != DataFormat.TEXT_PLAIN && f != DataFormat.JSON) {
 				assertTrue(f.format(data, context).contains("World"));
 				assertTrue(f.format(data, context).contains("escription"));
 
 				if (f != DataFormat.CSV && f != DataFormat.CSVCORRECT) {
-					System.out.println(f.format(metadata, context));
 					assertTrue(f.format(metadata, context).contains("Difi"));
 					assertTrue(f.format(metadata, context).contains("escription"));
 					assertTrue(f.format(metadata, context).contains("www.difi.no"));

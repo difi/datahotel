@@ -17,8 +17,6 @@ public class Filesystem {
 	public static final String FILE_FIELDS = "fields.xml";
 	public static final String FILE_DEFINITIONS = "definitions.xml";
 	public static final String FILE_METADATA = "meta.xml";
-	@Deprecated
-	public static final String INACTIVE = "inactive";
 
 	public static String getHome() {
 		String dir = System.getProperty("user.home");
