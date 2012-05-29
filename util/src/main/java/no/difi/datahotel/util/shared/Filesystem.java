@@ -61,6 +61,7 @@ public class Filesystem {
 		return new File(path + File.separator + uri[uri.length - 1]);
 	}
 
+	@Deprecated
 	public static void delete(String folder, String owner, String group, String dataset) {
 		File target = Filesystem.getFolder(folder, owner, group, dataset);
 		for (File f : target.listFiles())

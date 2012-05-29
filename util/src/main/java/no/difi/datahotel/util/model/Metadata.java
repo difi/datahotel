@@ -20,7 +20,7 @@ public class Metadata extends Abstract implements Comparable<Metadata>, Light<Me
 
 	private String location = "";
 	private List<Metadata> children = new ArrayList<Metadata>();
-	private boolean active = false;
+	private boolean active = true;
 	private boolean dataset;
 	private Metadata parent;
 	private Logger logger = Logger.getAnonymousLogger();
@@ -142,7 +142,8 @@ public class Metadata extends Abstract implements Comparable<Metadata>, Light<Me
 		Metadata metadata = (Metadata) read(Metadata.class, Filesystem.getFile(folder, FILE_METADATA));
 		metadata.setLocation(location);
 		metadata.setShortName(folder.getName());
-		metadata.setActive(!Filesystem.getFile(folder, INACTIVE).exists());
+		if (Filesystem.getFile(folder, INACTIVE).exists())
+			metadata.setActive(false);
 		metadata.setDataset(Filesystem.getFile(folder, FILE_DATASET).exists());
 
 		return metadata;

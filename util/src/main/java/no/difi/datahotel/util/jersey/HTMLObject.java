@@ -71,12 +71,14 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<a href=\"/api/html\">Data</a>");
 
 		String l = "";
-		/*Metadata m = context.getMetadata();
-		while (m.getLocation() != null) {
+
+		Metadata m = context.getMetadata();
+		while (!"".equals(m.getLocation())) {
 			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + (l.equals("") ? m.getName() : m.getShortName())
 					+ "</a>" + l;
 			m = m.getParent();
-		}*/
+		}
+
 		sb.append(l);
 
 		sb.append("</h2></div></div>");
@@ -115,16 +117,16 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<div class=\"top\"><div class=\"holder\"><h1>Datahotel</h1><h2>");
 		sb.append("<a href=\"/api/html\">Data</a>");
 
-		/* if (context.getMetadata() != null) {
+		if (context.getMetadata() != null) {
 			String l = "";
 			Metadata md = context.getMetadata();
-			while (md.getLocation() != null) {
+			while (!"".equals(md.getLocation())) {
 				l = " / <a href=\"/api/html/" + md.getLocation() + "\">"
 						+ (l.equals("") ? md.getName() : md.getShortName()) + "</a>" + l;
 				md = md.getParent();
 			}
 			sb.append(l);
-		} */
+		}
 
 		sb.append("</h2></div></div>");
 
@@ -132,6 +134,9 @@ public class HTMLObject implements FormaterInterface {
 
 		int i = 0;
 		for (MetadataLight m : list) {
+			if (m == null)
+				System.out.println("Null in list");
+
 			i++;
 			sb.append("<div class=\"metadata ").append(i % 2 == 1 ? "odd" : "even").append("\">");
 
@@ -140,7 +145,8 @@ public class HTMLObject implements FormaterInterface {
 
 			sb.append("<div class=\"meta\">");
 			sb.append("<span class=\"updated\" title=\"Last updated\">")
-					.append(date.format(new Date(m.getUpdated() * 1000))).append("</span>");
+					.append(m.getUpdated() == null ? "Never" : date.format(new Date(m.getUpdated() * 1000)))
+					.append("</span>");
 			if (m.getUrl() != null)
 				sb.append("<span class=\"url\"><a href=\"").append(m.getUrl()).append("\" rel=\"nofollow\">")
 						.append(niceUrl(m.getUrl())).append("</a></span>");
@@ -166,11 +172,12 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<a href=\"/api/html\">Data</a>");
 
 		String l = "";
-		/*Metadata m = context.getMetadata();
-		while (m.getLocation() != null) {
+
+		Metadata m = context.getMetadata();
+		while (!"".equals(m.getLocation())) {
 			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + m.getShortName() + "</a>" + l;
 			m = m.getParent();
-		} */
+		}
 
 		sb.append(l).append(" / Fields</h2></div></div>");
 

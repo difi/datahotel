@@ -30,7 +30,6 @@ public class RootService {
 	}
 
 	@GET
-	@Path("")
 	public Response getFrontpage() {
 		return Response.ok("Placeholder").build();
 	}
