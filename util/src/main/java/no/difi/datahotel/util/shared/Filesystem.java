@@ -77,8 +77,7 @@ public class Filesystem {
 	}
 
 	public static void delete(String folder, String location) {
-		String[] l = location.split("/");
-		delete(folder, l[0], l[1], l[2]);
+		delete(getFolder(folder, location));
 	}
 
 	public static void delete(String folder) {

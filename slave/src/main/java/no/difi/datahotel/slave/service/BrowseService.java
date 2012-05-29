@@ -25,6 +25,7 @@ import no.difi.datahotel.util.jersey.RequestContext;
 import no.difi.datahotel.util.model.FieldLight;
 import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.model.MetadataLight;
+import no.difi.datahotel.util.shared.DatahotelException;
 
 @Path("/api/{type}/")
 @Stateless
@@ -49,7 +50,7 @@ public class BrowseService extends BaseService {
 	 * @return
 	 */
 	@GET
-	@Path("")
+	// @Path("")
 	public Response getOwnerList(@PathParam("type") String type, @Context HttpServletRequest req,
 			@Context UriInfo uriInfo) {
 		return getDataset(type, "", req, uriInfo);
@@ -70,6 +71,9 @@ public class BrowseService extends BaseService {
 				return returnNotFound("No elements found.");
 
 			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
@@ -123,6 +127,9 @@ public class BrowseService extends BaseService {
 						.header("X-Datahotel-Total-Pages", chunkEJB.getPages(metadata.getLocation()))
 						.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(metadata.getLocation())).build();
 			}
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
@@ -158,6 +165,9 @@ public class BrowseService extends BaseService {
 
 			return Response.ok(dataFormat.format(fields, context)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)

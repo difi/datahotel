@@ -18,6 +18,7 @@ import no.difi.datahotel.slave.logic.FieldEJB;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
 import no.difi.datahotel.util.model.DefinitionLight;
+import no.difi.datahotel.util.shared.DatahotelException;
 
 @Path("/api/{type}/_defs/")
 @Stateless
@@ -29,7 +30,7 @@ public class DefinitionService extends BaseService {
 	private FieldEJB fieldEJB;
 
 	@GET
-	@Path("")
+	// @Path("")
 	public Response getDefinitions(@PathParam("type") String type, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
 		RequestContext context = new RequestContext(uriInfo);
@@ -42,6 +43,9 @@ public class DefinitionService extends BaseService {
 				return returnNotFound("No fields available.");
 
 			return Response.ok(dataFormat.format(defs, context)).type(dataFormat.getMime()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
@@ -63,6 +67,9 @@ public class DefinitionService extends BaseService {
 				return returnNotFound("Definition never used.");
 
 			return Response.ok(dataFormat.format(datasets, context)).type(dataFormat.getMime()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)

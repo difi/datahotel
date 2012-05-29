@@ -39,6 +39,12 @@ public class FolderService {
 	}
 
 	@GET
+	@Path("update")
+	public void update() {
+		metadataEJB.update();
+	}
+	
+	@GET
 	@Path("children")
 	public List<Metadata> getRoot() {
 		return getLocation("");

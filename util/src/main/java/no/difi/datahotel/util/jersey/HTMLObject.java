@@ -71,12 +71,12 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<a href=\"/api/html\">Data</a>");
 
 		String l = "";
-		Metadata m = context.getMetadata();
+		/*Metadata m = context.getMetadata();
 		while (m.getLocation() != null) {
 			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + (l.equals("") ? m.getName() : m.getShortName())
 					+ "</a>" + l;
 			m = m.getParent();
-		}
+		}*/
 		sb.append(l);
 
 		sb.append("</h2></div></div>");
@@ -115,7 +115,7 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<div class=\"top\"><div class=\"holder\"><h1>Datahotel</h1><h2>");
 		sb.append("<a href=\"/api/html\">Data</a>");
 
-		if (context.getMetadata() != null) {
+		/* if (context.getMetadata() != null) {
 			String l = "";
 			Metadata md = context.getMetadata();
 			while (md.getLocation() != null) {
@@ -124,7 +124,7 @@ public class HTMLObject implements FormaterInterface {
 				md = md.getParent();
 			}
 			sb.append(l);
-		}
+		} */
 
 		sb.append("</h2></div></div>");
 
@@ -166,11 +166,11 @@ public class HTMLObject implements FormaterInterface {
 		sb.append("<a href=\"/api/html\">Data</a>");
 
 		String l = "";
-		Metadata m = context.getMetadata();
+		/*Metadata m = context.getMetadata();
 		while (m.getLocation() != null) {
 			l = " / <a href=\"/api/html/" + m.getLocation() + "\">" + m.getShortName() + "</a>" + l;
 			m = m.getParent();
-		}
+		} */
 
 		sb.append(l).append(" / Fields</h2></div></div>");
 
