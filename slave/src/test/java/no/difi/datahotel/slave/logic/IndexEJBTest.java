@@ -5,8 +5,9 @@ import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -16,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import no.difi.datahotel.slave.logic.FieldEJB;
-import no.difi.datahotel.slave.logic.IndexEJB;
-import no.difi.datahotel.slave.logic.SearchEJB;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.model.FieldLight;
@@ -117,7 +115,7 @@ public class IndexEJBTest {
 
 	@Test
 	public void testDelete() {
-		indexEJB.delete("difi", "miljo", "kalkulator");
+		indexEJB.delete("difi/miljo/kalkulator");
 	}
 
 	@Test
@@ -148,7 +146,7 @@ public class IndexEJBTest {
 		assertEquals(2, search.find(metadata, "", query, 1).size());
 		assertEquals(0, search.find(metadata, "", query, 2).size());
 
-		indexEJB.delete("difi", "geo", "kommune");
+		indexEJB.delete("difi/geo/kommune");
 	}
 
 	@Test

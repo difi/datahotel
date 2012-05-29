@@ -24,11 +24,6 @@
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<modules>
 						<webModule>
-							<artifactId>datahotel-master</artifactId>
-							<groupId>no.difi.datahotel</groupId>
-							<contextRoot>/master</contextRoot>
-						</webModule>
-						<webModule>
 							<artifactId>datahotel-slave</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/</contextRoot>
@@ -67,12 +62,6 @@
 	<dependencies>
 
 		<!-- WAR -->
-		<dependency>
-			<artifactId>datahotel-master</artifactId>
-			<groupId>no.difi.datahotel</groupId>
-			<version>1.1.0</version>
-			<type>war</type>
-		</dependency>
 		<dependency>
 			<artifactId>datahotel-slave</artifactId>
 			<groupId>no.difi.datahotel</groupId>

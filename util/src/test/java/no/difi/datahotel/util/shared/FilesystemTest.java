@@ -1,10 +1,6 @@
 package no.difi.datahotel.util.shared;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -48,27 +44,5 @@ public class FilesystemTest {
 		String sep = File.separator;
 		Assert.assertEquals(Filesystem.getHome().replace(File.separator + File.separator, File.separator) + "test"
 				+ sep + "file", Filesystem.getFile("test", "file").toString());
-	}
-
-	@Test
-	public void testDeleteAdvanced() throws IOException {
-
-		File dir1 = Filesystem.getFolder("test", "owner1", "group1", "dataset1");
-		File dir2 = Filesystem.getFolder("test", "owner1", "group1", "dataset2");
-		Filesystem.getFolder("test", "owner1", "group2", "dataset1");
-		File file = Filesystem.getFile("test", "owner1", "group1", "dataset1", "test");
-
-		assertTrue(file.createNewFile());
-
-		Filesystem.delete("test", "owner1", "group1", "dataset1");
-		assertFalse(dir1.exists());
-		assertTrue(dir2.exists());
-
-		Filesystem.delete("test", "owner1", "group1", "dataset2");
-		assertFalse(dir2.exists());
-		assertTrue(Filesystem.getFolderPath("test", "owner1").exists());
-
-		Filesystem.delete("test", "owner1", "group2", "dataset1");
-		assertFalse(Filesystem.getFolderPath("test", "owner1").exists());
 	}
 }

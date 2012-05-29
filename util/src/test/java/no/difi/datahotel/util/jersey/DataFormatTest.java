@@ -136,7 +136,7 @@ public class DataFormatTest {
 				assertTrue(f.format(data, context).contains("escription"));
 
 				if (f != DataFormat.CSV && f != DataFormat.CSVCORRECT) {
-					System.out.println(f.getType());
+					System.out.println(f.format(metadata, context));
 					assertTrue(f.format(metadata, context).contains("Difi"));
 					assertTrue(f.format(metadata, context).contains("escription"));
 					assertTrue(f.format(metadata, context).contains("www.difi.no"));

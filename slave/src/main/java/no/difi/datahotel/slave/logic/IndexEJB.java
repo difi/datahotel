@@ -38,9 +38,8 @@ public class IndexEJB {
 	@EJB
 	private FieldEJB fieldEJB;
 	
-	@Deprecated
-	public void delete(String owner, String group, String dataset) {
-		Filesystem.delete(FOLDER_CACHE_INDEX, owner, group, dataset);
+	public void delete(String location) {
+		Filesystem.delete(FOLDER_CACHE_INDEX, location);
 	}
 
 	public void update(Metadata metadata) {

@@ -61,22 +61,6 @@ public class Filesystem {
 		return new File(path + File.separator + uri[uri.length - 1]);
 	}
 
-	@Deprecated
-	public static void delete(String folder, String owner, String group, String dataset) {
-		File target = Filesystem.getFolder(folder, owner, group, dataset);
-		for (File f : target.listFiles())
-			f.delete();
-		target.delete();
-
-		File parentGroup = new File(target.getParent());
-		if (parentGroup.listFiles().length == 0) {
-			parentGroup.delete();
-			File parentOwner = new File(parentGroup.getParent());
-			if (parentOwner.listFiles().length == 0)
-				parentOwner.delete();
-		}
-	}
-
 	public static void delete(String folder, String location) {
 		delete(getFolder(folder, location));
 	}
