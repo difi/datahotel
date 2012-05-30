@@ -46,7 +46,7 @@ public class RequestContext {
 
 		if (parameters.containsKey("callback"))
 			if (!"".equals(parameters.getFirst("callback")))
-				query = parameters.getFirst("callback");
+				callback = parameters.getFirst("callback");
 
 		if (parameters.containsKey("page"))
 			if (!"".equals(parameters.getFirst("page")))
