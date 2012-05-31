@@ -13,10 +13,8 @@ import no.difi.datahotel.util.model.MetadataLight;
 public class HTMLObject implements FormaterInterface {
 
 	private static Tab[] tabs = new Tab[] { // new Tab("Home", "/"),
-	new Tab("Data", "/api/html"), new Tab("Definition", "/api/html/_defs") // ,
-																			// new
-																			// Tab("API",
-																			// "/api")
+	new Tab("Data", "/api/html") // , new Tab("Definition", "/api/html/_defs")
+									// , new Tab("API", "/api")
 	};
 	private static SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -232,7 +230,7 @@ public class HTMLObject implements FormaterInterface {
 
 	private String getTabs(String tab) {
 		StringBuilder sb = new StringBuilder();
-
+		/*
 		sb.append("<div class=\"holder\"><ul class=\"tabs\">");
 		sb.append("<li class=\"meta\"><a href=\"https://github.com/difi/datahotel\">Code</a></li>");
 
@@ -241,7 +239,7 @@ public class HTMLObject implements FormaterInterface {
 					.append(t.location).append("\">").append(t.name).append("</a></li>");
 
 		sb.append("</ul></div>");
-
+		 */
 		return sb.toString();
 	}
 
