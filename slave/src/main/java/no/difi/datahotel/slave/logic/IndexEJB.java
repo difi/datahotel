@@ -44,9 +44,9 @@ public class IndexEJB {
 
 	public void update(Metadata metadata) {
 		Logger logger = metadata.getLogger();
+		Timestamp ts = new Timestamp(FOLDER_CACHE_INDEX, metadata.getLocation(), "timestamp");
 		
-		File tsfile = Filesystem.getFile(FOLDER_CACHE_INDEX, metadata.getLocation(), "timestamp");
-		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
+		if (metadata.getUpdated() == ts.getTimestamp()) {
 			logger.info("Index up to date.");
 			return;
 		}
@@ -101,7 +101,8 @@ public class IndexEJB {
 			writer.close();
 			dir.close();
 			
-			Timestamp.setTimestamp(tsfile, metadata.getUpdated());
+			ts.setTimestamp(metadata.getUpdated());
+			ts.save();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 		}

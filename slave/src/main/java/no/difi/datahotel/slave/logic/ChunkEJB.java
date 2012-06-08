@@ -33,9 +33,12 @@ public class ChunkEJB {
 	
 	public void update(Metadata metadata) {
 		Logger logger = metadata.getLogger();
+		Timestamp ts = new Timestamp(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
 		
-		File tsfile = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
-		if (metadata.getUpdated() == Timestamp.getTimestamp(tsfile)) {
+		if (metadata.getUpdated() == ts.getTimestamp()) {
+			posts.put(metadata.getLocation(), ts.getLong("posts"));
+			pages.put(metadata.getLocation(), ts.getLong("pages"));
+			
 			logger.info("Chunk up to date.");
 			return;
 		}
@@ -78,7 +81,10 @@ public class ChunkEJB {
 			posts.put(metadata.getLocation(), counter);
 			pages.put(metadata.getLocation(), number);
 
-			Timestamp.setTimestamp(tsfile, metadata.getUpdated());
+			ts.setTimestamp(metadata.getUpdated());
+			ts.set("posts", counter);
+			ts.set("pages", number);
+			ts.save();
 		} catch (Exception e) {
 			// TODO Start sending exceptions.
 			logger.log(Level.WARNING, e.getMessage(), e);
