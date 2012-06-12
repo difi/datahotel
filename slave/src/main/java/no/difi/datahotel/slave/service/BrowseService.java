@@ -19,6 +19,7 @@ import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
 import no.difi.datahotel.slave.logic.FieldEJB;
 import no.difi.datahotel.slave.logic.SearchEJB;
+import no.difi.datahotel.slave.logic.SearchEJB.Result;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
@@ -50,7 +51,6 @@ public class BrowseService extends BaseService {
 	 * @return
 	 */
 	@GET
-	// @Path("")
 	public Response getOwnerList(@PathParam("type") String type, @Context HttpServletRequest req,
 			@Context UriInfo uriInfo) {
 		return getDataset(type, "", req, uriInfo);
@@ -115,11 +115,11 @@ public class BrowseService extends BaseService {
 			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
 			if (context.isSearch()) {
-				return Response
-						.ok(dataFormat.format(
-								new CSVData(searchEJB.find(metadata, context.getQuery(), context.getLookup(),
-										context.getPage())), context)).type(dataFormat.getMime())
-						.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", context.getPage()).build();
+				Result result = searchEJB.find(metadata, context.getQuery(), context.getLookup(), context.getPage());
+				return Response.ok(dataFormat.format(new CSVData(result.docs), context)).type(dataFormat.getMime())
+						.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", context.getPage())
+						.header("X-Datahotel-Total-Pages", (((result.hits - (result.hits % 100)) / 100) + 1))
+						.header("X-Datahotel-Total-Posts", result.hits).build();
 			} else {
 				return Response.ok(dataFormat.format(new CSVData(chunkEJB.get(metadata, context.getPage())), context))
 						.type(dataFormat.getMime()).header("ETag", metadata.getUpdated())

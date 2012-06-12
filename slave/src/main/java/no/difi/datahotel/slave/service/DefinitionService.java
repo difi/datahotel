@@ -20,7 +20,7 @@ import no.difi.datahotel.util.jersey.RequestContext;
 import no.difi.datahotel.util.model.DefinitionLight;
 import no.difi.datahotel.util.shared.DatahotelException;
 
-@Path("/api/{type}/_defs/")
+@Path("/api/{type}/_def/")
 @Stateless
 public class DefinitionService extends BaseService {
 
@@ -30,7 +30,6 @@ public class DefinitionService extends BaseService {
 	private FieldEJB fieldEJB;
 
 	@GET
-	// @Path("")
 	public Response getDefinitions(@PathParam("type") String type, @Context UriInfo uriInfo) {
 		DataFormat dataFormat = DataFormat.get(type);
 		RequestContext context = new RequestContext(uriInfo);

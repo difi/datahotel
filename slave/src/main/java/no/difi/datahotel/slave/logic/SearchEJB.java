@@ -28,7 +28,7 @@ public class SearchEJB {
 
 	private static QueryParser parser = new QueryParser(Version.LUCENE_33, "searchable", new StandardAnalyzer(Version.LUCENE_33));
 
-	public List<Map<String, String>> find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
+	public Result find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
 		int num = 100;
 
 		StringBuilder query = new StringBuilder();
@@ -42,12 +42,16 @@ public class SearchEJB {
 		IndexSearcher searcher = new IndexSearcher(dir);
 
 		TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
-		List<Map<String, String>> result = convert(searcher, docs);
+		List<Map<String, String>> rdocs = convert(searcher, docs);
 		
 		searcher.close();
 		dir.close();
+		
+		Result result = new Result();
+		result.hits = docs.totalHits;
+		result.docs = (rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : rdocs.subList(num * (page - 1), rdocs.size()); 
 
-		return (result.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : result.subList(num * (page - 1), result.size());
+		return result;
 	}
 
 	private ArrayList<Map<String, String>> convert(IndexSearcher searcher, TopDocs docs) throws IOException {
@@ -60,5 +64,10 @@ public class SearchEJB {
 		}
 
 		return results;
+	}
+	
+	public class Result {
+		public List<Map<String, String>> docs;
+		public int hits;
 	}
 }

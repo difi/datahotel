@@ -100,17 +100,17 @@ public class IndexEJBTest {
 	public void testSearch() throws Exception {
 		testIndex();
 
-		assertEquals(2, search.find(metadata, "Energi", null, 1).size());
-		assertEquals(0, search.find(metadata, "km", null, 1).size());
-		assertEquals(1, search.find(metadata, "tog", null, 1).size());
-		assertEquals(1, search.find(metadata, "ark", null, 1).size());
-		assertEquals(2, search.find(metadata, "BUSS", null, 1).size());
+		assertEquals(2, search.find(metadata, "Energi", null, 1).docs.size());
+		assertEquals(0, search.find(metadata, "km", null, 1).docs.size());
+		assertEquals(1, search.find(metadata, "tog", null, 1).docs.size());
+		assertEquals(1, search.find(metadata, "ark", null, 1).docs.size());
+		assertEquals(2, search.find(metadata, "BUSS", null, 1).docs.size());
 
-		assertEquals(0, search.find(metadata, "Energi", null, 2).size());
-		assertEquals(0, search.find(metadata, "km", null, 2).size());
-		assertEquals(0, search.find(metadata, "tog", null, 2).size());
-		assertEquals(0, search.find(metadata, "ark", null, 2).size());
-		assertEquals(0, search.find(metadata, "BUSS", null, 2).size());
+		assertEquals(0, search.find(metadata, "Energi", null, 2).docs.size());
+		assertEquals(0, search.find(metadata, "km", null, 2).docs.size());
+		assertEquals(0, search.find(metadata, "tog", null, 2).docs.size());
+		assertEquals(0, search.find(metadata, "ark", null, 2).docs.size());
+		assertEquals(0, search.find(metadata, "BUSS", null, 2).docs.size());
 	}
 
 	@Test
@@ -128,23 +128,23 @@ public class IndexEJBTest {
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");
 		query.put("fylke", "14");
-		assertEquals(1, search.find(metadata, null, query, 1).size());
-		assertEquals(0, search.find(metadata, null, query, 2).size());
+		assertEquals(1, search.find(metadata, null, query, 1).docs.size());
+		assertEquals(0, search.find(metadata, null, query, 2).docs.size());
 
 		query.clear();
 		query.put("kommune", "1401");
-		assertEquals(1, search.find(metadata, null, query, 1).size());
-		assertEquals(0, search.find(metadata, null, query, 2).size());
+		assertEquals(1, search.find(metadata, null, query, 1).docs.size());
+		assertEquals(0, search.find(metadata, null, query, 2).docs.size());
 
 		query.clear();
 		query.put("fylke", "14");
-		assertEquals(26, search.find(metadata, "", query, 1).size());
-		assertEquals(0, search.find(metadata, "", query, 2).size());
+		assertEquals(26, search.find(metadata, "", query, 1).docs.size());
+		assertEquals(0, search.find(metadata, "", query, 2).docs.size());
 
 		query.clear();
 		query.put("navn", "l*anger");
-		assertEquals(2, search.find(metadata, "", query, 1).size());
-		assertEquals(0, search.find(metadata, "", query, 2).size());
+		assertEquals(2, search.find(metadata, "", query, 1).docs.size());
+		assertEquals(0, search.find(metadata, "", query, 2).docs.size());
 
 		indexEJB.delete("difi/geo/kommune");
 	}
