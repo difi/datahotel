@@ -4,6 +4,7 @@ import static no.difi.datahotel.util.shared.Filesystem.FILE_METADATA;
 import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -23,6 +24,9 @@ import no.difi.datahotel.util.model.Disk;
 import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 import no.difi.datahotel.util.shared.Part;
+
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 @Stateless
 @Path("/master/folder")
@@ -52,7 +56,8 @@ public class FolderService {
 
 	@POST
 	@Path("{location: [a-z0-9\\-/]*}")
-	public void updateMetadata(@PathParam("location") String location, JAXBElement<Metadata> metadataJAXB) throws Exception {
+	public void updateMetadata(@PathParam("location") String location, JAXBElement<Metadata> metadataJAXB)
+			throws Exception {
 		if (metadataEJB.getChild(Part.SLAVE, location) != null) {
 			File file = Filesystem.getFile(FOLDER_SLAVE, location, FILE_METADATA);
 			Disk.save(file, metadataJAXB.getValue());
@@ -61,11 +66,28 @@ public class FolderService {
 
 	@PUT
 	@Path("{location: [a-z0-9\\-/]*}")
-	public void insertMetadata(@PathParam("location") String location, JAXBElement<Metadata> metadataJAXB) throws Exception {
+	public void insertMetadata(@PathParam("location") String location, JAXBElement<Metadata> metadataJAXB)
+			throws Exception {
 		if (location.equals("") || metadataEJB.getChild(Part.SLAVE, location) != null) {
-			File file = Filesystem.getFile(FOLDER_SLAVE, location, metadataJAXB.getValue().getShortName(), FILE_METADATA);
+			File file = Filesystem.getFile(FOLDER_SLAVE, location, metadataJAXB.getValue().getShortName(),
+					FILE_METADATA);
 			Disk.save(file, metadataJAXB.getValue());
 		}
+	}
+
+	// curl -X POST --form file=@file http://localhost:8080/master/folder/[location]/upload
+	@POST
+	@Path("{location: [a-z0-9\\-/]*}/upload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public String uploadFile(@PathParam("location") String location, @FormDataParam("file") InputStream file,
+			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+		Metadata metadata = metadataEJB.getChild(Part.SLAVE, location);
+		if (metadata != null && metadata.isDataset()) {
+			metadata.getLogger().info(fileDetail.getFileName());
+			return "OK\n";
+		}
+
+		return "Failed\n";
 	}
 
 	@GET
@@ -73,5 +95,4 @@ public class FolderService {
 	public List<Metadata> getLocation(@PathParam("location") String location) {
 		return metadataEJB.getChildren(Part.SLAVE, location);
 	}
-
 }

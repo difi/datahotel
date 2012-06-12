@@ -31,14 +31,6 @@ public class DownloadService extends BaseService {
 	@EJB
 	private ChunkEJB chunkEJB;
 
-	/**
-	 * "/api/type/owner/group/dataset" Gets a dataset or metadata of a dataset
-	 * based on owner and group.
-	 * 
-	 * @param type
-	 * @param location
-	 * @return
-	 */
 	@GET
 	@Path("{location: [a-z0-9\\-/]*}")
 	public Response getFullDataset(@PathParam("location") String location, @Context HttpServletRequest req,
@@ -53,6 +45,56 @@ public class DownloadService extends BaseService {
 				return returnNotModified();
 
 			return Response.ok(chunkEJB.getFullDataset(metadata)).type(dataFormat.getMime())
+					.header("ETag", metadata.getUpdated()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(404)
+					.build();
+		}
+	}
+	
+	@GET
+	@Path("{location: [a-z0-9\\-/]*}/meta.xml")
+	public Response getMetadata(@PathParam("location") String location, @Context HttpServletRequest req,
+			@Context UriInfo uriInfo) {
+		DataFormat dataFormat = DataFormat.XML;
+		try {
+			Metadata metadata = dataEJB.getChild(location);
+			if (metadata == null)
+				return returnNotFound("Dataset not found or not ready.");
+
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
+
+			return Response.ok(chunkEJB.getMetadata(metadata)).type(dataFormat.getMime())
+					.header("ETag", metadata.getUpdated()).build();
+		} catch (DatahotelException e) {
+			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(404)
+					.build();
+		}
+	}
+
+	@GET
+	@Path("{location: [a-z0-9\\-/]*}/fields.xml")
+	public Response getFields(@PathParam("location") String location, @Context HttpServletRequest req,
+			@Context UriInfo uriInfo) {
+		DataFormat dataFormat = DataFormat.XML;
+		try {
+			Metadata metadata = dataEJB.getChild(location);
+			if (metadata == null)
+				return returnNotFound("Dataset not found or not ready.");
+
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
+
+			return Response.ok(chunkEJB.getFields(metadata)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
 		} catch (DatahotelException e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))

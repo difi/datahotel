@@ -28,7 +28,6 @@ public class XmlEJB {
 		for (int i = 0; i < fieldList.size(); i++) {
 			FieldEntity fieldEntity = fieldList.get(i);
 			Field field = new Field();
-			field.setColumnNumber(i);
 
 			field.setDefinition(createDefinition(fieldEntity));
 			field.setGroupable(fieldEntity.getGroupable());

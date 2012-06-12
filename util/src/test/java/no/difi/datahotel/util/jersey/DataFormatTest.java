@@ -102,13 +102,11 @@ public class DataFormatTest {
 		List<FieldLight> fields = new ArrayList<FieldLight>();
 		no.difi.datahotel.util.model.Field field;
 		field = new no.difi.datahotel.util.model.Field();
-		field.setColumnNumber(1);
 		field.setName("Name");
 		field.setShortName("name");
 		fields.add(field.light());
 		
 		field = new no.difi.datahotel.util.model.Field();
-		field.setColumnNumber(2);
 		field.setName("Description");
 		field.setShortName("description");
 		fields.add(field.light());

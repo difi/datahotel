@@ -86,8 +86,8 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);
 		
-		assertEquals(100, chunkEJB.get(metadata, 1).size());
-		assertEquals(19, chunkEJB.get(metadata, 2).size());
+		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
+		assertEquals(19, chunkEJB.get(metadata, 2).getEntries().size());
 		
 		assertNull(chunkEJB.get(metadata, 3));
 		
@@ -106,11 +106,8 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);		
 
-		assertEquals(100, chunkEJB.get(metadata, 1).size());
+		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
 		assertNull(chunkEJB.get(metadata, 2));
-		
-		assertEquals(new Long(1), chunkEJB.getPages("difi/test/hundred"));
-		assertEquals(new Long(0), chunkEJB.getPages("difi/test/hundred200"));
 		
 		assertEquals(new Long(100), chunkEJB.getPosts("difi/test/hundred"));
 		assertEquals(new Long(0), chunkEJB.getPosts("difi/test/hundred200"));
@@ -128,7 +125,7 @@ public class ChunkEJBTest {
 
 		chunkEJB.update(metadata);		
 
-		assertEquals(100, chunkEJB.get(metadata, 1).size());
+		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
 		assertNull(chunkEJB.get(metadata, 2));
 		long ts = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp").lastModified();
 		

@@ -1,6 +1,7 @@
 package no.difi.datahotel.util.jersey;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,11 @@ public class CSVData implements Serializable {
 	
 	private static final long serialVersionUID = -8412531397903068046L;
 	private List<Map<String, String>> entries;
+	private long page, pages, posts;
+	
+	public CSVData() {
+		this.setEntries(new ArrayList<Map<String,String>>());
+	}
 	
 	/**
 	 * Creates a new CSVData object with the specified list of hashmaps.
@@ -35,5 +41,26 @@ public class CSVData implements Serializable {
 	 */
 	public List<Map<String, String>> getEntries() {
 		return entries;
+	}
+
+	public long getPosts() {
+		return posts;
+	}
+
+	public void setPosts(long posts) {
+		this.posts = posts;
+		this.pages = ((posts - (posts % 100)) / 100) + (posts % 100 == 0 ? 0 : 1);
+	}
+	
+	public long getPages() {
+		return pages;
+	}
+
+	public long getPage() {
+		return page;
+	}
+
+	public void setPage(long page) {
+		this.page = page;
 	}
 }

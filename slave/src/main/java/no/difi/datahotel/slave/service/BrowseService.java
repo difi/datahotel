@@ -19,7 +19,6 @@ import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
 import no.difi.datahotel.slave.logic.FieldEJB;
 import no.difi.datahotel.slave.logic.SearchEJB;
-import no.difi.datahotel.slave.logic.SearchEJB.Result;
 import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.jersey.DataFormat;
 import no.difi.datahotel.util.jersey.RequestContext;
@@ -43,13 +42,6 @@ public class BrowseService extends BaseService {
 	@EJB
 	private SearchEJB searchEJB;
 
-	/**
-	 * "/api/type" Gets a list of owners available in the datahotel.
-	 * 
-	 * @param type
-	 *            Mime type
-	 * @return
-	 */
 	@GET
 	public Response getOwnerList(@PathParam("type") String type, @Context HttpServletRequest req,
 			@Context UriInfo uriInfo) {
@@ -81,13 +73,6 @@ public class BrowseService extends BaseService {
 		}
 	}
 
-	/**
-	 * "/api/type/owner/group/dataset" Gets a dataset or metadata of a dataset
-	 * based on owner and group.
-	 * 
-	 * @param type
-	 * @return
-	 */
 	@GET
 	@Path("{location: [a-z0-9\\-/]*}")
 	public Response getDataset(@PathParam("type") String type, @PathParam("location") String location,
@@ -114,19 +99,20 @@ public class BrowseService extends BaseService {
 			List<FieldLight> fields = fieldEJB.getFields(metadata);
 			RequestContext context = new RequestContext(uriInfo, metadata, fields);
 
-			if (context.isSearch()) {
-				Result result = searchEJB.find(metadata, context.getQuery(), context.getLookup(), context.getPage());
-				return Response.ok(dataFormat.format(new CSVData(result.docs), context)).type(dataFormat.getMime())
-						.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", context.getPage())
-						.header("X-Datahotel-Total-Pages", (((result.hits - (result.hits % 100)) / 100) + 1))
-						.header("X-Datahotel-Total-Posts", result.hits).build();
-			} else {
-				return Response.ok(dataFormat.format(new CSVData(chunkEJB.get(metadata, context.getPage())), context))
-						.type(dataFormat.getMime()).header("ETag", metadata.getUpdated())
-						.header("X-Datahotel-Page", context.getPage())
-						.header("X-Datahotel-Total-Pages", chunkEJB.getPages(metadata.getLocation()))
-						.header("X-Datahotel-Total-Posts", chunkEJB.getPosts(metadata.getLocation())).build();
-			}
+			CSVData result;
+			if (context.isSearch())
+				result = searchEJB.find(metadata, context.getQuery(), context.getLookup(), context.getPage());
+			else
+				result = chunkEJB.get(metadata, context.getPage());
+
+			if (result == null)
+				throw new DatahotelException("No data retrieved.");
+			
+			return Response.ok(dataFormat.format(result, context)).type(dataFormat.getMime())
+					.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", result.getPage())
+					.header("X-Datahotel-Total-Pages", result.getPages())
+					.header("X-Datahotel-Total-Posts", result.getPosts()).build();
+
 		} catch (DatahotelException e) {
 			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
 					.type(dataFormat.getMime()).status(500).build();
@@ -137,13 +123,6 @@ public class BrowseService extends BaseService {
 		}
 	}
 
-	/**
-	 * "/api/type/owner/group/dataset/metadata" Gets a dataset or metadata of a
-	 * dataset based on owner and group.
-	 * 
-	 * @param type
-	 * @return
-	 */
 	@GET
 	@Path("{location: [a-z0-9\\-/]*}/fields")
 	public Response getFields(@PathParam("type") String type, @PathParam("location") String location,

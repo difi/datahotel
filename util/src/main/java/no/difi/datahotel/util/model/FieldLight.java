@@ -11,9 +11,9 @@ public class FieldLight {
 
 	private String name;
 	private String shortName;
-	private Boolean groupable;
-	private Boolean searchable;
-	private Boolean indexPrimaryKey;
+	private boolean groupable;
+	private boolean searchable;
+	private boolean indexPrimaryKey;
 	private String description;
 	private String definition;
 
@@ -43,27 +43,27 @@ public class FieldLight {
 		this.shortName = shortName;
 	}
 
-	public Boolean getGroupable() {
+	public boolean getGroupable() {
 		return groupable;
 	}
 
-	public void setGroupable(Boolean groupable) {
+	public void setGroupable(boolean groupable) {
 		this.groupable = groupable;
 	}
 
-	public Boolean getSearchable() {
+	public boolean getSearchable() {
 		return searchable;
 	}
 
-	public void setSearchable(Boolean searchable) {
+	public void setSearchable(boolean searchable) {
 		this.searchable = searchable;
 	}
 
-	public Boolean getIndexPrimaryKey() {
+	public boolean getIndexPrimaryKey() {
 		return indexPrimaryKey;
 	}
 
-	public void setIndexPrimaryKey(Boolean indexPrimaryKey) {
+	public void setIndexPrimaryKey(boolean indexPrimaryKey) {
 		this.indexPrimaryKey = indexPrimaryKey;
 	}
 

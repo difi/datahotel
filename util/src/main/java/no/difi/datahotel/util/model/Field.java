@@ -2,7 +2,6 @@ package no.difi.datahotel.util.model;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -21,16 +20,13 @@ public class Field implements Light<FieldLight> {
 	private String shortName;
 
 	@XmlElement
-	private Boolean groupable;
+	private boolean groupable = false;
 
 	@XmlElement
-	private Boolean searchable;
+	private boolean searchable = false;
 
 	@XmlElement
-	private Boolean indexPrimaryKey;
-
-	@XmlAttribute
-	private int columnNumber;
+	private boolean indexPrimaryKey = false;
 
 	@XmlElement
 	private String content;
@@ -59,20 +55,12 @@ public class Field implements Light<FieldLight> {
 		this.name = name;
 	}
 
-	public Boolean getGroupable() {
+	public boolean getGroupable() {
 		return groupable;
 	}
 
-	public void setGroupable(Boolean groupable) {
+	public void setGroupable(boolean groupable) {
 		this.groupable = groupable;
-	}
-
-	public int getColumnNumber() {
-		return columnNumber;
-	}
-
-	public void setColumnNumber(int columnNumber) {
-		this.columnNumber = columnNumber;
 	}
 
 	public String getContent() {
@@ -83,19 +71,19 @@ public class Field implements Light<FieldLight> {
 		this.content = metadata;
 	}
 
-	public void setSearchable(Boolean searchable) {
+	public void setSearchable(boolean searchable) {
 		this.searchable = searchable;
 	}
 
-	public Boolean getSearchable() {
+	public boolean getSearchable() {
 		return searchable;
 	}
 
-	public void setIndexPrimaryKey(Boolean indexPrimaryKey) {
+	public void setIndexPrimaryKey(boolean indexPrimaryKey) {
 		this.indexPrimaryKey = indexPrimaryKey;
 	}
 
-	public Boolean getIndexPrimaryKey() {
+	public boolean getIndexPrimaryKey() {
 		return indexPrimaryKey;
 	}
 

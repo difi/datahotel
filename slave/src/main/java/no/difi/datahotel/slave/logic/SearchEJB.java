@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.ejb.Stateless;
 
+import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 
@@ -28,7 +29,7 @@ public class SearchEJB {
 
 	private static QueryParser parser = new QueryParser(Version.LUCENE_33, "searchable", new StandardAnalyzer(Version.LUCENE_33));
 
-	public Result find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
+	public CSVData find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
 		int num = 100;
 
 		StringBuilder query = new StringBuilder();
@@ -47,9 +48,10 @@ public class SearchEJB {
 		searcher.close();
 		dir.close();
 		
-		Result result = new Result();
-		result.hits = docs.totalHits;
-		result.docs = (rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : rdocs.subList(num * (page - 1), rdocs.size()); 
+		CSVData result = new CSVData();
+		result.setEntries((rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : rdocs.subList(num * (page - 1), rdocs.size()));
+		result.setPosts(docs.totalHits);
+		result.setPage(page);
 
 		return result;
 	}
@@ -64,10 +66,5 @@ public class SearchEJB {
 		}
 
 		return results;
-	}
-	
-	public class Result {
-		public List<Map<String, String>> docs;
-		public int hits;
 	}
 }

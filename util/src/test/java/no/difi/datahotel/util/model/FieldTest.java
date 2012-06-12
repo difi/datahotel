@@ -18,7 +18,6 @@ public class FieldTest {
 
 		assertNull(f.getName());
 		assertNull(f.getShortName());
-		assertEquals(0, f.getColumnNumber());
 		assertNull(f.getContent());
 		assertNull(f.getDefinition());
 		assertNull(f.getGroupable());
@@ -27,7 +26,6 @@ public class FieldTest {
 
 		f.setName("Direktoratet for forvaltning og IKT");
 		f.setShortName("difi");
-		f.setColumnNumber(Integer.MAX_VALUE);
 		f.setContent("What goes here?");
 		f.setDefinition(new Definition());
 		f.setGroupable(true);
@@ -36,7 +34,6 @@ public class FieldTest {
 
 		assertEquals("Direktoratet for forvaltning og IKT", f.getName());
 		assertEquals("difi", f.getShortName());
-		assertEquals(Integer.MAX_VALUE, f.getColumnNumber());
 		assertEquals("What goes here?", f.getContent());
 		assertEquals(new Definition(), f.getDefinition());
 		assertEquals(true, f.getGroupable());

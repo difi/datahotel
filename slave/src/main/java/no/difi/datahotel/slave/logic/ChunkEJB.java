@@ -6,6 +6,7 @@ import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import javax.ejb.Singleton;
 import no.difi.datahotel.util.csv.CSVParser;
 import no.difi.datahotel.util.csv.CSVParserFactory;
 import no.difi.datahotel.util.csv.CSVWriter;
+import no.difi.datahotel.util.jersey.CSVData;
 import no.difi.datahotel.util.model.Metadata;
 import no.difi.datahotel.util.shared.Filesystem;
 import no.difi.datahotel.util.shared.Timestamp;
@@ -23,21 +25,27 @@ import no.difi.datahotel.util.shared.Timestamp;
 public class ChunkEJB {
 
 	private Map<String, Long> posts = new HashMap<String, Long>();
-	private Map<String, Long> pages = new HashMap<String, Long>();
 
 	private int size = 100;
 
 	public File getFullDataset(Metadata metadata) {
 		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_DATASET);
 	}
-	
+
+	public File getMetadata(Metadata metadata) {
+		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_METADATA);
+	}
+
+	public File getFields(Metadata metadata) {
+		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_FIELDS);
+	}
+
 	public void update(Metadata metadata) {
 		Logger logger = metadata.getLogger();
 		Timestamp ts = new Timestamp(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
 		
 		if (metadata.getUpdated() == ts.getTimestamp()) {
 			posts.put(metadata.getLocation(), ts.getLong("posts"));
-			pages.put(metadata.getLocation(), ts.getLong("pages"));
 			
 			logger.info("Chunk up to date.");
 			return;
@@ -79,11 +87,9 @@ public class ChunkEJB {
 			Filesystem.getFolderPath(FOLDER_CACHE_CHUNK, locationTmp).renameTo(goal);
 
 			posts.put(metadata.getLocation(), counter);
-			pages.put(metadata.getLocation(), number);
 
 			ts.setTimestamp(metadata.getUpdated());
 			ts.set("posts", counter);
-			ts.set("pages", number);
 			ts.save();
 		} catch (Exception e) {
 			// TODO Start sending exceptions.
@@ -91,20 +97,22 @@ public class ChunkEJB {
 		}
 	}
 
-	public ArrayList<Map<String, String>> get(Metadata metadata, int number) {
+	public CSVData get(Metadata metadata, long page) {
 		Logger logger = metadata.getLogger();
 		
-		File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + number + ".csv");
-
-		ArrayList<Map<String, String>> result = new ArrayList<Map<String, String>>();
 		try {
+			File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + page + ".csv");
+
+			List<Map<String, String>> data = new ArrayList<Map<String, String>>();
 			CSVParser parser = CSVParserFactory.getCSVParser(source);
 
 			while (parser.hasNext())
-				result.add(parser.getNextLine());
-
+				data.add(parser.getNextLine());
 			parser.close();
 
+			CSVData result = new CSVData(data);
+			result.setPage(page);
+			result.setPosts(posts.get(metadata.getLocation()));
 			return result;
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage());
@@ -114,9 +122,5 @@ public class ChunkEJB {
 
 	public Long getPosts(String location) {
 		return posts.containsKey(location) ? posts.get(location) : 0;
-	}
-
-	public Long getPages(String location) {
-		return pages.containsKey(location) ? pages.get(location) : 0;
 	}
 }
