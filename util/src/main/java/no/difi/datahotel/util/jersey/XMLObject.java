@@ -49,6 +49,9 @@ public class XMLObject implements FormaterInterface {
 			Document doc = docBuilder.newDocument();
 			doc.setXmlStandalone(true);
 			Element rootElement = doc.createElement("entries");
+			rootElement.setAttribute("page", String.valueOf(csvData.getPage()));
+			rootElement.setAttribute("pages", String.valueOf(csvData.getPages()));
+			rootElement.setAttribute("posts", String.valueOf(csvData.getPosts()));
 			doc.appendChild(rootElement);
 
 			for (Map<String, String> e : csvData.getEntries()) {

@@ -230,7 +230,8 @@ public class HTMLObject implements FormaterInterface {
 	private String getTabs(String tab) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class=\"holder\"><ul class=\"tabs\">");
-		sb.append("<li class=\"meta\"><a href=\"https://github.com/difi/datahotel\">Code</a></li>");
+		sb.append("<li class=\"meta\"><a href=\"https://github.com/difi/datahotel\">GitHub</a></li>");
+		sb.append("<li class=\"meta\"><a href=\"https://twitter.com/datahotell\">Twitter</a></li>");
 
 		for (Tab t : tabs)
 			sb.append("<li class=\"").append(t.name.equals(tab) ? "tab active" : "tab").append("\"><a href=\"")
