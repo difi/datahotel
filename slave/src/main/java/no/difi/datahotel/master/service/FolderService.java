@@ -4,8 +4,11 @@ import static no.difi.datahotel.util.shared.Filesystem.FILE_METADATA;
 import static no.difi.datahotel.util.shared.Filesystem.FOLDER_SLAVE;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -22,8 +25,11 @@ import javax.xml.bind.JAXBElement;
 import no.difi.datahotel.slave.logic.MetadataEJB;
 import no.difi.datahotel.util.model.Disk;
 import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.model.Version;
 import no.difi.datahotel.util.shared.Filesystem;
 import no.difi.datahotel.util.shared.Part;
+
+import org.apache.commons.io.IOUtils;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
@@ -75,19 +81,47 @@ public class FolderService {
 		}
 	}
 
-	// curl -X POST --form file=@file http://localhost:8080/master/folder/[location]/upload
+	// curl -X POST --form file=@file
+	// http://localhost:8080/master/folder/[location]/upload
 	@POST
 	@Path("{location: [a-z0-9\\-/]*}/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public String uploadFile(@PathParam("location") String location, @FormDataParam("file") InputStream file,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 		Metadata metadata = metadataEJB.getChild(Part.SLAVE, location);
+		Logger logger = metadata.getLogger();
+
 		if (metadata != null && metadata.isDataset()) {
-			metadata.getLogger().info(fileDetail.getFileName());
-			return "OK\n";
+			try {
+				metadata.getLogger().info(fileDetail.getFileName());
+				String ts = String.valueOf(System.currentTimeMillis());
+				File target = Filesystem.getFile(Filesystem.FOLDER_MASTER, metadata.getLocation(), ts, "original.csv");
+				FileWriter writer = new FileWriter(target);
+				IOUtils.copy(file, writer);
+				writer.close();
+
+				logger.info("Uploaded file.");
+				return ts;
+			} catch (Exception e) {}
 		}
 
+		logger.warning("Unable to upload file.");
 		return "Failed\n";
+	}
+
+	@GET
+	@Path("{location: [a-z0-9\\-/]*}/versions")
+	public List<Version> getVersions(@PathParam("location") String location) {
+		Metadata metadata = metadataEJB.getChild(Part.SLAVE, location);
+		if (metadata != null && metadata.isDataset()) {
+			File home = Filesystem.getFolder(Filesystem.FOLDER_MASTER, metadata.getLocation());
+			List<Version> versions = new ArrayList<Version>();
+			for (File f : home.listFiles())
+				if (f.isDirectory())
+					versions.add(new Version(f));
+			return versions;
+		}
+		return null;
 	}
 
 	@GET

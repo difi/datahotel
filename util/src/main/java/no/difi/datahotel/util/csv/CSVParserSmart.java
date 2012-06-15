@@ -47,6 +47,4 @@ public class CSVParserSmart extends CSVParserImpl {
 		char delimiter = FindCsvErrors.findDelimiter(bufReader).toCharArray()[0];
 		super.setDelimiter(delimiter);
 	}
-	
-	
 }
