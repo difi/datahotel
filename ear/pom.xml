@@ -9,7 +9,7 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>datahotel-delivery-slave</artifactId>
+	<artifactId>datahotel-ear</artifactId>
 	<groupId>no.difi.datahotel</groupId>
 	<packaging>ear</packaging>
 	<name>Data Hotel :: EAR</name>
@@ -33,7 +33,7 @@
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<modules>
 						<webModule>
-							<artifactId>datahotel-slave</artifactId>
+							<artifactId>datahotel-server</artifactId>
 							<groupId>no.difi.datahotel</groupId>
 							<contextRoot>/</contextRoot>
 						</webModule>
@@ -54,7 +54,7 @@
 
 	<dependencies>
 		<dependency>
-			<artifactId>datahotel-slave</artifactId>
+			<artifactId>datahotel-server</artifactId>
 			<groupId>no.difi.datahotel</groupId>
 			<version>1.1.0</version>
 			<type>war</type>
