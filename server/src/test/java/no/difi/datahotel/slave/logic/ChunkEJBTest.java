@@ -2,15 +2,13 @@ package no.difi.datahotel.slave.logic;
 
 import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_CHUNK;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 import no.difi.datahotel.model.Metadata;
-import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.util.Filesystem;
 
 import org.junit.AfterClass;
@@ -89,10 +87,10 @@ public class ChunkEJBTest {
 		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
 		assertEquals(19, chunkEJB.get(metadata, 2).getEntries().size());
 		
-		assertNull(chunkEJB.get(metadata, 3));
+		assertEquals(0, chunkEJB.get(metadata, 3).getEntries().size());
 		
 		metadata.setLocation("difi/test/simple2");
-		assertNull(chunkEJB.get(metadata, 1));
+		assertEquals(0, chunkEJB.get(metadata, 1).getEntries().size());
 		
 		// Thread.sleep(1000);
 		
@@ -107,12 +105,14 @@ public class ChunkEJBTest {
 		chunkEJB.update(metadata);		
 
 		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
-		assertNull(chunkEJB.get(metadata, 2));
+		assertEquals(0, chunkEJB.get(metadata, 2).getEntries().size());
 		
-		assertEquals(new Long(100), chunkEJB.getPosts("difi/test/hundred"));
-		assertEquals(new Long(0), chunkEJB.getPosts("difi/test/hundred200"));
+		assertEquals(100, chunkEJB.get(metadata, 1).getPosts());
+
+		metadata.setLocation("difi/test/hundred200");
+		assertEquals(0, chunkEJB.get(metadata, 1).getPosts());
 		
-		Thread.sleep(1000);
+		// Thread.sleep(1000);
 		
 		// chunkEJB.delete("difi", "test", "hundred");
 		// assertFalse(Filesystem.getFolderPathF("chunk", "difi", "test", "hundred").exists());
@@ -126,7 +126,7 @@ public class ChunkEJBTest {
 		chunkEJB.update(metadata);		
 
 		assertEquals(100, chunkEJB.get(metadata, 1).getEntries().size());
-		assertNull(chunkEJB.get(metadata, 2));
+		assertEquals(0, chunkEJB.get(metadata, 2).getEntries().size());
 		long ts = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp").lastModified();
 		
 		Thread.sleep(1000);

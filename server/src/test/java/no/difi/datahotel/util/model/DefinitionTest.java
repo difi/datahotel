@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import no.difi.datahotel.model.Definition;
+import no.difi.datahotel.model.DefinitionLight;
 
 import org.junit.Test;
 
@@ -26,6 +27,16 @@ public class DefinitionTest {
 		assertEquals("Organisasjonsnummer", d.getName());
 		assertEquals("orgnr", d.getShortName());
 		assertEquals("Identifikator i brreg.", d.getDescription());
+		
+		DefinitionLight dl = d.light();
+
+		assertEquals("Organisasjonsnummer", dl.getName());
+		assertEquals("orgnr", dl.getShortName());
+		assertEquals("Identifikator i brreg.", dl.getDescription());
+		
+		d.setDescription("");
+		
+		assertNull(d.getDescription());
 	}
 	
 	@Test

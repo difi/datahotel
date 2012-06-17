@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import no.difi.datahotel.model.Result;
+import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.FormaterInterface;
 import no.difi.datahotel.util.RequestContext;
 
@@ -37,16 +38,12 @@ public class XMLFormater implements FormaterInterface {
 		} else if (object instanceof List) {
 			parseArrayList((List<?>) object);
 		} else {
-			builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			builder.append("<error>Unsupported object</error>");
+			throw new DatahotelException("Unable to parse unknown object to XML.");
 		}
 	}
 
 	private void parseCSVData(Result csvData) {
 		try {
-			if (csvData == null)
-				throw new NullPointerException();
-
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -80,8 +77,7 @@ public class XMLFormater implements FormaterInterface {
 			writer.close();
 
 		} catch (Exception e) {
-			builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-			builder.append("<error>An error has occured</error>");
+			throw new DatahotelException("Unable to parse result to XML.");
 		}
 	}
 

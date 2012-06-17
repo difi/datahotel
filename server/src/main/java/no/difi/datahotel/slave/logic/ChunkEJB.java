@@ -28,14 +28,17 @@ public class ChunkEJB {
 
 	private int size = 100;
 
+	// TODO: Move
 	public File getFullDataset(Metadata metadata) {
 		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_DATASET);
 	}
 
+	// TODO: Move
 	public File getMetadata(Metadata metadata) {
 		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_METADATA);
 	}
 
+	// TODO: Move
 	public File getFields(Metadata metadata) {
 		return Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), Filesystem.FILE_FIELDS);
 	}
@@ -43,10 +46,10 @@ public class ChunkEJB {
 	public void update(Metadata metadata) {
 		Logger logger = metadata.getLogger();
 		Timestamp ts = new Timestamp(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
-		
+
 		if (metadata.getUpdated() == ts.getTimestamp()) {
 			posts.put(metadata.getLocation(), ts.getLong("posts"));
-			
+
 			logger.info("Chunk up to date.");
 			return;
 		}
@@ -77,7 +80,7 @@ public class ChunkEJB {
 					writer = null;
 				}
 			}
-			
+
 			if (writer != null)
 				writer.close();
 
@@ -99,28 +102,28 @@ public class ChunkEJB {
 
 	public Result get(Metadata metadata, long page) {
 		Logger logger = metadata.getLogger();
-		
+
+		File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + page + ".csv");
+
+		Result result = new Result();
+		result.setPage(page);
+		result.setPosts(posts.containsKey(metadata.getLocation()) ? posts.get(metadata.getLocation()) : 0);
+
 		try {
-			File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + page + ".csv");
+			if (source.isFile()) {
+				List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+				CSVParser parser = CSVParserFactory.getCSVParser(source);
 
-			List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-			CSVParser parser = CSVParserFactory.getCSVParser(source);
+				while (parser.hasNext())
+					data.add(parser.getNextLine());
+				parser.close();
 
-			while (parser.hasNext())
-				data.add(parser.getNextLine());
-			parser.close();
-
-			Result result = new Result(data);
-			result.setPage(page);
-			result.setPosts(posts.get(metadata.getLocation()));
-			return result;
+				result.setEntries(data);
+			}
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage());
 		}
-		return null;
-	}
 
-	public Long getPosts(String location) {
-		return posts.containsKey(location) ? posts.get(location) : 0;
+		return result;
 	}
 }
