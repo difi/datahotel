@@ -15,11 +15,11 @@ import javax.ejb.Singleton;
 import no.difi.datahotel.util.model.Definition;
 import no.difi.datahotel.util.model.DefinitionLight;
 import no.difi.datahotel.util.model.Definitions;
-import no.difi.datahotel.util.model.Disk;
 import no.difi.datahotel.util.model.Field;
 import no.difi.datahotel.util.model.FieldLight;
 import no.difi.datahotel.util.model.Fields;
 import no.difi.datahotel.util.model.Metadata;
+import no.difi.datahotel.util.shared.Disk;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @Singleton

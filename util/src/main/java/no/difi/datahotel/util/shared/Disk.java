@@ -1,4 +1,4 @@
-package no.difi.datahotel.util.model;
+package no.difi.datahotel.util.shared;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,9 +11,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
-abstract class Abstract {
-
-	protected static Object read(Class<?> cls, File path) {
+public class Disk {
+	public static Object read(Class<?> cls, File path) {
 		try {
 			JAXBContext jc = JAXBContext.newInstance(cls);
 			Unmarshaller u = jc.createUnmarshaller();
@@ -24,7 +23,7 @@ abstract class Abstract {
 		}
 	}
 
-	protected static void save(File path, Object jaxb) throws Exception {
+	public static void save(File path, Object jaxb) throws Exception {
 		JAXBContext context = JAXBContext.newInstance(jaxb.getClass());
 
 		Marshaller m = context.createMarshaller();

@@ -10,9 +10,7 @@
 	<name>Data Hotel</name>
 
 	<modules>
-		<module>client</module>
-		<module>delivery</module>
-		<module>logic</module>
+		<module>ear</module>
 		<module>slave</module>
 		<module>util</module>
 	</modules>

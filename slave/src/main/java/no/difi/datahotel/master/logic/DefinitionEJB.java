@@ -12,7 +12,7 @@ import javax.ejb.Stateless;
 
 import no.difi.datahotel.util.model.Definition;
 import no.difi.datahotel.util.model.Definitions;
-import no.difi.datahotel.util.model.Disk;
+import no.difi.datahotel.util.shared.Disk;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @Stateless

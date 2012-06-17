@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class Definition extends Abstract implements Comparable<Definition>, Light<DefinitionLight> {
+public class Definition implements Comparable<Definition>, Light<DefinitionLight> {
 	@XmlElement
 	private String name;
 	

@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "list")
 @XmlAccessorType(XmlAccessType.NONE)
-public class Definitions extends Abstract {
+public class Definitions {
 
 	@XmlElementWrapper(name = "definitions")
 	@XmlElement(name = "definition")

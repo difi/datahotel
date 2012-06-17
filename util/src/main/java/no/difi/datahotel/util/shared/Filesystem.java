@@ -14,9 +14,11 @@ public class Filesystem {
 	public static final String FOLDER_CACHE_INDEX = FOLDER_CACHE + File.separator + "index";
 
 	public static final String FILE_DATASET = "dataset.csv";
+	public static final String FILE_DATASET_ORIGINAL = "original.csv";
 	public static final String FILE_FIELDS = "fields.xml";
 	public static final String FILE_DEFINITIONS = "definitions.xml";
 	public static final String FILE_METADATA = "meta.xml";
+	public static final String FILE_VERSION = "version.xml";
 
 	public static String getHome() {
 		String dir = System.getProperty("user.home");

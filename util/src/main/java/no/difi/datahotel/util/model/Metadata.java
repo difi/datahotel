@@ -12,17 +12,19 @@ import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import no.difi.datahotel.util.shared.Disk;
 import no.difi.datahotel.util.shared.Filesystem;
 
 @XmlRootElement
-public class Metadata extends Abstract implements Comparable<Metadata>, Light<MetadataLight> {
+public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 
 	private String location = "";
 	private List<Metadata> children = new ArrayList<Metadata>();
 	private boolean active = true;
-	private boolean dataset;
+	private boolean dataset = false;
 	private Metadata parent;
 	private Logger logger = Logger.getAnonymousLogger();
+	private Long version;
 
 	// Values for users
 	private String shortName;
@@ -30,7 +32,7 @@ public class Metadata extends Abstract implements Comparable<Metadata>, Light<Me
 	private String description;
 	private String url;
 	private Long updated;
-
+	
 	public String getShortName() {
 		return shortName;
 	}
@@ -128,17 +130,25 @@ public class Metadata extends Abstract implements Comparable<Metadata>, Light<Me
 		this.parent = parent;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 	public MetadataLight light() {
 		return new MetadataLight(this);
 	}
 
 	public void save() throws Exception {
-		save(Filesystem.getFile(Filesystem.FOLDER_SLAVE, location, Filesystem.FILE_METADATA), this);
+		Disk.save(Filesystem.getFile(Filesystem.FOLDER_SLAVE, location, Filesystem.FILE_METADATA), this);
 	}
 
 	public static Metadata read(String location) {
 		File folder = Filesystem.getFolder(FOLDER_SLAVE, location);
-		Metadata metadata = (Metadata) read(Metadata.class, Filesystem.getFile(folder, FILE_METADATA));
+		Metadata metadata = (Metadata) Disk.read(Metadata.class, Filesystem.getFile(folder, FILE_METADATA));
 		metadata.setLocation(location);
 		metadata.setShortName(folder.getName());
 		metadata.setDataset(Filesystem.getFile(folder, FILE_DATASET).exists());
