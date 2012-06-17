@@ -15,6 +15,10 @@ import javax.xml.bind.annotation.XmlTransient;
 import no.difi.datahotel.util.Disk;
 import no.difi.datahotel.util.Filesystem;
 
+/**
+ * Metadata is an unit in the "file system" available to users, and can be a
+ * dataset or a folder.
+ */
 @XmlRootElement
 public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 
@@ -32,7 +36,7 @@ public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 	private String description;
 	private String url;
 	private Long updated;
-	
+
 	public String getShortName() {
 		return shortName;
 	}

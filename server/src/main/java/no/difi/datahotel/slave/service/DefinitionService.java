@@ -1,5 +1,6 @@
 package no.difi.datahotel.slave.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import no.difi.datahotel.model.DefinitionLight;
+import no.difi.datahotel.model.Field;
 import no.difi.datahotel.slave.logic.FieldEJB;
 import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.Formater;
@@ -22,7 +24,7 @@ import no.difi.datahotel.util.RequestContext;
 
 @Path("/api/{type}/_def/")
 @Stateless
-public class DefinitionService extends BaseService {
+public class DefinitionService {
 
 	Logger logger = Logger.getLogger(DefinitionService.class.getSimpleName());
 
@@ -59,7 +61,10 @@ public class DefinitionService extends BaseService {
 		RequestContext context = new RequestContext(uriInfo);
 
 		try {
-			List<String> datasets = fieldEJB.getUsage(def);
+			List<String> datasets = new ArrayList<String>();
+			for (Field f : fieldEJB.getUsage(def))
+				if (!datasets.contains(f.getMetadata().getLocation()))
+					datasets.add(f.getMetadata().getLocation());
 			Collections.sort(datasets);
 
 			if (datasets.size() == 0)
@@ -74,5 +79,13 @@ public class DefinitionService extends BaseService {
 			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
+	}
+
+	/**
+	 * TODO Remove when fixed.
+	 */
+	protected Response returnNotFound(String message) throws Exception {
+		throw new DatahotelException(message);
+		// return Response.ok().status(404).build();
 	}
 }

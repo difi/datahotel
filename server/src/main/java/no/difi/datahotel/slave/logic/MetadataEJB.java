@@ -18,6 +18,9 @@ import javax.ejb.Stateless;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.Filesystem;
 
+/**
+ * Actions on the virtual file system.
+ */
 @Stateless
 public class MetadataEJB {
 

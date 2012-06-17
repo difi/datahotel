@@ -9,21 +9,21 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The class creates a definintion that represent the 
- * definiton of a field in a dataset.
+ * The class creates a definintion that represent the definiton of a field in a
+ * dataset.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class Definition implements Comparable<Definition>, Light<DefinitionLight> {
 	@XmlElement
 	private String name;
-	
+
 	@XmlElement
 	private String shortName;
 
 	@XmlElement
 	private String description;
-	
+
 	private List<Field> fields = new ArrayList<Field>();
 
 	public String getName() {
@@ -49,33 +49,30 @@ public class Definition implements Comparable<Definition>, Light<DefinitionLight
 	public String getShortName() {
 		return shortName;
 	}
-	
+
 	public List<Field> getFields() {
 		return fields;
 	}
-	
+
 	public void addField(Field field) {
 		fields.add(field);
+		field.setDefinition(this);
+	}
+
+	public void removeField(Field field) {
+		fields.remove(field);
 	}
 
 	public DefinitionLight light() {
 		return new DefinitionLight(this);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
-		if (o == this) 
-			return true;
 		if (o == null || !(o instanceof Definition))
 			return false;
 
-		Definition d = (Definition) o;
-		
-		if (shortName != null && !shortName.equals(d.shortName))
-			return false;
-		// TODO Make better.
-		
-		return true;
+		return String.valueOf(shortName).compareTo(String.valueOf(((Definition) o).shortName)) == 0;
 	}
 
 	@Override

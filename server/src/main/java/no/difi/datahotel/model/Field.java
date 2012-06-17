@@ -97,7 +97,6 @@ public class Field implements Light<FieldLight> {
 
 	public void setDefinition(Definition definition) {
 		this.definition = definition;
-		definition.addField(this);
 	}
 
 	@XmlTransient

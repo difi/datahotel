@@ -18,6 +18,9 @@ import no.difi.datahotel.util.Filesystem;
 @Stateless
 public class DefinitionEJB {
 
+	/**
+	 * Read all definitions from disk.
+	 */
 	public List<Definition> getDefinitions() {
 		List<Definition> list = new ArrayList<Definition>();
 
@@ -28,11 +31,17 @@ public class DefinitionEJB {
 		return list;
 	}
 
+	/**
+	 * Read a definitions from disk.
+	 */
 	public Definition getDefinition(String shortName) {
 		File f = Filesystem.getFile(FOLDER_MASTER_DEFINITION, shortName + ".xml");
 		return f.isFile() ? (Definition) Disk.read(Definition.class, f) : null;
 	}
 
+	/**
+	 * Saves a definiton to disk and  
+	 */
 	public void setDefinition(Definition definition) throws Exception {
 		Disk.save(Filesystem.getFile(FOLDER_MASTER_DEFINITION, definition.getShortName() + ".xml"), definition);
 		Disk.save(Filesystem.getFile(FOLDER_SLAVE, FILE_DEFINITIONS), new Definitions(getDefinitions()));

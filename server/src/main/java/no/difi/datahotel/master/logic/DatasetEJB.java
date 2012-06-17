@@ -78,7 +78,7 @@ public class DatasetEJB {
 		try {
 			if (version != null) {
 				metadata.getLogger().info("Publishing version " + version.getTimestamp());
-				
+
 				FileReader reader = new FileReader(Filesystem.getFile(FOLDER_MASTER, metadata.getLocation(), timestamp,
 						FILE_DATASET));
 				FileWriter writer = new FileWriter(Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(),
@@ -86,9 +86,9 @@ public class DatasetEJB {
 				IOUtils.copy(reader, writer);
 				reader.close();
 				writer.close();
-				
+
 				// TODO Write fields.
-				
+
 				metadata.setUpdated(System.currentTimeMillis());
 				metadata.setVersion(version.getTimestamp());
 				metadata.save();

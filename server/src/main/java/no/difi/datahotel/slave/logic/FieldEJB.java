@@ -28,8 +28,14 @@ public class FieldEJB {
 	private Map<String, List<Field>> fields = new HashMap<String, List<Field>>();
 	private Map<String, Definition> definitions = new HashMap<String, Definition>();
 
+	/**
+	 * Holds the timestamp of the definitions file last read.
+	 */
 	private long defUpdated;
 	
+	/**
+	 * Updated definitions if an updated definitions file is available.
+	 */
 	public void updateDefinitions() {
 		File f = Filesystem.getFile(FOLDER_SLAVE, FILE_DEFINITIONS);
 		if (f.isFile() && f.lastModified() != defUpdated) {
@@ -50,21 +56,29 @@ public class FieldEJB {
 
 		logger.info("Reading fields.");
 		
-		/*if (fields.containsKey(metadata.getLocation())) {
+		if (fields.containsKey(metadata.getLocation())) {
 			for (Field f : fields.get(metadata.getLocation())) {
-				Definition d = f.getDefinition();
+				if (f.getDefShort() != null && definitions.containsKey(f.getDefShort()))
+					definitions.get(f.getDefShort()).removeField(f);
 			}
-		}*/
+		}
 		
 		Fields fresh = Fields.read(metadata.getLocation());
 		
 		fields.put(metadata.getLocation(), fresh.getFields());
 		for (Field f : fresh.getFields()) {
 			f.setMetadata(metadata);
+			if (f.getDefinition() != null)
+				f.setDefShort(f.getDefinition().getShortName());
+			if (f.getDefShort() != null && definitions.containsKey(f.getDefShort()))
+				definitions.get(f.getDefShort()).addField(f);
 			// Definition d = f.getDefinition();
 		}
 	}
 
+	/**
+	 * Get all fields for a dataset.
+	 */
 	public List<FieldLight> getFields(Metadata metadata) {
 		List<FieldLight> result = new ArrayList<FieldLight>();
 		for (Field f : fields.get(metadata.getLocation()))
@@ -72,6 +86,9 @@ public class FieldEJB {
 		return result;
 	}
 
+	/**
+	 * Get all definitions, not sorted.
+	 */
 	public List<DefinitionLight> getDefinitions() {
 		List<DefinitionLight> result = new ArrayList<DefinitionLight>();
 		for (Definition d : definitions.values())
@@ -79,14 +96,18 @@ public class FieldEJB {
 		return result;
 	}
 
+	/**
+	 * Get definition by short name if available. 
+	 */
 	public DefinitionLight getDefinition(String def) {
 		if (definitions.containsKey(def))
 			return definitions.get(def).light();
 		return null;
 	}
 
-	public List<String> getUsage(String definition) {
-		// TODO Fix me
+	public List<Field> getUsage(String def) {
+		if (definitions.containsKey(def))
+			return definitions.get(def).getFields();
 		return null;
 	}
 }

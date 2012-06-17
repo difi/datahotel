@@ -15,10 +15,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import no.difi.datahotel.model.Result;
 import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.MetadataLight;
+import no.difi.datahotel.model.Result;
 import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
 import no.difi.datahotel.slave.logic.FieldEJB;

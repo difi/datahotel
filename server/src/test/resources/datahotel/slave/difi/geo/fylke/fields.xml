@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <datasetFields>
     <fields>
-        <field columnNumber="0">
+        <field>
             <name>Fylkesnummer</name>
             <shortName>nummer</shortName>
             <groupable>true</groupable>
             <searchable>false</searchable>
             <indexPrimaryKey>false</indexPrimaryKey>
-            <content>...</content>
-            <definition>
-                <name>Fylkesnummer</name>
-                <shortName>fylkenr</shortName>
-                <description>...</description>
-            </definition>
+            <defName>fylkenr</defName>
         </field>
-        <field columnNumber="1">
+        <field>
             <name>Fylkesnavn</name>
             <shortName>navn</shortName>
             <groupable>false</groupable>
             <searchable>true</searchable>
             <indexPrimaryKey>false</indexPrimaryKey>
-            <content>...</content>
-            <definition>
-                <name>Navn</name>
-                <shortName>navn</shortName>
-                <description>Navn på noe.</description>
-            </definition>
+            <defName>navn</defName>
         </field>
     </fields>
 </datasetFields>

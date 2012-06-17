@@ -22,7 +22,7 @@ public class UpdateEJB {
 	// TODO How to make this @Asynchronous?
 	public void validate(Metadata metadata) {
 		Logger logger = metadata.getLogger();
-		
+
 		if (metadata.getUpdated() == null) {
 			logger.warning("Missing timestamp in metadata file.");
 			return;

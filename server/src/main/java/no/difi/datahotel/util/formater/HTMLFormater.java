@@ -16,7 +16,7 @@ import no.difi.datahotel.util.RequestContext;
 public class HTMLFormater implements FormaterInterface {
 
 	private static Tab[] tabs = new Tab[] { // new Tab("Home", "/"),
-	new Tab("Data", "/api/html") // , new Tab("Definition", "/api/html/_defs")
+	new Tab("Data", "/api/html") // , new Tab("Definition", "/api/html/_def")
 			, new Tab("API", "/api") };
 	private static SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -36,7 +36,7 @@ public class HTMLFormater implements FormaterInterface {
 				sb.append("<div class=\"").append(key).append("\">").append(values.get(key)).append("</div>");
 		} else {
 			if (object instanceof Result) {
-				sb.append(formatCSVData((Result) object, context));
+				sb.append(formatResult((Result) object, context));
 			} else if (object instanceof List<?>) {
 				List list = (List) object;
 				if (list.size() > 0) {
@@ -55,7 +55,7 @@ public class HTMLFormater implements FormaterInterface {
 		return sb.toString();
 	}
 
-	private String formatCSVData(Result data, RequestContext context) {
+	private String formatResult(Result data, RequestContext context) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(getTabs("Data"));
@@ -219,7 +219,7 @@ public class HTMLFormater implements FormaterInterface {
 		for (DefinitionLight f : list) {
 			i++;
 			sb.append("<div class=\"").append(i % 2 == 1 ? "odd" : "even").append("\">");
-			sb.append("<h3><a href=\"/api/html/_defs/").append(f.getShortName()).append("\">").append(f.getName())
+			sb.append("<h3><a href=\"/api/html/_def/").append(f.getShortName()).append("\">").append(f.getName())
 					.append("</a></h3>");
 			if (f.getDescription() != null && !"".equals(f.getDescription()))
 				sb.append("<div class=\"description\">").append(f.getDescription()).append("</div>");

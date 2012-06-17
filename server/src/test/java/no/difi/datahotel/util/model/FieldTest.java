@@ -20,9 +20,9 @@ public class FieldTest {
 		assertNull(f.getShortName());
 		assertNull(f.getContent());
 		assertNull(f.getDefinition());
-		assertNull(f.getGroupable());
-		assertNull(f.getIndexPrimaryKey());
-		assertNull(f.getSearchable());
+		assertFalse(f.getGroupable());
+		assertFalse(f.getIndexPrimaryKey());
+		assertFalse(f.getSearchable());
 
 		f.setName("Direktoratet for forvaltning og IKT");
 		f.setShortName("difi");
