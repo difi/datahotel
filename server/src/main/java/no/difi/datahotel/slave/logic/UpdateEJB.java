@@ -17,6 +17,8 @@ public class UpdateEJB {
 	@EJB
 	private IndexEJB indexEJB;
 	@EJB
+	private SearchEJB searchEJB;
+	@EJB
 	private DataEJB dataEJB;
 
 	// TODO How to make this @Asynchronous?
@@ -41,6 +43,7 @@ public class UpdateEJB {
 		fieldEJB.update(metadata);
 		chunkEJB.update(metadata);
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 
 		logger.info("Ready");
 		dataEJB.setTimestamp(metadata.getLocation(), metadata.getUpdated());

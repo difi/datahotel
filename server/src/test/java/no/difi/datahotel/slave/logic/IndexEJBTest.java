@@ -37,8 +37,7 @@ public class IndexEJBTest {
 
 	private IndexEJB indexEJB;
 	private FieldEJB fieldEJB;
-
-	private SearchEJB search;
+	private SearchEJB searchEJB;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -62,7 +61,7 @@ public class IndexEJBTest {
 		settingsFieldField.setAccessible(true);
 		settingsFieldField.set(indexEJB, fieldEJB);
 
-		search = new SearchEJB();
+		searchEJB = new SearchEJB();
 		
 		metadata = new Metadata();
 		metadata.setLocation("difi/miljo/kalkulator");
@@ -73,6 +72,7 @@ public class IndexEJBTest {
 	public void testIndex() throws Exception {
 		fieldEJB.update(metadata);
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 	}
 
 	@Test
@@ -80,37 +80,30 @@ public class IndexEJBTest {
 		metadata.setLocation("difi/miljo/no-exists");
 		
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 	}
 
 	@Test
 	public void testNoIndex() {
-		Exception ex = null;
-
 		metadata.setLocation("no/dataset/here");
-		try {
-			search.find(metadata, "kings", null, 1);
-		} catch (Exception e) {
-			ex = e;
-		}
-
-		assertNotNull(ex);
+		assertEquals(0, searchEJB.find(metadata, "kings", null, 1).getEntries().size());
 	}
 
 	@Test
 	public void testSearch() throws Exception {
 		testIndex();
 
-		assertEquals(2, search.find(metadata, "Energi", null, 1).getEntries().size());
-		assertEquals(0, search.find(metadata, "km", null, 1).getEntries().size());
-		assertEquals(1, search.find(metadata, "tog", null, 1).getEntries().size());
-		assertEquals(1, search.find(metadata, "ark", null, 1).getEntries().size());
-		assertEquals(2, search.find(metadata, "BUSS", null, 1).getEntries().size());
+		assertEquals(2, searchEJB.find(metadata, "Energi", null, 1).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "km", null, 1).getEntries().size());
+		assertEquals(1, searchEJB.find(metadata, "tog", null, 1).getEntries().size());
+		assertEquals(1, searchEJB.find(metadata, "ark", null, 1).getEntries().size());
+		assertEquals(2, searchEJB.find(metadata, "BUSS", null, 1).getEntries().size());
 
-		assertEquals(0, search.find(metadata, "Energi", null, 2).getEntries().size());
-		assertEquals(0, search.find(metadata, "km", null, 2).getEntries().size());
-		assertEquals(0, search.find(metadata, "tog", null, 2).getEntries().size());
-		assertEquals(0, search.find(metadata, "ark", null, 2).getEntries().size());
-		assertEquals(0, search.find(metadata, "BUSS", null, 2).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "Energi", null, 2).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "km", null, 2).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "tog", null, 2).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "ark", null, 2).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "BUSS", null, 2).getEntries().size());
 	}
 
 	@Test
@@ -124,27 +117,28 @@ public class IndexEJBTest {
 
 		fieldEJB.update(metadata);
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 
 		Map<String, String> query = new HashMap<String, String>();
 		query.put("kommune", "1401");
 		query.put("fylke", "14");
-		assertEquals(1, search.find(metadata, null, query, 1).getEntries().size());
-		assertEquals(0, search.find(metadata, null, query, 2).getEntries().size());
+		assertEquals(1, searchEJB.find(metadata, null, query, 1).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, null, query, 2).getEntries().size());
 
 		query.clear();
 		query.put("kommune", "1401");
-		assertEquals(1, search.find(metadata, null, query, 1).getEntries().size());
-		assertEquals(0, search.find(metadata, null, query, 2).getEntries().size());
+		assertEquals(1, searchEJB.find(metadata, null, query, 1).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, null, query, 2).getEntries().size());
 
 		query.clear();
 		query.put("fylke", "14");
-		assertEquals(26, search.find(metadata, "", query, 1).getEntries().size());
-		assertEquals(0, search.find(metadata, "", query, 2).getEntries().size());
+		assertEquals(26, searchEJB.find(metadata, "", query, 1).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "", query, 2).getEntries().size());
 
 		query.clear();
 		query.put("navn", "l*anger");
-		assertEquals(2, search.find(metadata, "", query, 1).getEntries().size());
-		assertEquals(0, search.find(metadata, "", query, 2).getEntries().size());
+		assertEquals(2, searchEJB.find(metadata, "", query, 1).getEntries().size());
+		assertEquals(0, searchEJB.find(metadata, "", query, 2).getEntries().size());
 
 		indexEJB.delete("difi/geo/kommune");
 	}
@@ -253,10 +247,12 @@ public class IndexEJBTest {
 		metadata.setLogger(logger);
 		
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 		
 		verify(logger).info("Building index.");
 		
 		indexEJB.update(metadata);
+		searchEJB.update(metadata);
 		
 		verify(logger).info("Index up to date.");
 	}

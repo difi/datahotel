@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 
-import no.difi.datahotel.model.Result;
 import no.difi.datahotel.model.Metadata;
+import no.difi.datahotel.model.Result;
 import no.difi.datahotel.util.Filesystem;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -24,14 +25,34 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-@Stateless
+@Singleton
 public class SearchEJB {
 
+	private static int num = 100;
 	private static QueryParser parser = new QueryParser(Version.LUCENE_33, "searchable", new StandardAnalyzer(Version.LUCENE_33));
+	
+	private Map<String, Directory> directories = new HashMap<String, Directory>();
+	private Map<String, IndexSearcher> searchers = new HashMap<String, IndexSearcher>();
+	
+	public void update(Metadata metadata) {
+		try {
+			Directory oldDirectory = directories.get(metadata.getLocation());
+			IndexSearcher oldSearcher = searchers.get(metadata.getLocation());
 
-	public Result find(Metadata metadata, String q, Map<String, String> lookup, int page) throws Exception {
-		int num = 100;
-
+			Directory newDirectory = FSDirectory.open(Filesystem.getFolderPath(FOLDER_CACHE_INDEX, metadata.getLocation()));
+			IndexSearcher newSearcher = new IndexSearcher(newDirectory);
+			
+			directories.put(metadata.getLocation(), newDirectory);
+			searchers.put(metadata.getLocation(), newSearcher);
+			
+			oldSearcher.close();
+			oldDirectory.close();
+		} catch (Exception e) {
+			metadata.getLogger().log(Level.WARNING, "Unable to load searcher.", e);
+		}
+	}
+	
+	public Result find(Metadata metadata, String q, Map<String, String> lookup, int page) {
 		StringBuilder query = new StringBuilder();
 		if (lookup != null)
 			for (String key : lookup.keySet())
@@ -39,20 +60,22 @@ public class SearchEJB {
 		if (q != null && !q.equals(""))
 			query.append(query.length() == 0 ? "" : " AND ").append(q);
 		
-		Directory dir = FSDirectory.open(Filesystem.getFolderPath(FOLDER_CACHE_INDEX, metadata.getLocation()));
-		IndexSearcher searcher = new IndexSearcher(dir);
-
-		TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
-		List<Map<String, String>> rdocs = convert(searcher, docs);
-		
-		searcher.close();
-		dir.close();
-		
 		Result result = new Result();
-		result.setEntries((rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : rdocs.subList(num * (page - 1), rdocs.size()));
-		result.setPosts(docs.totalHits);
 		result.setPage(page);
-
+		
+		IndexSearcher searcher = searchers.get(metadata.getLocation()); 
+		if (searcher != null) {
+			try {
+				TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
+				List<Map<String, String>> rdocs = convert(searcher, docs);
+	
+				result.setEntries((rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String,String>>() : rdocs.subList(num * (page - 1), rdocs.size()));
+				result.setPosts(docs.totalHits);
+			} catch (Exception e) {
+				metadata.getLogger().warning("Error in search: " + query.toString());
+			}
+		}
+		
 		return result;
 	}
 
