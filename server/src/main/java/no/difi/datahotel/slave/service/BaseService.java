@@ -11,6 +11,5 @@ public abstract class BaseService {
 	
 	protected Response returnNotFound(String message) throws Exception {
 		throw new DatahotelException(message);
-		// return Response.ok().status(404).build();
 	}
 }

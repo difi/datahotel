@@ -32,7 +32,7 @@ public class RootService {
 	@GET
 	@Path("/def")
 	public Response getDefinitions() {
-		return Response.ok().header("location", "/api/html/_defs").status(301).build();
+		return Response.ok().header("location", "/api/html/_def").status(301).build();
 	}
 
 	@GET

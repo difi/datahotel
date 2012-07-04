@@ -45,8 +45,10 @@ public class SearchEJB {
 			directories.put(metadata.getLocation(), newDirectory);
 			searchers.put(metadata.getLocation(), newSearcher);
 			
-			oldSearcher.close();
-			oldDirectory.close();
+			if (oldSearcher != null)
+				oldSearcher.close();
+			if (oldDirectory != null)
+				oldDirectory.close();
 		} catch (Exception e) {
 			metadata.getLogger().log(Level.WARNING, "Unable to load searcher.", e);
 		}

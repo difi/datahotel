@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,6 +23,7 @@ import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.Formater;
 import no.difi.datahotel.util.RequestContext;
 
+@LocalBean // TODO HACK
 @Path("/api/{type}/_def/")
 @Stateless
 public class DefinitionService {
@@ -45,12 +47,10 @@ public class DefinitionService {
 
 			return Response.ok(dataFormat.format(defs, context)).type(dataFormat.getMime()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
-					.build();
+			return Response.ok(dataFormat.formatError(e, context)).type(dataFormat.getMime()).status(500).build();
 		}
 	}
 
@@ -72,11 +72,10 @@ public class DefinitionService {
 
 			return Response.ok(dataFormat.format(datasets, context)).type(dataFormat.getMime()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e, context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -86,6 +85,5 @@ public class DefinitionService {
 	 */
 	protected Response returnNotFound(String message) throws Exception {
 		throw new DatahotelException(message);
-		// return Response.ok().status(404).build();
 	}
 }

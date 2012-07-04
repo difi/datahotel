@@ -1,11 +1,14 @@
 package no.difi.datahotel.util.formater;
 
-import no.difi.datahotel.model.Result;
+import java.util.HashMap;
+import java.util.Map;
+
 import no.difi.datahotel.model.DefinitionLight;
 import no.difi.datahotel.model.Definitions;
 import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Fields;
 import no.difi.datahotel.model.MetadataLight;
+import no.difi.datahotel.model.Result;
 import no.difi.datahotel.util.FormaterInterface;
 import no.difi.datahotel.util.RequestContext;
 
@@ -38,7 +41,17 @@ public class YAMLFormater implements FormaterInterface {
 		yaml = new Yaml(representer, options);
 	}
 
+	@Override
 	public String format(Object object, RequestContext context) {
 		return yaml.dump(object);
+	}
+
+	@Override
+	public String format(Exception exception, RequestContext context) {
+		Map<String, String> object = new HashMap<String, String>();
+		// object.put("status", String.valueOf(exception.getStatus()));
+		object.put("error", exception.getMessage());
+
+		return format(object, context);
 	}
 }

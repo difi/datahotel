@@ -8,6 +8,7 @@ import no.difi.datahotel.util.RequestContext;
  */
 public class JSONPFormater extends JSONFormater {
 
+	@Override
 	public String format(Object object, RequestContext context) {
 		String callback = context.getCallback() == null ? "callback" : context.getCallback();
 		return String.valueOf(callback) + "(" + super.format(object, context) + ");";

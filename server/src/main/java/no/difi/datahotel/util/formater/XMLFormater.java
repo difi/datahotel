@@ -1,6 +1,7 @@
 package no.difi.datahotel.util.formater;
 
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -173,5 +174,14 @@ public class XMLFormater implements FormaterInterface {
 		XMLFormater x = new XMLFormater();
 		x.forData(object);
 		return x.getData();
+	}
+
+	@Override
+	public String format(Exception exception, RequestContext context) {
+		Map<String, String> object = new HashMap<String, String>();
+		// object.put("status", String.valueOf(exception.getStatus()));
+		object.put("error", exception.getMessage());
+
+		return format(object, context);
 	}
 }

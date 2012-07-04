@@ -32,4 +32,9 @@ public class CSVFormater implements FormaterInterface {
 
 		throw new Exception("Unable to parse content.");
 	}
+
+	@Override
+	public String format(Exception exception, RequestContext context) {
+		return exception.getMessage();
+	}
 }

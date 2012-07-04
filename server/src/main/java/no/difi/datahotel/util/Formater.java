@@ -1,6 +1,5 @@
 package no.difi.datahotel.util;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,14 +19,14 @@ import no.difi.datahotel.util.formater.YAMLFormater;
  */
 public enum Formater {
 	
-	XML("xml", "text/xml;charset=UTF-8", new XMLFormater()),
-	CSV("csv", "text/plain;charset=UTF-8", new CSVFormater()),
-	CSVCORRECT(null, "text/csv;charset=UTF-8", new CSVFormater()),
-	JSON("json", "application/json;charset=UTF-8", new JSONFormater()),
-	JSONP("jsonp", "application/json;charset=UTF-8", new JSONPFormater()),
-	YAML("yaml", "text/plain;charset=UTF-8", new YAMLFormater()),
-	TEXT_HTML("html", "text/html;charset=UTF-8", new HTMLFormater()),
-	TEXT_PLAIN(null, "text/plain;charset=UTF-8", new TextFormater());
+	XML("xml", "text/xml", new XMLFormater()),
+	CSV("csv", "text/plain", new CSVFormater()),
+	CSVCORRECT(null, "text/csv", new CSVFormater()),
+	JSON("json", "application/json", new JSONFormater()),
+	JSONP("jsonp", "application/json", new JSONPFormater()),
+	YAML("yaml", "text/plain", new YAMLFormater()),
+	TEXT_HTML("html", "text/html", new HTMLFormater()),
+	TEXT_PLAIN(null, "text/plain", new TextFormater());
 
 	private static Logger logger = Logger.getLogger(Formater.class.getSimpleName());
 
@@ -51,7 +50,7 @@ public enum Formater {
 			if (type.equals(t.type))
 				return t;
 
-		return TEXT_PLAIN;
+		throw new DatahotelException(404, "Format not found."); 
 	}
 
 	/**
@@ -67,7 +66,7 @@ public enum Formater {
 	 * @return Returns the correct Mime type for this DataFormat.
 	 */
 	public String getMime() {
-		return this.mime;
+		return this.mime + ";charset=UTF-8";
 	}
 
 	/**
@@ -83,7 +82,7 @@ public enum Formater {
 		} catch (Exception e)
 		{
 			logger.log(Level.WARNING, "Exception in error presenter.", e);
-			return formatError(e.getMessage(), context);
+			return formatError(e, context);
 		}
 	}
 	
@@ -93,13 +92,10 @@ public enum Formater {
 	 * @param metadata
 	 * @return
 	 */
-	public String formatError(String error, RequestContext context) {
+	public String formatError(Exception exception, RequestContext context) {
 		try
 		{
-			HashMap<String, String> message = new HashMap<String, String>();
-			message.put("error", error);
-
-			return cls.format(message, context);
+			return cls.format(exception, context);
 		} catch (Exception e)
 		{
 			logger.log(Level.WARNING, "Exception in error presenter.");

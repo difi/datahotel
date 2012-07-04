@@ -52,7 +52,7 @@ public class FormaterTest {
 	@Test
 	public void testError() {
 		Formater df = Formater.JSON;
-		String result = df.formatError("WARNING", null);
+		String result = df.formatError(new Exception("WARNING"), null);
 
 		assertTrue(result.contains("WARNING"));
 		assertTrue(result.contains("error"));
@@ -85,7 +85,7 @@ public class FormaterTest {
 		rField.setAccessible(true);
 		rField.set(df, Mockito.mock(Logger.class));
 
-		assertEquals("Error", df.formatError("Message", null));
+		assertEquals("Error", df.formatError(new Exception("Message"), null));
 	}
 
 	/**

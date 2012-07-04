@@ -18,7 +18,6 @@ import no.difi.datahotel.slave.logic.ChunkEJB;
 import no.difi.datahotel.slave.logic.DataEJB;
 import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.Formater;
-import no.difi.datahotel.util.RequestContext;
 
 @Path("/download/")
 @Stateless
@@ -47,11 +46,10 @@ public class DownloadService extends BaseService {
 			return Response.ok(chunkEJB.getFullDataset(metadata)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(404)
+			return Response.ok(dataFormat.formatError(e, null)).type(dataFormat.getMime()).status(404)
 					.build();
 		}
 	}
@@ -72,11 +70,10 @@ public class DownloadService extends BaseService {
 			return Response.ok(chunkEJB.getMetadata(metadata)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(404)
+			return Response.ok(dataFormat.formatError(e, null)).type(dataFormat.getMime()).status(404)
 					.build();
 		}
 	}
@@ -97,11 +94,10 @@ public class DownloadService extends BaseService {
 			return Response.ok(chunkEJB.getFields(metadata)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(404)
+			return Response.ok(dataFormat.formatError(e, null)).type(dataFormat.getMime()).status(404)
 					.build();
 		}
 	}

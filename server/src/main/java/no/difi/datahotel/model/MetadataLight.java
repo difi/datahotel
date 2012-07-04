@@ -11,6 +11,7 @@ public class MetadataLight {
 	private String url;
 	private String location;
 	private Long updated;
+	private boolean dataset;
 
 	public MetadataLight() {
 
@@ -23,6 +24,7 @@ public class MetadataLight {
 		url = metadata.getUrl();
 		location = metadata.getLocation();
 		updated = metadata.getUpdated();
+		dataset = metadata.isDataset();
 	}
 
 	public String getShortName() {
@@ -71,6 +73,14 @@ public class MetadataLight {
 
 	public void setUpdated(Long updated) {
 		this.updated = updated;
+	}
+
+	public boolean isDataset() {
+		return dataset;
+	}
+
+	public void setDataset(boolean dataset) {
+		this.dataset = dataset;
 	}
 
 }

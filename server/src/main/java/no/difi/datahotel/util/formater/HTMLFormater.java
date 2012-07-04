@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import no.difi.datahotel.model.Result;
 import no.difi.datahotel.model.DefinitionLight;
 import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.MetadataLight;
+import no.difi.datahotel.model.Result;
 import no.difi.datahotel.util.FormaterInterface;
 import no.difi.datahotel.util.RequestContext;
 
@@ -264,5 +264,10 @@ public class HTMLFormater implements FormaterInterface {
 			this.name = name;
 			this.location = location;
 		}
+	}
+
+	@Override
+	public String format(Exception exception, RequestContext context) {
+		return exception.getMessage();
 	}
 }

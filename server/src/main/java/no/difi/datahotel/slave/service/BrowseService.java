@@ -64,11 +64,10 @@ public class BrowseService extends BaseService {
 
 			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), context)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e, context)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
@@ -107,18 +106,44 @@ public class BrowseService extends BaseService {
 
 			if (result == null)
 				throw new DatahotelException("No data retrieved.");
-			
+
 			return Response.ok(dataFormat.format(result, context)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).header("X-Datahotel-Page", result.getPage())
 					.header("X-Datahotel-Total-Pages", result.getPages())
-					.header("X-Datahotel-Total-Posts", result.getPosts()).build();
+					.header("X-Datahotel-Total-Posts", result.getPosts()).header("Access-Control-Allow-Origin", "*")
+					.build();
 
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
+			return Response.ok(dataFormat.formatError(e, new RequestContext(uriInfo)))
+					.type(dataFormat.getMime()).status(500).build();
+		}
+	}
+
+	@GET
+	@Path("{location: [a-z0-9\\-/]*}/meta")
+	public Response getMeta(@PathParam("type") String type, @PathParam("location") String location,
+			@Context HttpServletRequest req, @Context UriInfo uriInfo) {
+		Formater dataFormat = Formater.get(type);
+		try {
+			Metadata metadata = dataEJB.getChild(location);
+			if (metadata == null)
+				return returnNotFound("Folder not found or not ready.");
+
+			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
+				return returnNotModified();
+
+			return Response.ok(dataFormat.format(metadata.light(), new RequestContext(uriInfo, metadata, null)))
+					.type(dataFormat.getMime()).header("ETag", metadata.getUpdated())
+					.header("Access-Control-Allow-Origin", "*").build();
+
+		} catch (DatahotelException e) {
+			throw e.setFormater(dataFormat);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, e.getMessage(), e);
+			return Response.ok(dataFormat.formatError(e, new RequestContext(uriInfo)))
 					.type(dataFormat.getMime()).status(500).build();
 		}
 	}
@@ -145,11 +170,10 @@ public class BrowseService extends BaseService {
 			return Response.ok(dataFormat.format(fields, context)).type(dataFormat.getMime())
 					.header("ETag", metadata.getUpdated()).build();
 		} catch (DatahotelException e) {
-			return Response.ok(dataFormat.formatError(e.getMessage(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime()).status(500).build();
+			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
-			return Response.ok(dataFormat.formatError(e.getMessage(), null)).type(dataFormat.getMime()).status(500)
+			return Response.ok(dataFormat.formatError(e, null)).type(dataFormat.getMime()).status(500)
 					.build();
 		}
 	}
