@@ -37,8 +37,6 @@ public class DownloadService extends BaseService {
 		Formater dataFormat = Formater.CSVCORRECT;
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -61,8 +59,6 @@ public class DownloadService extends BaseService {
 		Formater dataFormat = Formater.XML;
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -85,8 +81,6 @@ public class DownloadService extends BaseService {
 		Formater dataFormat = Formater.XML;
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();

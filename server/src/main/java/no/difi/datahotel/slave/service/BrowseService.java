@@ -79,8 +79,6 @@ public class BrowseService extends BaseService {
 		Formater dataFormat = Formater.get(type);
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Folder not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -129,8 +127,6 @@ public class BrowseService extends BaseService {
 		Formater dataFormat = Formater.get(type);
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Folder not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();
@@ -155,8 +151,6 @@ public class BrowseService extends BaseService {
 		Formater dataFormat = Formater.get(type);
 		try {
 			Metadata metadata = dataEJB.getChild(location);
-			if (metadata == null)
-				return returnNotFound("Dataset not found or not ready.");
 
 			if (String.valueOf(metadata.getUpdated()).equals(req.getHeader("If-None-Match")))
 				return returnNotModified();

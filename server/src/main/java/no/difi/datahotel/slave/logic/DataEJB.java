@@ -9,6 +9,7 @@ import javax.ejb.Singleton;
 
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.MetadataLight;
+import no.difi.datahotel.util.DatahotelException;
 
 @Singleton
 public class DataEJB {
@@ -30,7 +31,10 @@ public class DataEJB {
 
 	public Metadata getChild(String... dir) {
 		String location = Metadata.getLocation(dir);
-		return directory.containsKey(location) ? directory.get(location) : null;
+		if (!directory.containsKey(location))
+			throw new DatahotelException(404, "Dataset or folder not found.");
+		
+		return directory.get(location);
 	}
 
 	public List<Metadata> getDatasets() {

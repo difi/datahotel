@@ -103,25 +103,27 @@ public class ChunkEJB {
 	public Result get(Metadata metadata, long page) {
 		Logger logger = metadata.getLogger();
 
-		File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + page + ".csv");
-
 		Result result = new Result();
 		result.setPage(page);
 		result.setPosts(posts.containsKey(metadata.getLocation()) ? posts.get(metadata.getLocation()) : 0);
 
-		try {
-			if (source.isFile()) {
-				List<Map<String, String>> data = new ArrayList<Map<String, String>>();
-				CSVParser parser = CSVParserFactory.getCSVParser(source);
-
-				while (parser.hasNext())
-					data.add(parser.getNextLine());
-				parser.close();
-
-				result.setEntries(data);
+		if (page <= result.getPages()) {
+			try {
+				File source = Filesystem.getFile(FOLDER_CACHE_CHUNK, metadata.getLocation(), "dataset-" + page + ".csv");
+	
+				if (source.isFile()) {
+					List<Map<String, String>> data = new ArrayList<Map<String, String>>();
+					CSVParser parser = CSVParserFactory.getCSVParser(source);
+	
+					while (parser.hasNext())
+						data.add(parser.getNextLine());
+					parser.close();
+	
+					result.setEntries(data);
+				}
+			} catch (Exception e) {
+				logger.log(Level.WARNING, e.getMessage());
 			}
-		} catch (Exception e) {
-			logger.log(Level.WARNING, e.getMessage());
 		}
 
 		return result;
