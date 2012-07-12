@@ -47,22 +47,17 @@ public class MetadataBeanTest {
 	}
 	
 	public MetadataBean getMetadataBean() throws Exception {
-		MetadataBean m = new MetadataBean();
 
 		dataBean = new DataBean();
-		Field settingsDataField = MetadataBean.class.getDeclaredField("dataEJB");
-		settingsDataField.setAccessible(true);
-		settingsDataField.set(m, dataBean);
-
 		logger = Mockito.mock(Logger.class);
+		
+		MetadataBean m = new MetadataBean();
+		m.setDataEJB(dataBean);
+		m.setUpdateEJB(Mockito.mock(UpdateBean.class));
+
 		Field settingsLoggerField = MetadataBean.class.getDeclaredField("logger");
 		settingsLoggerField.setAccessible(true);
 		settingsLoggerField.set(m, logger);
-
-		UpdateBean updateEJB = UpdateBeanTest.getUpdateBean();
-		Field settingsUpdateField = MetadataBean.class.getDeclaredField("updateEJB");
-		settingsUpdateField.setAccessible(true);
-		settingsUpdateField.set(m, updateEJB);
 		
 		return m;
 	}

@@ -35,14 +35,10 @@ public class FieldBeanTest {
 	@Before
 	public void before() throws Exception
 	{
-		fieldBean = getFieldBean();
+		fieldBean = new FieldBean();
 		definitionBean = new MasterDefinitionBean();
 	}
 	
-	public FieldBean getFieldBean() throws Exception {
-		return new FieldBean();
-	}
-
 	@Test
 	public void testSimple() throws Exception {
 		Definition d = new Definition();

@@ -35,7 +35,7 @@ public class IndexBean {
 	private CSVParserFactory csvParserFactory = new CSVParserFactory();
 	
 	@Autowired
-	private FieldBean fieldEJB;
+	private FieldBean fieldBean;
 	
 	public void delete(String location) {
 		Filesystem.delete(FOLDER_CACHE_INDEX, location);
@@ -71,7 +71,7 @@ public class IndexBean {
 					Map<String, String> line = csv.getNextLine();
 					Document doc = new Document();
 					String searchable = "";
-					for (FieldLight f : fieldEJB.getFields(metadata)) {
+					for (FieldLight f : fieldBean.getFields(metadata)) {
 						String value = line.get(f.getShortName());
 						
 						if (value.matches("[0-9.,]+"))
@@ -107,7 +107,7 @@ public class IndexBean {
 		}
 	}
 
-	public void setFieldEJB(FieldBean fieldEJB) {
-		this.fieldEJB = fieldEJB;
+	public void setFielBean(FieldBean fieldBean) {
+		this.fieldBean = fieldBean;
 	}
 }

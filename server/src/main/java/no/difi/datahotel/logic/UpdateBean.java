@@ -11,17 +11,16 @@ import org.springframework.stereotype.Component;
 public class UpdateBean {
 
 	@Autowired
-	private FieldBean fieldEJB;
+	private FieldBean fieldBean;
 	@Autowired
-	private ChunkBean chunkEJB;
+	private ChunkBean chunkBean;
 	@Autowired
-	private IndexBean indexEJB;
+	private IndexBean indexBean;
 	@Autowired
-	private SearchBean searchEJB;
+	private SearchBean searchBean;
 	@Autowired
-	private DataBean dataEJB;
+	private DataBean dataBean;
 
-	// TODO How to make this @Asynchronous? Don't want it to be async...
 	public void validate(Metadata metadata) {
 		Logger logger = metadata.getLogger();
 
@@ -30,42 +29,42 @@ public class UpdateBean {
 			return;
 		}
 
-		if (metadata.getUpdated().equals(dataEJB.getTimestamp(metadata.getLocation())))
+		if (metadata.getUpdated().equals(dataBean.getTimestamp(metadata.getLocation())))
 			return;
 
-		if (dataEJB.getTimestamp(metadata.getLocation()) != null && dataEJB.getTimestamp(metadata.getLocation()) == -1) {
+		if (dataBean.getTimestamp(metadata.getLocation()) != null && dataBean.getTimestamp(metadata.getLocation()) == -1) {
 			logger.info("Do not disturb.");
 			return;
 		}
 
-		dataEJB.setTimestamp(metadata.getLocation(), -1L);
+		dataBean.setTimestamp(metadata.getLocation(), -1L);
 
-		fieldEJB.update(metadata);
-		chunkEJB.update(metadata);
-		indexEJB.update(metadata);
-		searchEJB.update(metadata);
+		fieldBean.update(metadata);
+		chunkBean.update(metadata);
+		indexBean.update(metadata);
+		searchBean.update(metadata);
 
 		logger.info("Ready");
-		dataEJB.setTimestamp(metadata.getLocation(), metadata.getUpdated());
+		dataBean.setTimestamp(metadata.getLocation(), metadata.getUpdated());
 	}
 
-	public void setFieldEJB(FieldBean fieldEJB) {
-		this.fieldEJB = fieldEJB;
+	public void setFieldBean(FieldBean fieldBean) {
+		this.fieldBean = fieldBean;
 	}
 
-	public void setChunkEJB(ChunkBean chunkEJB) {
-		this.chunkEJB = chunkEJB;
+	public void setChunkBean(ChunkBean chunkBean) {
+		this.chunkBean = chunkBean;
 	}
 
-	public void setIndexEJB(IndexBean indexEJB) {
-		this.indexEJB = indexEJB;
+	public void setIndexBean(IndexBean indexBean) {
+		this.indexBean = indexBean;
 	}
 
-	public void setSearchEJB(SearchBean searchEJB) {
-		this.searchEJB = searchEJB;
+	public void setSearchBean(SearchBean searchBean) {
+		this.searchBean = searchBean;
 	}
 
-	public void setDataEJB(DataBean dataEJB) {
-		this.dataEJB = dataEJB;
+	public void setDataBean(DataBean dataBean) {
+		this.dataBean = dataBean;
 	}
 }

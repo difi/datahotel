@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import no.difi.datahotel.logic.FieldBean;
-import no.difi.datahotel.logic.IndexBean;
-import no.difi.datahotel.logic.SearchBean;
 import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.Filesystem;
@@ -40,6 +37,8 @@ public class IndexBeanTest {
 	private IndexBean indexBean;
 	private FieldBean fieldBean;
 	private SearchBean searchBean;
+	
+	private Logger logger;
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
@@ -54,20 +53,18 @@ public class IndexBeanTest {
 
 	@Before
 	public void before() throws Exception {
-		indexBean = new IndexBean();
-
-		// TODO Ta over logger.
-
 		fieldBean = new FieldBean();
-		Field settingsFieldField = IndexBean.class.getDeclaredField("fieldEJB");
-		settingsFieldField.setAccessible(true);
-		settingsFieldField.set(indexBean, fieldBean);
+		logger = Mockito.mock(Logger.class);
+
+		indexBean = new IndexBean();
+		indexBean.setFielBean(fieldBean);
 
 		searchBean = new SearchBean();
 		
 		metadata = new Metadata();
 		metadata.setLocation("difi/miljo/kalkulator");
 		metadata.setUpdated(System.currentTimeMillis());
+		metadata.setLogger(logger);
 	}
 
 	@Test
@@ -75,20 +72,29 @@ public class IndexBeanTest {
 		fieldBean.update(metadata);
 		indexBean.update(metadata);
 		searchBean.update(metadata);
+		
+		verify(logger).info("Reading fields.");
+		verify(logger).info("Building index.");
 	}
 
 	@Test
 	public void testNoSource() {
 		metadata.setLocation("difi/miljo/no-exists");
+		metadata.setLogger(logger);
 		
 		indexBean.update(metadata);
 		searchBean.update(metadata);
+		
+		// TODO Verify logger.
 	}
 
 	@Test
 	public void testNoIndex() {
 		metadata.setLocation("no/dataset/here");
+		metadata.setLogger(logger);
 		assertEquals(0, searchBean.find(metadata, "kings", null, 1).getEntries().size());
+		
+		// TODO Verify logger.
 	}
 
 	@Test
@@ -116,6 +122,7 @@ public class IndexBeanTest {
 	@Test
 	public void testLookupAdv() throws Exception {
 		metadata.setLocation("difi/geo/kommune");
+		metadata.setLogger(logger);
 
 		fieldBean.update(metadata);
 		indexBean.update(metadata);
@@ -147,10 +154,9 @@ public class IndexBeanTest {
 
 	@Test
 	public void test10000() throws Exception {
-		FieldBean fieldEJB = Mockito.mock(FieldBean.class);
-		Field settingsFieldField = IndexBean.class.getDeclaredField("fieldEJB");
-		settingsFieldField.setAccessible(true);
-		settingsFieldField.set(indexBean, fieldEJB);
+		FieldBean fieldBean = Mockito.mock(FieldBean.class);
+
+		indexBean.setFielBean(fieldBean);
 
 		Logger logger = Mockito.mock(Logger.class);
 
@@ -179,7 +185,7 @@ public class IndexBeanTest {
 		line.put("field1", "value");
 		
 		when(csvParserFactory.get(filename)).thenReturn(parser);
-		when(fieldEJB.getFields(metadata)).thenReturn(fields);
+		when(fieldBean.getFields(metadata)).thenReturn(fields);
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
 		doThrow(new RuntimeException()).when(logger).info("Document 20000");
@@ -195,10 +201,9 @@ public class IndexBeanTest {
 
 	@Test
 	public void testUnableToReadLine() throws Exception {
-		FieldBean fieldEJB = Mockito.mock(FieldBean.class);
-		Field settingsFieldField = IndexBean.class.getDeclaredField("fieldEJB");
-		settingsFieldField.setAccessible(true);
-		settingsFieldField.set(indexBean, fieldEJB);
+		FieldBean fieldBean = Mockito.mock(FieldBean.class);
+		
+		indexBean.setFielBean(fieldBean);
 
 		Logger logger = Mockito.mock(Logger.class);
 
@@ -227,7 +232,7 @@ public class IndexBeanTest {
 		line.put("field2", "value");
 		
 		when(csvParserFactory.get(filename)).thenReturn(parser);
-		when(fieldEJB.getFields(metadata)).thenReturn(fields);
+		when(fieldBean.getFields(metadata)).thenReturn(fields);
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
 		doThrow(new RuntimeException()).when(logger).info("Document 10000");

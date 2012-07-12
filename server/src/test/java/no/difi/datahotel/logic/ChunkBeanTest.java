@@ -41,19 +41,12 @@ public class ChunkBeanTest {
 	@Before
 	public void before() throws Exception
 	{
-		chunkBean = getChunkBean();
-	}
-	
-	public static ChunkBean getChunkBean() throws Exception {
-		ChunkBean c = new ChunkBean();
-		
+		chunkBean = new ChunkBean();
 		logger = Mockito.mock(Logger.class);
 		
 		metadata = new Metadata();
 		metadata.setUpdated(System.currentTimeMillis());
 		metadata.setLogger(logger);
-		
-		return c;
 	}
 	
 	@Test
