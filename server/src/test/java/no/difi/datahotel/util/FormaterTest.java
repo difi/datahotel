@@ -2,6 +2,7 @@ package no.difi.datahotel.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -26,8 +27,16 @@ public class FormaterTest {
 
 	@Test
 	public void testGet() throws Exception {
-		assertEquals(Formater.TEXT_PLAIN, Formater.get("espen"));
 		assertEquals(Formater.JSON, Formater.get("json"));
+		
+		DatahotelException exeption = null;
+		try {
+			Formater.get("espen");
+		} catch (DatahotelException e) {
+			exeption = e;
+		}
+		assertNotNull(exeption);
+
 	}
 
 	@Test

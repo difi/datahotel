@@ -5,12 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>datahotel</artifactId>
 	<groupId>no.difi.datahotel</groupId>
-	<version>1.1.0</version>
+	<version>1.2.0</version>
 	<packaging>pom</packaging>
 	<name>Data Hotel</name>
 
 	<modules>
 		<module>ear</module>
+		<module>jetty</module>
 		<module>server</module>
 	</modules>
 
@@ -40,24 +41,12 @@
 		</repository>
 	</repositories>
 
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<properties>
-		<glassfish-version>3.1</glassfish-version>
-		<javacsv-version>2.0</javacsv-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jetty.version>8.1.4.v20120524</jetty.version>
+		<lucene.version>3.4.0</lucene.version>
+		<spring.version>3.1.2.RELEASE</spring.version>
+		<jersey.version>1.12</jersey.version>
 	</properties>
 
 </project>
