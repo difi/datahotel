@@ -12,7 +12,7 @@ public class Result implements Serializable {
 
 	private static final long serialVersionUID = -8412531397903068046L;
 	private List<Map<String, String>> entries;
-	private Long page, pages, posts;
+	private Long page = 0L, pages = 0L, posts = 0L;
 
 	public Result() {
 		this.setEntries(new ArrayList<Map<String, String>>());
