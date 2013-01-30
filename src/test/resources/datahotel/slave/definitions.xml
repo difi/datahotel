@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<list>
+    <definitions>
+        <definition>
+            <name>Fylkenummer</name>
+            <shortName>fylkenr</shortName>
+            <description>Fylkenummer basert på den autorative oversikten til &lt;a href=&quot;http://www.ssb.no/&quot;&gt;SSB&lt;/a&gt;.</description>
+        </definition>
+        <definition>
+            <name>Kommunenummer</name>
+            <shortName>kommunenr</shortName>
+            <description>Kommunenummer basert på den autorative oversikten til &lt;a href=&quot;http://www.ssb.no/&quot;&gt;SSB&lt;/a&gt;.</description>
+        </definition>
+        <definition>
+            <name>Navn</name>
+            <shortName>navn</shortName>
+            <description>Navn på noe, eksempelvis et idrettsanlegg.</description>
+        </definition>
+    </definitions>
+</list>
+

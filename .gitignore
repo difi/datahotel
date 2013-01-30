@@ -3,5 +3,4 @@
 .project
 .settings
 target
-
-grizzly
+.vagrant

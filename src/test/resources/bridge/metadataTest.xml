@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dataset>
+    <name>MetadataName</name>
+    <shortName>MetaName</shortName>
+    <description>This is a description</description>
+    <datasetGroup>
+        <shortName>GroupName</shortName>
+    </datasetGroup>
+    <owner>
+        <shortName>OName</shortName>
+    </owner>
+</dataset>

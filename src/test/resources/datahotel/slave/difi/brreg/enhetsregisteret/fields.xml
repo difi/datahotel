@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<datasetFields>
+    <fields>
+        <field columnNumber="0">
+            <name>Orgnr </name>
+            <shortName>orgnr</shortName>
+            <groupable>true</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Organisasjonsnummer brukes for å identifisere juridiske personer (enheter) i Norge, og tildeles ved registrering i Enhetsregisteret. Organisasjonsnummeret består av ni siffer og starter på tallet 8 eller 9. http://www.brreg.no/samordning/organisasjonsnummeret.html</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="1">
+            <name>Navn </name>
+            <shortName>navn</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Enhetens/foretakets offisielle navn</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="2">
+            <name>Organisasjonsform</name>
+            <shortName>organisasjonsform</shortName>
+            <groupable>true</groupable>
+            <searchable>false</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Angir hvilken form for juridisk organisering som er valgt for enheten.</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="3">
+            <name>Forretningsadr</name>
+            <shortName>forretningsadr</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Enhetens geografiske beliggenhet – Gate-/vegadresse</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="4">
+            <name>Forradr postnr</name>
+            <shortName>forradrpostnr</shortName>
+            <groupable>true</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Postnummer til enhetens geografiske beliggenhet</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="5">
+            <name>Forradr poststed</name>
+            <shortName>forradrpoststed</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Poststed til enhetens geografiske beliggenhet</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="6">
+            <name>Forradr kommnr</name>
+            <shortName>forradrkommnr</shortName>
+            <groupable>true</groupable>
+            <searchable>false</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Kommunenummeret til kommunen der enheten er lokalisert</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="6">
+            <name>Forradr land</name>
+            <shortName>forradrland</shortName>
+            <groupable>true</groupable>
+            <searchable>false</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content></content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="7">
+            <name>Postadresse</name>
+            <shortName>postadresse</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Enhetens postadresse, derom denne er forskjellig fra forretningsadresse</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="8">
+            <name>Ppostnr</name>
+            <shortName>ppostnr</shortName>
+            <groupable>true</groupable>
+            <searchable>false</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Postnummer til postadressens poststed</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="9">
+            <name>Ppoststed</name>
+            <shortName>ppoststed</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Postadressens poststed</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="9">
+            <name>Ppost land</name>
+            <shortName>ppostland</shortName>
+            <groupable>false</groupable>
+            <searchable>true</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content></content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+        <field columnNumber="10">
+            <name>Reg i FR</name>
+            <shortName>regifr</shortName>
+            <groupable>true</groupable>
+            <searchable>false</searchable>
+            <indexPrimaryKey>false</indexPrimaryKey>
+            <content>Angir om enheten er registrert i Foretaksregisteret, i tillegg til Enhetsregisteret</content>
+            <definition>
+                <name>Felt</name>
+                <shortName>felt</shortName>
+                <description>...</description>
+            </definition>
+        </field>
+    </fields>
+</datasetFields>
