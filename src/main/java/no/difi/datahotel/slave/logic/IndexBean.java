@@ -81,6 +81,9 @@ public class IndexBean {
 					for (FieldLight f : fieldBean.getFields(metadata)) {
 						String value = line.get(f.getShortName());
 
+						if (value == null)
+							logger.info("Field not found: " + f.getShortName());
+
 						// TODO if (f.getGroupable())
 						if (value.matches("[0-9.,]+"))
 							doc.add(new Field(f.getShortName(), value, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
@@ -96,7 +99,7 @@ public class IndexBean {
 
 					writer.addDocument(doc);
 				} catch (Exception e) {
-					logger.info("[" + e.getClass().getSimpleName() + "] Unable to index line " + i + ". (" + String.valueOf(e.getMessage())
+					logger.info("[" + e.getClass().getSimpleName() + (e.getStackTrace().length > 0 ? "][" + e.getStackTrace()[0].getFileName() + ":" + e.getStackTrace()[0].getLineNumber() : "") + "] Unable to index line " + i + ". (" + String.valueOf(e.getMessage())
 							+ ")");
 				}
 

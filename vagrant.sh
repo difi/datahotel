@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Sette opp difi-bruker
+# Sette opp difi-bruker (passord: difi)
 if [ ! -d /home/difi ]; then
 	useradd -U -m -G admin -s /bin/bash -p FX317d7avEp4s difi
 fi

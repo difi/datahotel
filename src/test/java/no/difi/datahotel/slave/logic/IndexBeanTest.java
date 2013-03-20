@@ -240,7 +240,7 @@ public class IndexBeanTest extends BaseTest {
 		when(parser.hasNext()).thenReturn(true);
 		when(parser.getNextLine()).thenReturn(line);
 		doThrow(new RuntimeException()).when(logger).info("Document 10000");
-		doThrow(new RuntimeException()).when(logger).info("[NullPointerException] Unable to index line 1. (null)");
+		doThrow(new RuntimeException()).when(logger).info("[NullPointerException][IndexBean.java:88] Unable to index line 1. (null)");
 		
 		indexBean.update(metadata);
 		
