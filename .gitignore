@@ -4,3 +4,5 @@
 .settings
 target
 .vagrant
+.idea
+*.iml

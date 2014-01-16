@@ -6,7 +6,9 @@ import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -39,7 +41,13 @@ public class DownloadResource extends BaseResource {
 		Metadata metadata = dataBean.getChild(location);
 		checkNotModified(metadata);
 		try {
-			return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("ETag", metadata.getUpdated()).build();
+            if (uriInfo.getQueryParameters().containsKey("excel"))
+                // http://www.progresstalk.com/threads/can-i-force-excel-to-automatically-open-a-utf-8-csv-file-correctly.122183/
+                return Response.ok(chunkBean.getFullDataset(metadata)).type("application~/vnd.ms-excel~; charset=UTF-8").header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
+            else if (uriInfo.getQueryParameters().containsKey("download"))
+                return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
+            else
+			    return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("ETag", metadata.getUpdated()).build();
 		} catch (Exception e) {
 			logger.log(Level.WARNING, e.getMessage(), e);
 			throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
