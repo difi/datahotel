@@ -58,7 +58,7 @@ public class SearchBean {
         IndexSearcher searcher = searchers.get(metadata.getLocation());
         if (searcher != null) {
             try {
-                System.out.println("---");
+                // System.out.println("---");
 
                 if (lookup != null)
                     for (String key : lookup.keySet()) {
