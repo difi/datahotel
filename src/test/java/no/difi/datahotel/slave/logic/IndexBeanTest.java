@@ -122,7 +122,74 @@ public class IndexBeanTest extends BaseTest {
 		assertEquals(84, searchBean.find(metadata, null, query, 1).getEntries().size());
 	}
 
-	@Test
+    @Test
+    public void testElmaParticipants() throws Exception {
+        metadata.setLocation("difi/participants");
+
+        fieldBean.update(metadata);
+        indexBean.update(metadata);
+        searchBean.update(metadata);
+
+        Map<String, String> query;
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(52, searchBean.find(metadata, "oslo kommune", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "\"Ja\"");
+        assertEquals(52, searchBean.find(metadata, "oslo kommune", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "J*");
+        assertEquals(52, searchBean.find(metadata, "oslo kommune", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "J*");
+        assertEquals(52, searchBean.find(metadata, "oslo k*une", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(100, searchBean.find(metadata, "o*", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(100, searchBean.find(metadata, "St*", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("identifier", "991825*");
+        assertEquals(2, searchBean.find(metadata, null, query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(0, searchBean.find(metadata, "9908\\:", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(1, searchBean.find(metadata, "time and date", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("identifier", "991825827");
+        assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(1, searchBean.find(metadata, "991825827", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(1, searchBean.find(metadata, "\"Time and date\"", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(1, searchBean.find(metadata, "988375713 \"Time and date\"", query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("EHF_INVOICE", "Ja");
+        assertEquals(1, searchBean.find(metadata, "988375713 \"Time and date", query, 1).getEntries().size());
+    }
+
+    @Test
 	public void testDelete() {
 		indexBean.delete("difi/miljo/kalkulator");
 	}
