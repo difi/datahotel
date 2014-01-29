@@ -64,14 +64,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.13</version>
-			</plugin>
-		</plugins>
+                <version>2.9.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.16</version>
+            </plugin>
+        </plugins>
 	</reporting>
 
 	<dependencies>
@@ -202,8 +202,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty.version>8.1.4.v20120524</jetty.version>
-		<lucene.version>3.4.0</lucene.version>
-		<spring.version>3.1.3.RELEASE</spring.version>
+        <lucene.version>3.5.0</lucene.version>
+        <spring.version>3.1.3.RELEASE</spring.version>
 		<jersey.version>1.16</jersey.version>
 	</properties>
 

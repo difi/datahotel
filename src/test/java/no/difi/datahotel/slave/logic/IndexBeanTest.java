@@ -1,12 +1,14 @@
 package no.difi.datahotel.slave.logic;
 
-import static no.difi.datahotel.util.Filesystem.FILE_DATASET;
-import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import no.difi.datahotel.BaseTest;
+import no.difi.datahotel.model.FieldLight;
+import no.difi.datahotel.model.Metadata;
+import no.difi.datahotel.util.CSVReader;
+import no.difi.datahotel.util.Filesystem;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -16,16 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import no.difi.datahotel.BaseTest;
-import no.difi.datahotel.model.FieldLight;
-import no.difi.datahotel.model.Metadata;
-import no.difi.datahotel.util.CSVReader;
-import no.difi.datahotel.util.Filesystem;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mockito;
+import static no.difi.datahotel.util.Filesystem.FILE_DATASET;
+import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 public class IndexBeanTest extends BaseTest {
 
@@ -87,13 +83,16 @@ public class IndexBeanTest extends BaseTest {
 	public void testSearch() throws Exception {
 		testIndex();
 
-		assertEquals(2, searchBean.find(metadata, "Energi", null, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "9908:*", null, 1).getEntries().size());
+
+        assertEquals(2, searchBean.find(metadata, "Energi", null, 1).getEntries().size());
 		assertEquals(0, searchBean.find(metadata, "km", null, 1).getEntries().size());
 		assertEquals(1, searchBean.find(metadata, "tog", null, 1).getEntries().size());
 		assertEquals(1, searchBean.find(metadata, "ark", null, 1).getEntries().size());
 		assertEquals(2, searchBean.find(metadata, "BUSS", null, 1).getEntries().size());
+        assertEquals(2, searchBean.find(metadata, "BU*", null, 1).getEntries().size());
 
-		assertEquals(0, searchBean.find(metadata, "Energi", null, 2).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "Energi", null, 2).getEntries().size());
 		assertEquals(0, searchBean.find(metadata, "km", null, 2).getEntries().size());
 		assertEquals(0, searchBean.find(metadata, "tog", null, 2).getEntries().size());
 		assertEquals(0, searchBean.find(metadata, "ark", null, 2).getEntries().size());

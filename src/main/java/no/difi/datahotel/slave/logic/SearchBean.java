@@ -4,10 +4,8 @@ import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.Result;
 import no.difi.datahotel.util.Filesystem;
 import org.apache.lucene.document.Fieldable;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Component;
@@ -25,9 +23,9 @@ import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_INDEX;
 public class SearchBean {
 
 	private int num = 100;
-	private QueryParser parser = new QueryParser(IndexBean.version, "searchable", IndexBean.analyzer);
+    // private QueryParser parser = new QueryParser(IndexBean.version, "searchable", IndexBean.analyzer);
 
-	private Map<String, Directory> directories = new HashMap<String, Directory>();
+    private Map<String, Directory> directories = new HashMap<String, Directory>();
 	private Map<String, IndexSearcher> searchers = new HashMap<String, IndexSearcher>();
 
 	public void update(Metadata metadata) {
@@ -51,27 +49,42 @@ public class SearchBean {
 	}
 
 	public Result find(Metadata metadata, String q, Map<String, String> lookup, int page) {
-		StringBuilder query = new StringBuilder();
-		if (lookup != null)
-			for (String key : lookup.keySet())
-				query.append(query.length() == 0 ? "" : " AND ").append("+").append(key).append(":").append(lookup.get(key));
-		if (q != null && !q.equals(""))
-			query.append(query.length() == 0 ? "" : " AND ").append(q);
+        BooleanQuery booleanQuery = new BooleanQuery();
+        // StringBuilder query = new StringBuilder();
+        if (lookup != null)
+            for (String key : lookup.keySet()) {
+                booleanQuery.add(new BooleanClause(new WildcardQuery(new Term(key, lookup.get(key))), BooleanClause.Occur.MUST));
+                // query.append(query.length() == 0 ? "" : " AND ").append("+").append(key).append(":").append(lookup.get(key));
+            }
+        if (q != null && !q.equals("")) {
+            booleanQuery.add(new BooleanClause(new WildcardQuery(new Term("searchable", q.toLowerCase())), BooleanClause.Occur.SHOULD));
+            // booleanQuery.add(new BooleanClause(new WildcardQuery(new Term(q.toLowerCase())), BooleanClause.Occur.SHOULD));
+            // query.append(query.length() == 0 ? "" : " AND ").append(q);
+        }
 
-		Result result = new Result();
+        Result result = new Result();
 		result.setPage(page);
 
 		IndexSearcher searcher = searchers.get(metadata.getLocation());
 		if (searcher != null) {
 			try {
-				TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
-				List<Map<String, String>> rdocs = convert(searcher, docs);
+                TopDocs docs = searcher.search(booleanQuery, num * page);
+
+                // System.out.println(query);
+                // System.out.println(parser.parse(query.toString()));
+                System.out.println(booleanQuery);
+
+                // TopDocs docs = searcher.search(parser.parse(query.toString()), num * page);
+                List<Map<String, String>> rdocs = convert(searcher, docs);
 
 				result.setEntries((rdocs.size() < num * (page - 1)) ? new ArrayList<Map<String, String>>() : rdocs.subList(
 						num * (page - 1), rdocs.size()));
 				result.setPosts(docs.totalHits);
-			} catch (Exception e) {
-                metadata.getLogger().warning("Error in search: " + query.toString() + " - Reason: " + e.getClass().getSimpleName());
+                // } catch (ParseException e) {
+                //     throw new DatahotelException("Unable to parse query.");
+            } catch (Exception e) {
+                // metadata.getLogger().warning("Error in search: " + query.toString() + " - Reason: " + e.getClass().getSimpleName());
+                metadata.getLogger().warning("Error in search: " + booleanQuery.toString() + " - Reason: " + e.getClass().getSimpleName());
             }
 		}
 
