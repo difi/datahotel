@@ -1,18 +1,8 @@
 package no.difi.datahotel.slave.logic;
 
-import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_INDEX;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.Result;
 import no.difi.datahotel.util.Filesystem;
-
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
@@ -21,6 +11,15 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_INDEX;
 
 @Component("search")
 public class SearchBean {
@@ -72,8 +71,8 @@ public class SearchBean {
 						num * (page - 1), rdocs.size()));
 				result.setPosts(docs.totalHits);
 			} catch (Exception e) {
-				metadata.getLogger().warning("Error in search: " + query.toString() + " - Query: " + query.toString());
-			}
+                metadata.getLogger().warning("Error in search: " + query.toString() + " - Reason: " + e.getClass().getSimpleName());
+            }
 		}
 
 		return result;
