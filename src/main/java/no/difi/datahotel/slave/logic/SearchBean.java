@@ -81,7 +81,7 @@ public class SearchBean {
 						num * (page - 1), rdocs.size()));
 				result.setPosts(docs.totalHits);
                 // } catch (ParseException e) {
-                throw new Exception("Unable to parse query.");
+                // throw new Exception("Unable to parse query.");
             } catch (Exception e) {
                 // metadata.getLogger().warning("Error in search: " + query.toString() + " - Reason: " + e.getClass().getSimpleName());
                 metadata.getLogger().warning("Error in search: " + booleanQuery.toString() + " - Reason: " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
