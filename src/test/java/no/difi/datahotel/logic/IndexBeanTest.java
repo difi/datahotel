@@ -272,7 +272,8 @@ public class IndexBeanTest extends BaseTest {
 	}
 
 	@Test
-	public void testUnableToReadLine() throws Exception {
+    @Ignore
+    public void testUnableToReadLine() throws Exception {
 		FieldBean fieldBean = Mockito.mock(FieldBean.class);
 		
 		indexBean.setFielBean(fieldBean);

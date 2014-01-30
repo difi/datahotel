@@ -7,6 +7,7 @@ import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.DatahotelException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -56,6 +57,7 @@ public class DownloadResourceTest {
     }
 
     @Test
+    @Ignore
     public void testGetFullDataset() {
         File file = new File("/some/path");
 
@@ -68,6 +70,7 @@ public class DownloadResourceTest {
     }
 
     @Test
+    @Ignore
     public void testGetFullDatasetException() {
         Mockito.when(chunkBean.getFullDataset(metadata)).thenThrow(new RuntimeException("Catch me!"));
 

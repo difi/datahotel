@@ -32,156 +32,155 @@ public class BrowseResource extends BaseResource {
     private static Logger logger = Logger.getLogger(BrowseResource.class.getSimpleName());
 
     @Autowired
-	private DataBean dataBean;
-	@Autowired
-	private FieldBean fieldBean;
-	@Autowired
-	private ChunkBean chunkBean;
-	@Autowired
-	private SearchBean searchBean;
+    private DataBean dataBean;
+    @Autowired
+    private FieldBean fieldBean;
+    @Autowired
+    private ChunkBean chunkBean;
+    @Autowired
+    private SearchBean searchBean;
 
-	@GET
-	public Response getRoot(@PathParam("type") String type) {
-		return getDataset(type, "");
-	}
+    @GET
+    public Response getRoot(@PathParam("type") String type) {
+        return getDataset(type, "");
+    }
 
-	@GET
-	@Path("_all")
-	public Response getAllDatasets(@PathParam("type") String type) {
-		Formater dataFormat = Formater.get(type);
+    @GET
+    @Path("_all")
+    public Response getAllDatasets(@PathParam("type") String type) {
+        Formater dataFormat = Formater.get(type);
 
-		RequestContext context = new RequestContext(uriInfo);
+        RequestContext context = new RequestContext(uriInfo);
 
-		try {
-			List<MetadataLight> list = new ArrayList<MetadataLight>();
-			for (Metadata m : dataBean.getDatasets())
-				if (m.getParent() == null || m.getParent().isActive())
-					list.add(m.light());
+        try {
+            List<MetadataLight> list = new ArrayList<MetadataLight>();
+            for (Metadata m : dataBean.getDatasets())
+                if (m.getParent() == null || m.getParent().isActive())
+                    list.add(m.light());
 
-			if (list.size() == 0)
-				return returnNotFound("No elements found.");
+            if (list.size() == 0)
+                return returnNotFound("No elements found.");
 
-			return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime())
-					.header("Access-Control-Allow-Origin", "*")
-					.build();
-		} catch (DatahotelException e) {
-			throw e.setFormater(dataFormat);
-		} catch (Exception e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
-			throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
-		}
-	}
-
-	@GET
-	@Path("{location: [a-z0-9\\-/]*}")
-	public Response getDataset(@PathParam("type") String type, @PathParam("location") String location) {
-		Formater dataFormat = Formater.get(type);
-
-		try {
-			Metadata metadata = dataBean.getChild(location);
-			checkNotModified(metadata);
-
-			if (!metadata.isDataset()) {
-				List<MetadataLight> list = dataBean.getChildren(location);
-				if (list == null)
-					return returnNotFound("No elements found.");
-
-				RequestContext context = new RequestContext(uriInfo);
-
-				return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime()).build();
-			}
-
-			List<FieldLight> fields = fieldBean.getFields(metadata);
-			RequestContext context = new RequestContext(uriInfo, fields);
-
-			Result result;
-			if (context.isSearch())
-				result = searchBean.find(metadata, context.getQuery(), context.getLookup(), context.getPage());
-			else
-				result = chunkBean.get(metadata, context.getPage());
-
-			if (result == null)
-				throw new DatahotelException("No data retrieved.");
-
-			return Response.ok(dataFormat.format(result, context)).type(dataFormat.getMime())
-					.header("ETag", metadata.getUpdated())
-					.header("X-Datahotel-Page", result.getPage())
-					.header("X-Datahotel-Total-Pages", result.getPages())
-					.header("X-Datahotel-Total-Posts", result.getPosts())
-					.header("Access-Control-Allow-Origin", "*")
-					.build();
-
-		} catch (DatahotelException e) {
-            logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - Location: " + location + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
+            return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
+        } catch (DatahotelException e) {
             throw e.setFormater(dataFormat);
-		} catch (Exception e) {
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+            throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
+        }
+    }
+
+    @GET
+    @Path("{location: [a-z0-9\\-/]*}")
+    public Response getDataset(@PathParam("type") String type, @PathParam("location") String location) {
+        Formater dataFormat = Formater.get(type);
+
+        try {
+            Metadata metadata = dataBean.getChild(location);
+            checkNotModified(metadata);
+
+            if (!metadata.isDataset()) {
+                List<MetadataLight> list = dataBean.getChildren(location);
+                if (list == null)
+                    return returnNotFound("No elements found.");
+
+                RequestContext context = new RequestContext(uriInfo);
+
+                return Response.ok(dataFormat.format(list, context)).type(dataFormat.getMime()).build();
+            }
+
+            List<FieldLight> fields = fieldBean.getFields(metadata);
+            RequestContext context = new RequestContext(uriInfo, fields);
+
+            Result result;
+            if (context.isSearch())
+                result = searchBean.find(metadata, context.getQuery(), context.getLookup(), context.getPage());
+            else
+                result = chunkBean.get(metadata, context.getPage());
+
+            if (result == null)
+                throw new DatahotelException("No data retrieved.");
+
+            return Response.ok(dataFormat.format(result, context)).type(dataFormat.getMime())
+                    .header("ETag", metadata.getUpdated())
+                    .header("X-Datahotel-Page", result.getPage())
+                    .header("X-Datahotel-Total-Pages", result.getPages())
+                    .header("X-Datahotel-Total-Posts", result.getPosts())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
+
+        } catch (DatahotelException e) {
+            throw e.setFormater(dataFormat);
+        } catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - Location: " + location + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
             throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
-		}
-	}
+        }
+    }
 
-	@GET
-	@Path("{location: [a-z0-9\\-/]*}/meta")
-	public Response getMeta(@PathParam("type") String type, @PathParam("location") String location) {
-		Formater dataFormat = Formater.get(type);
+    @GET
+    @Path("{location: [a-z0-9\\-/]*}/meta")
+    public Response getMeta(@PathParam("type") String type, @PathParam("location") String location) {
+        Formater dataFormat = Formater.get(type);
 
-		try {
-			Metadata metadata = dataBean.getChild(location);
-			checkNotModified(metadata);
+        try {
+            Metadata metadata = dataBean.getChild(location);
+            checkNotModified(metadata);
 
-			return Response.ok(dataFormat.format(metadata.light(), new RequestContext(uriInfo)))
-					.type(dataFormat.getMime())
-					.header("ETag", metadata.getUpdated())
-					.header("Access-Control-Allow-Origin", "*")
-					.build();
+            return Response.ok(dataFormat.format(metadata.light(), new RequestContext(uriInfo)))
+                    .type(dataFormat.getMime())
+                    .header("ETag", metadata.getUpdated())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
 
-		} catch (DatahotelException e) {
-			throw e.setFormater(dataFormat);
-		} catch (Exception e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
-			throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
-		}
-	}
+        } catch (DatahotelException e) {
+            throw e.setFormater(dataFormat);
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+            throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
+        }
+    }
 
-	@GET
-	@Path("{location: [a-z0-9\\-/]*}/fields")
-	public Response getFields(@PathParam("type") String type, @PathParam("location") String location) {
-		Formater dataFormat = Formater.get(type);
-		try {
-	
-			Metadata metadata = dataBean.getChild(location);
-			checkNotModified(metadata);
+    @GET
+    @Path("{location: [a-z0-9\\-/]*}/fields")
+    public Response getFields(@PathParam("type") String type, @PathParam("location") String location) {
+        Formater dataFormat = Formater.get(type);
+        try {
 
-			List<FieldLight> fields = fieldBean.getFields(metadata);
-			if (fields.size() == 0)
-				return returnNotFound("Metadata with that name could not be found.");
+            Metadata metadata = dataBean.getChild(location);
+            checkNotModified(metadata);
 
-			return Response.ok(dataFormat.format(fields, new RequestContext(uriInfo, fields)))
-					.type(dataFormat.getMime())
-					.header("ETag", metadata.getUpdated())
-					.header("Access-Control-Allow-Origin", "*")
-					.build();
-		} catch (DatahotelException e) {
-			throw e.setFormater(dataFormat);
-		} catch (Exception e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
-			throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
-		}
-	}
+            List<FieldLight> fields = fieldBean.getFields(metadata);
+            if (fields.size() == 0)
+                return returnNotFound("Metadata with that name could not be found.");
 
-	public void setDataEJB(DataBean dataEJB) {
-		this.dataBean = dataEJB;
-	}
+            return Response.ok(dataFormat.format(fields, new RequestContext(uriInfo, fields)))
+                    .type(dataFormat.getMime())
+                    .header("ETag", metadata.getUpdated())
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
+        } catch (DatahotelException e) {
+            throw e.setFormater(dataFormat);
+        } catch (Exception e) {
+            logger.log(Level.WARNING, e.getMessage(), e);
+            throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
+        }
+    }
 
-	public void setFieldEJB(FieldBean fieldEJB) {
-		this.fieldBean = fieldEJB;
-	}
+    public void setDataEJB(DataBean dataEJB) {
+        this.dataBean = dataEJB;
+    }
 
-	public void setChunkEJB(ChunkBean chunkEJB) {
-		this.chunkBean = chunkEJB;
-	}
+    public void setFieldEJB(FieldBean fieldEJB) {
+        this.fieldBean = fieldEJB;
+    }
 
-	public void setSearchEJB(SearchBean searchEJB) {
-		this.searchBean = searchEJB;
-	}
+    public void setChunkEJB(ChunkBean chunkEJB) {
+        this.chunkBean = chunkEJB;
+    }
+
+    public void setSearchEJB(SearchBean searchEJB) {
+        this.searchBean = searchEJB;
+    }
 }
