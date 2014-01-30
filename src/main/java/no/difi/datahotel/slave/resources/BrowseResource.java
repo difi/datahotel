@@ -112,7 +112,8 @@ public class BrowseResource extends BaseResource {
 					.build();
 
 		} catch (DatahotelException e) {
-			throw e.setFormater(dataFormat);
+            logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - Location: " + location + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
+            throw e.setFormater(dataFormat);
 		} catch (Exception e) {
             logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - Location: " + location + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
             throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
