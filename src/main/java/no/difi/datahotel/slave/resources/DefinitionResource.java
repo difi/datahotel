@@ -1,35 +1,33 @@
 package no.difi.datahotel.slave.resources;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import no.difi.datahotel.model.DefinitionLight;
 import no.difi.datahotel.model.Field;
 import no.difi.datahotel.slave.logic.FieldBean;
 import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.Formater;
 import no.difi.datahotel.util.RequestContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Path("/api/{type}/_def/")
 @Component
 @Scope("request")
 public class DefinitionResource extends BaseResource {
 
-	Logger logger = Logger.getLogger(DefinitionResource.class.getSimpleName());
+    private static Logger logger = Logger.getLogger(DefinitionResource.class.getSimpleName());
 
-	@Autowired
+    @Autowired
 	private FieldBean fieldBean;
 
 	@GET

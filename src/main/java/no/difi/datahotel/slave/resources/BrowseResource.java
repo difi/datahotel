@@ -1,19 +1,5 @@
 package no.difi.datahotel.slave.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.MetadataLight;
@@ -25,15 +11,27 @@ import no.difi.datahotel.slave.logic.SearchBean;
 import no.difi.datahotel.util.DatahotelException;
 import no.difi.datahotel.util.Formater;
 import no.difi.datahotel.util.RequestContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Path("/api/{type}/")
 @Component
 @Scope("request")
 public class BrowseResource extends BaseResource {
 
-	Logger logger = Logger.getLogger(BrowseResource.class.getSimpleName());
+    private static Logger logger = Logger.getLogger(BrowseResource.class.getSimpleName());
 
-	@Autowired
+    @Autowired
 	private DataBean dataBean;
 	@Autowired
 	private FieldBean fieldBean;
@@ -116,8 +114,8 @@ public class BrowseResource extends BaseResource {
 		} catch (DatahotelException e) {
 			throw e.setFormater(dataFormat);
 		} catch (Exception e) {
-			logger.log(Level.WARNING, e.getMessage(), e);
-			throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
+            logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - Location: " + location + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
+            throw new DatahotelException(e.getMessage()).setFormater(dataFormat);
 		}
 	}
 
