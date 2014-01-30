@@ -1,13 +1,9 @@
 package no.difi.datahotel.util;
 
+import no.difi.datahotel.util.formater.*;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import no.difi.datahotel.util.formater.CSVFormater;
-import no.difi.datahotel.util.formater.JSONFormater;
-import no.difi.datahotel.util.formater.JSONPFormater;
-import no.difi.datahotel.util.formater.XMLFormater;
-import no.difi.datahotel.util.formater.YAMLFormater;
 
 
 /**
@@ -68,8 +64,8 @@ public enum Formater {
 	/**
 	 * Formats an object if support for it has been implemented.
 	 * @param object Object to format.
-	 * @param metadata Metadata.
-	 * @return Returns a string representation of the object supplied.
+     * @param context Context.
+     * @return Returns a string representation of the object supplied.
 	 */
 	public String format(Object object, RequestContext context) {
 		try
@@ -77,16 +73,16 @@ public enum Formater {
 			return cls.format(object, context);
 		} catch (Exception e)
 		{
-			logger.log(Level.WARNING, "Exception in error presenter.", e);
-			return formatError(e, context);
+            logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
+            return formatError(e, context);
 		}
 	}
 	
 	/**
 	 * Formats an object into an error.
-	 * @param error
-	 * @param metadata
-	 * @return
+     * @param exception
+     * @param context
+     * @return
 	 */
 	public String formatError(Exception exception, RequestContext context) {
 		try
@@ -94,8 +90,8 @@ public enum Formater {
 			return cls.format(new SimpleError(exception.getMessage()), context);
 		} catch (Exception e)
 		{
-			logger.log(Level.WARNING, "Exception in error presenter.", e);
-			return "Error";
-		}
+            logger.log(Level.WARNING, e.getMessage() + " - Format: " + type + " - " + e.getClass().getSimpleName() + " - " + e.getStackTrace()[0].toString());
+            return "Error";
+        }
 	}
 }
