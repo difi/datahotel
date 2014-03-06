@@ -1,19 +1,16 @@
 package no.difi.datahotel.model;
 
-import static no.difi.datahotel.util.Filesystem.FILE_DATASET;
-import static no.difi.datahotel.util.Filesystem.FILE_METADATA;
-import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
+import no.difi.datahotel.util.Disk;
+import no.difi.datahotel.util.Filesystem;
+import no.difi.datahotel.util.MetadataLogger;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import no.difi.datahotel.util.Disk;
-import no.difi.datahotel.util.Filesystem;
+import static no.difi.datahotel.util.Filesystem.*;
 
 /**
  * Metadata is an unit in the "file system" available to users, and can be a
@@ -27,8 +24,8 @@ public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 	private boolean active = true;
 	private boolean dataset = false;
 	private Metadata parent;
-	private Logger logger = Logger.getAnonymousLogger();
-	private Long version;
+    private MetadataLogger logger = new MetadataLogger(this);
+    private Long version;
 
 	// Values for users
 	private String shortName;
@@ -83,7 +80,6 @@ public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 
 	public void setLocation(String location) {
 		this.location = location;
-		this.logger = Logger.getLogger(location);
 	}
 
 	@XmlTransient
@@ -117,12 +113,12 @@ public class Metadata implements Comparable<Metadata>, Light<MetadataLight> {
 	}
 
 	@XmlTransient
-	public Logger getLogger() {
-		return logger;
+    public MetadataLogger getLogger() {
+        return logger;
 	}
 
-	public void setLogger(Logger logger) {
-		this.logger = logger;
+    public void setLogger(MetadataLogger logger) {
+        this.logger = logger;
 	}
 
 	@XmlTransient

@@ -3,12 +3,12 @@ package no.difi.datahotel.logic;
 import no.difi.datahotel.BaseTest;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.Filesystem;
+import no.difi.datahotel.util.MetadataLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_CHUNK;
 import static org.junit.Assert.*;
@@ -17,13 +17,13 @@ public class ChunkBeanTest extends BaseTest {
 
     private ChunkBean chunkBean;
 
-    static Logger logger;
+    static MetadataLogger logger;
     static Metadata metadata;
 
     @Before
     public void before() throws Exception {
         chunkBean = new ChunkBean();
-        logger = Mockito.mock(Logger.class);
+        logger = Mockito.mock(MetadataLogger.class);
 
         metadata = new Metadata();
         metadata.setUpdated(System.currentTimeMillis());

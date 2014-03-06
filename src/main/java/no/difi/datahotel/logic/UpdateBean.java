@@ -1,10 +1,9 @@
 package no.difi.datahotel.logic;
 
 import no.difi.datahotel.model.Metadata;
+import no.difi.datahotel.util.MetadataLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.logging.Logger;
 
 @Component("update")
 public class UpdateBean {
@@ -21,7 +20,7 @@ public class UpdateBean {
     private DataBean dataBean;
 
     public void validate(Metadata metadata) {
-        Logger logger = metadata.getLogger();
+        MetadataLogger logger = metadata.getLogger();
 
         if (metadata.getUpdated() == null) {
             logger.warning("Missing timestamp in metadata file.");

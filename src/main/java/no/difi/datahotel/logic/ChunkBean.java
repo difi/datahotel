@@ -2,10 +2,7 @@ package no.difi.datahotel.logic;
 
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.model.Result;
-import no.difi.datahotel.util.CSVReader;
-import no.difi.datahotel.util.CSVWriter;
-import no.difi.datahotel.util.Filesystem;
-import no.difi.datahotel.util.Timestamp;
+import no.difi.datahotel.util.*;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -14,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static no.difi.datahotel.util.Filesystem.FOLDER_CACHE_CHUNK;
 import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
@@ -42,7 +38,7 @@ public class ChunkBean {
     }
 
     public void update(Metadata metadata) {
-        Logger logger = metadata.getLogger();
+        MetadataLogger logger = metadata.getLogger();
         Timestamp ts = new Timestamp(FOLDER_CACHE_CHUNK, metadata.getLocation(), "timestamp");
 
         if (metadata.getUpdated() == ts.getTimestamp()) {
@@ -99,7 +95,7 @@ public class ChunkBean {
     }
 
     public Result get(Metadata metadata, long page) {
-        Logger logger = metadata.getLogger();
+        MetadataLogger logger = metadata.getLogger();
 
         Result result = new Result();
         result.setPage(page);

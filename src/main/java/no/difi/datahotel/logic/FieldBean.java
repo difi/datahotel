@@ -3,6 +3,7 @@ package no.difi.datahotel.logic;
 import no.difi.datahotel.model.*;
 import no.difi.datahotel.util.Disk;
 import no.difi.datahotel.util.Filesystem;
+import no.difi.datahotel.util.MetadataLogger;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -10,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static no.difi.datahotel.util.Filesystem.FILE_DEFINITIONS;
 import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
@@ -45,7 +45,7 @@ public class FieldBean {
     public void update(Metadata metadata) {
         updateDefinitions();
 
-        Logger logger = metadata.getLogger();
+        MetadataLogger logger = metadata.getLogger();
 
         logger.info("Reading fields.");
 

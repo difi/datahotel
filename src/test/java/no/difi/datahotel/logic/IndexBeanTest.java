@@ -5,6 +5,7 @@ import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.CSVReader;
 import no.difi.datahotel.util.Filesystem;
+import no.difi.datahotel.util.MetadataLogger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static no.difi.datahotel.util.Filesystem.FILE_DATASET;
 import static no.difi.datahotel.util.Filesystem.FOLDER_SLAVE;
@@ -25,102 +25,102 @@ import static org.mockito.Mockito.*;
 
 public class IndexBeanTest extends BaseTest {
 
-	private Metadata metadata;
+    private Metadata metadata;
 
-	private IndexBean indexBean;
-	private FieldBean fieldBean;
-	private SearchBean searchBean;
-	
-	private Logger logger;
+    private IndexBean indexBean;
+    private FieldBean fieldBean;
+    private SearchBean searchBean;
 
-	@Before
-	public void before() throws Exception {
-		fieldBean = new FieldBean();
-		logger = Mockito.mock(Logger.class);
+    private MetadataLogger logger;
 
-		indexBean = new IndexBean();
-		indexBean.setFielBean(fieldBean);
+    @Before
+    public void before() throws Exception {
+        fieldBean = new FieldBean();
+        logger = Mockito.mock(MetadataLogger.class);
 
-		searchBean = new SearchBean();
-		
-		metadata = new Metadata();
-		metadata.setLocation("difi/miljo/kalkulator");
-		metadata.setUpdated(System.currentTimeMillis());
-		metadata.setLogger(logger);
-	}
+        indexBean = new IndexBean();
+        indexBean.setFielBean(fieldBean);
 
-	@Test
-	public void testIndex() throws Exception {
-		fieldBean.update(metadata);
-		indexBean.update(metadata);
-		searchBean.update(metadata);
-		
-		verify(logger).info("Reading fields.");
-		verify(logger).info("Building index.");
-	}
+        searchBean = new SearchBean();
 
-	@Test
-	public void testNoSource() {
-		metadata.setLocation("difi/miljo/no-exists");
-		metadata.setLogger(logger);
-		
-		indexBean.update(metadata);
-		searchBean.update(metadata);
-		
-		// TODO Verify logger.
-	}
+        metadata = new Metadata();
+        metadata.setLocation("difi/miljo/kalkulator");
+        metadata.setUpdated(System.currentTimeMillis());
+        metadata.setLogger(logger);
+    }
 
-	@Test
-	public void testNoIndex() {
-		metadata.setLocation("no/dataset/here");
-		metadata.setLogger(logger);
-		assertEquals(0, searchBean.find(metadata, "kings", null, 1).getEntries().size());
-		
-		// TODO Verify logger.
-	}
+    @Test
+    public void testIndex() throws Exception {
+        fieldBean.update(metadata);
+        indexBean.update(metadata);
+        searchBean.update(metadata);
 
-	@Test
-	public void testSearch() throws Exception {
-		testIndex();
+        verify(logger).info("Reading fields.");
+        verify(logger).info("Building index.");
+    }
+
+    @Test
+    public void testNoSource() {
+        metadata.setLocation("difi/miljo/no-exists");
+        metadata.setLogger(logger);
+
+        indexBean.update(metadata);
+        searchBean.update(metadata);
+
+        // TODO Verify logger.
+    }
+
+    @Test
+    public void testNoIndex() {
+        metadata.setLocation("no/dataset/here");
+        metadata.setLogger(logger);
+        assertEquals(0, searchBean.find(metadata, "kings", null, 1).getEntries().size());
+
+        // TODO Verify logger.
+    }
+
+    @Test
+    public void testSearch() throws Exception {
+        testIndex();
 
         assertEquals(0, searchBean.find(metadata, "9908:*", null, 1).getEntries().size());
 
         assertEquals(2, searchBean.find(metadata, "Energi", null, 1).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "km", null, 1).getEntries().size());
-		assertEquals(1, searchBean.find(metadata, "tog", null, 1).getEntries().size());
-		assertEquals(1, searchBean.find(metadata, "ark", null, 1).getEntries().size());
-		assertEquals(2, searchBean.find(metadata, "BUSS", null, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "km", null, 1).getEntries().size());
+        assertEquals(1, searchBean.find(metadata, "tog", null, 1).getEntries().size());
+        assertEquals(1, searchBean.find(metadata, "ark", null, 1).getEntries().size());
+        assertEquals(2, searchBean.find(metadata, "BUSS", null, 1).getEntries().size());
         assertEquals(2, searchBean.find(metadata, "BU*", null, 1).getEntries().size());
 
         assertEquals(0, searchBean.find(metadata, "Energi", null, 2).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "km", null, 2).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "tog", null, 2).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "ark", null, 2).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "BUSS", null, 2).getEntries().size());
-	}
+        assertEquals(0, searchBean.find(metadata, "km", null, 2).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "tog", null, 2).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "ark", null, 2).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "BUSS", null, 2).getEntries().size());
+    }
 
-	@Test
-	@Ignore
-	public void testEnhetsregisteret() throws Exception {
-		metadata.setLocation("brreg/enhetsregisteret");
-		
-		indexBean.update(metadata);
-		searchBean.update(metadata);
+    @Test
+    @Ignore
+    public void testEnhetsregisteret() throws Exception {
+        metadata.setLocation("brreg/enhetsregisteret");
 
-		Map<String, String> query;
-		
-		query = new HashMap<String, String>();
-		query.put("organisasjonsform", "BA");
-		assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
+        indexBean.update(metadata);
+        searchBean.update(metadata);
 
-		query = new HashMap<String, String>();
-		query.put("organisasjonsform", "DA");
-		assertEquals(15, searchBean.find(metadata, null, query, 1).getEntries().size());
+        Map<String, String> query;
 
-		query = new HashMap<String, String>();
-		query.put("organisasjonsform", "AS");
-		assertEquals(84, searchBean.find(metadata, null, query, 1).getEntries().size());
-	}
+        query = new HashMap<String, String>();
+        query.put("organisasjonsform", "BA");
+        assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("organisasjonsform", "DA");
+        assertEquals(15, searchBean.find(metadata, null, query, 1).getEntries().size());
+
+        query = new HashMap<String, String>();
+        query.put("organisasjonsform", "AS");
+        assertEquals(84, searchBean.find(metadata, null, query, 1).getEntries().size());
+    }
 
     @Test
     public void testElmaParticipants() throws Exception {
@@ -190,148 +190,148 @@ public class IndexBeanTest extends BaseTest {
     }
 
     @Test
-	public void testDelete() {
-		indexBean.delete("difi/miljo/kalkulator");
-	}
+    public void testDelete() {
+        indexBean.delete("difi/miljo/kalkulator");
+    }
 
-	@Test
-	public void testLookupAdv() throws Exception {
-		metadata.setLocation("difi/geo/kommune");
-		metadata.setLogger(logger);
+    @Test
+    public void testLookupAdv() throws Exception {
+        metadata.setLocation("difi/geo/kommune");
+        metadata.setLogger(logger);
 
-		fieldBean.update(metadata);
-		indexBean.update(metadata);
-		searchBean.update(metadata);
+        fieldBean.update(metadata);
+        indexBean.update(metadata);
+        searchBean.update(metadata);
 
-		Map<String, String> query = new HashMap<String, String>();
-		query.put("kommune", "1401");
-		query.put("fylke", "14");
-		assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, null, query, 2).getEntries().size());
+        Map<String, String> query = new HashMap<String, String>();
+        query.put("kommune", "1401");
+        query.put("fylke", "14");
+        assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, null, query, 2).getEntries().size());
 
-		query.clear();
-		query.put("kommune", "1401");
-		assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, null, query, 2).getEntries().size());
+        query.clear();
+        query.put("kommune", "1401");
+        assertEquals(1, searchBean.find(metadata, null, query, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, null, query, 2).getEntries().size());
 
-		query.clear();
-		query.put("fylke", "14");
-		assertEquals(26, searchBean.find(metadata, "", query, 1).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "", query, 2).getEntries().size());
+        query.clear();
+        query.put("fylke", "14");
+        assertEquals(26, searchBean.find(metadata, "", query, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "", query, 2).getEntries().size());
 
-		query.clear();
-		query.put("navn", "l*anger");
-		assertEquals(2, searchBean.find(metadata, "", query, 1).getEntries().size());
-		assertEquals(0, searchBean.find(metadata, "", query, 2).getEntries().size());
+        query.clear();
+        query.put("navn", "l*anger");
+        assertEquals(2, searchBean.find(metadata, "", query, 1).getEntries().size());
+        assertEquals(0, searchBean.find(metadata, "", query, 2).getEntries().size());
 
-		indexBean.delete("difi/geo/kommune");
-	}
+        indexBean.delete("difi/geo/kommune");
+    }
 
-	@Test
-	public void test10000() throws Exception {
-		FieldBean fieldBean = Mockito.mock(FieldBean.class);
-		indexBean.setFielBean(fieldBean);
+    @Test
+    public void test10000() throws Exception {
+        FieldBean fieldBean = Mockito.mock(FieldBean.class);
+        indexBean.setFielBean(fieldBean);
 
-		Logger logger = Mockito.mock(Logger.class);
+        MetadataLogger logger = Mockito.mock(MetadataLogger.class);
 
-		CSVReader parser = Mockito.mock(CSVReader.class);
-		Field settingsFactoryField = IndexBean.class.getDeclaredField("csvReaderFactory");
-		settingsFactoryField.setAccessible(true);
-		settingsFactoryField.set(indexBean, parser);
+        CSVReader parser = Mockito.mock(CSVReader.class);
+        Field settingsFactoryField = IndexBean.class.getDeclaredField("csvReaderFactory");
+        settingsFactoryField.setAccessible(true);
+        settingsFactoryField.set(indexBean, parser);
 
-		Metadata metadata = new Metadata();
-		metadata.setLocation("whoknows");
-		metadata.setUpdated(10L);
-		metadata.setLogger(logger);
+        Metadata metadata = new Metadata();
+        metadata.setLocation("whoknows");
+        metadata.setUpdated(10L);
+        metadata.setLogger(logger);
 
-		File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
+        File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
 
-		List<FieldLight> fields = new ArrayList<FieldLight>();
-		no.difi.datahotel.model.Field field;
-		field = new no.difi.datahotel.model.Field();
-		field.setShortName("field1");
-		field.setSearchable(false);
-		fields.add(field.light());
+        List<FieldLight> fields = new ArrayList<FieldLight>();
+        no.difi.datahotel.model.Field field;
+        field = new no.difi.datahotel.model.Field();
+        field.setShortName("field1");
+        field.setSearchable(false);
+        fields.add(field.light());
 
-		Map<String, String> line = new HashMap<String, String>();
-		line.put("field1", "value");
-		
-		when(parser.open(filename)).thenReturn(parser);
-		when(fieldBean.getFields(metadata)).thenReturn(fields);
-		when(parser.hasNext()).thenReturn(true);
-		when(parser.getNextLine()).thenReturn(line);
-		doThrow(new RuntimeException()).when(logger).info("Document 20000");
-		
-		indexBean.update(metadata);
-		
-		verify(parser, times(20000)).getNextLine();
-		
-		verify(logger).info("Building index.");
-		verify(logger).info("Document 10000");
-		verify(logger).info("Document 20000");
-	}
+        Map<String, String> line = new HashMap<String, String>();
+        line.put("field1", "value");
 
-	@Test
+        when(parser.open(filename)).thenReturn(parser);
+        when(fieldBean.getFields(metadata)).thenReturn(fields);
+        when(parser.hasNext()).thenReturn(true);
+        when(parser.getNextLine()).thenReturn(line);
+        doThrow(new RuntimeException()).when(logger).info("Document 20000");
+
+        indexBean.update(metadata);
+
+        verify(parser, times(20000)).getNextLine();
+
+        verify(logger).info("Building index.");
+        verify(logger).info("Document 10000");
+        verify(logger).info("Document 20000");
+    }
+
+    @Test
     @Ignore
     public void testUnableToReadLine() throws Exception {
-		FieldBean fieldBean = Mockito.mock(FieldBean.class);
-		
-		indexBean.setFielBean(fieldBean);
+        FieldBean fieldBean = Mockito.mock(FieldBean.class);
 
-		Logger logger = Mockito.mock(Logger.class);
+        indexBean.setFielBean(fieldBean);
 
-		CSVReader parser = Mockito.mock(CSVReader.class);
-		Field settingsFactoryField = IndexBean.class.getDeclaredField("csvReaderFactory");
-		settingsFactoryField.setAccessible(true);
-		settingsFactoryField.set(indexBean, parser);
+        MetadataLogger logger = Mockito.mock(MetadataLogger.class);
 
-		Metadata metadata = new Metadata();
-		metadata.setLocation("whoknows2");
-		metadata.setUpdated(10L);
-		metadata.setLogger(logger);
-		
-		File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
+        CSVReader parser = Mockito.mock(CSVReader.class);
+        Field settingsFactoryField = IndexBean.class.getDeclaredField("csvReaderFactory");
+        settingsFactoryField.setAccessible(true);
+        settingsFactoryField.set(indexBean, parser);
 
-		List<FieldLight> fields = new ArrayList<FieldLight>();
-		no.difi.datahotel.model.Field field;
-		field = new no.difi.datahotel.model.Field();
-		field.setShortName("field1");
-		field.setSearchable(false);
-		fields.add(field.light());
+        Metadata metadata = new Metadata();
+        metadata.setLocation("whoknows2");
+        metadata.setUpdated(10L);
+        metadata.setLogger(logger);
 
-		Map<String, String> line = new HashMap<String, String>();
-		line.put("field2", "value");
-		
-		when(parser.open(filename)).thenReturn(parser);
-		when(fieldBean.getFields(metadata)).thenReturn(fields);
-		when(parser.hasNext()).thenReturn(true);
-		when(parser.getNextLine()).thenReturn(line);
-		doThrow(new RuntimeException()).when(logger).info("Document 10000");
-		doThrow(new RuntimeException()).when(logger).info("[NullPointerException][IndexBean.java:88] Unable to index line 1. (null)");
-		
-		indexBean.update(metadata);
-		
-		verify(parser, times(1)).getNextLine();
-		verify(logger).info("Building index.");
-	}
-	
-	@Test
-	public void testUpToDate() {
-		Logger logger = Mockito.mock(Logger.class);
+        File filename = Filesystem.getFile(FOLDER_SLAVE, metadata.getLocation(), FILE_DATASET);
 
-		Metadata metadata = new Metadata();
-		metadata.setLocation("difi/geo/kommune");
-		metadata.setUpdated(System.currentTimeMillis());
-		metadata.setLogger(logger);
-		
-		indexBean.update(metadata);
-		searchBean.update(metadata);
-		
-		verify(logger).info("Building index.");
-		
-		indexBean.update(metadata);
-		searchBean.update(metadata);
+        List<FieldLight> fields = new ArrayList<FieldLight>();
+        no.difi.datahotel.model.Field field;
+        field = new no.difi.datahotel.model.Field();
+        field.setShortName("field1");
+        field.setSearchable(false);
+        fields.add(field.light());
 
-		verify(logger).info("Index up to date.");
-	}
+        Map<String, String> line = new HashMap<String, String>();
+        line.put("field2", "value");
+
+        when(parser.open(filename)).thenReturn(parser);
+        when(fieldBean.getFields(metadata)).thenReturn(fields);
+        when(parser.hasNext()).thenReturn(true);
+        when(parser.getNextLine()).thenReturn(line);
+        doThrow(new RuntimeException()).when(logger).info("Document 10000");
+        doThrow(new RuntimeException()).when(logger).info("[NullPointerException][IndexBean.java:88] Unable to index line 1. (null)");
+
+        indexBean.update(metadata);
+
+        verify(parser, times(1)).getNextLine();
+        verify(logger).info("Building index.");
+    }
+
+    @Test
+    public void testUpToDate() {
+        MetadataLogger logger = Mockito.mock(MetadataLogger.class);
+
+        Metadata metadata = new Metadata();
+        metadata.setLocation("difi/geo/kommune");
+        metadata.setUpdated(System.currentTimeMillis());
+        metadata.setLogger(logger);
+
+        indexBean.update(metadata);
+        searchBean.update(metadata);
+
+        verify(logger).info("Building index.");
+
+        indexBean.update(metadata);
+        searchBean.update(metadata);
+
+        verify(logger).info("Index up to date.");
+    }
 }

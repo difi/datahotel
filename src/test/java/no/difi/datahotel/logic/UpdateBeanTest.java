@@ -2,11 +2,10 @@ package no.difi.datahotel.logic;
 
 import no.difi.datahotel.BaseTest;
 import no.difi.datahotel.model.Metadata;
+import no.difi.datahotel.util.MetadataLogger;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import java.util.logging.Logger;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -20,7 +19,7 @@ public class UpdateBeanTest extends BaseTest {
     private IndexBean indexBean;
     private SearchBean searchBean;
     private DataBean dataBean;
-    private Logger logger;
+    private MetadataLogger logger;
     private Metadata metadata;
 
     @Before
@@ -30,7 +29,7 @@ public class UpdateBeanTest extends BaseTest {
         indexBean = Mockito.mock(IndexBean.class);
         searchBean = Mockito.mock(SearchBean.class);
         dataBean = new DataBean();
-        logger = Mockito.mock(Logger.class);
+        logger = Mockito.mock(MetadataLogger.class);
 
         updateBean = new UpdateBean();
         updateBean.setFieldBean(fieldBean);

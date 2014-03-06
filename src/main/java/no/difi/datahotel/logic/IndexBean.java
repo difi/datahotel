@@ -4,6 +4,7 @@ import no.difi.datahotel.model.FieldLight;
 import no.difi.datahotel.model.Metadata;
 import no.difi.datahotel.util.CSVReader;
 import no.difi.datahotel.util.Filesystem;
+import no.difi.datahotel.util.MetadataLogger;
 import no.difi.datahotel.util.Timestamp;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static no.difi.datahotel.util.Filesystem.*;
 
@@ -44,7 +44,7 @@ public class IndexBean {
 
     @SuppressWarnings("rawtypes")
     public void update(Metadata metadata) {
-        Logger logger = metadata.getLogger();
+        MetadataLogger logger = metadata.getLogger();
         Timestamp ts = new Timestamp(FOLDER_CACHE_INDEX, metadata.getLocation(), "timestamp");
 
         if (metadata.getUpdated() == ts.getTimestamp()) {
