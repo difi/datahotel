@@ -46,7 +46,7 @@ public class DownloadResource extends BaseResource {
         try {
             if (uriInfo.getQueryParameters().containsKey("excel")) {
                 List<InputStream> streams = new ArrayList<InputStream>();
-                streams.add(new ByteArrayInputStream(new byte[]{ (byte) 65279 }));
+                streams.add(new ByteArrayInputStream(new String(new char[] { '\ufeff' }).getBytes("UTF-8")));
                 streams.add(new FileInputStream(chunkBean.getFullDataset(metadata)));
                 InputStream result = new SequenceInputStream(Collections.enumeration(streams));
 
