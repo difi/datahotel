@@ -13,6 +13,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,9 +44,14 @@ public class DownloadResource extends BaseResource {
         Metadata metadata = dataBean.getChild(location);
         checkNotModified(metadata);
         try {
-            if (uriInfo.getQueryParameters().containsKey("excel"))
-                // http://www.progresstalk.com/threads/can-i-force-excel-to-automatically-open-a-utf-8-csv-file-correctly.122183/
-                return Response.ok(chunkBean.getFullDataset(metadata)).type("application~/vnd.ms-excel~; charset=UTF-8").header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
+            if (uriInfo.getQueryParameters().containsKey("excel")) {
+                List<InputStream> streams = new ArrayList<InputStream>();
+                streams.add(new ByteArrayInputStream(new byte[]{ (byte) 65279 }));
+                streams.add(new FileInputStream(chunkBean.getFullDataset(metadata)));
+                InputStream result = new SequenceInputStream(Collections.enumeration(streams));
+
+                return Response.ok(result).type("application~/vnd.ms-excel~; charset=UTF-8").header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
+            }
             else if (uriInfo.getQueryParameters().containsKey("download"))
                 return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
             else

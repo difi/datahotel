@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class MetadataLogger {
 
-    private Logger logger = Logger.getAnonymousLogger();
+    private static Logger logger = Logger.getLogger(MetadataLogger.class.getSimpleName());
     private Metadata metadata;
 
     public MetadataLogger(Metadata metadata) {
