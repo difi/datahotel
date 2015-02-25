@@ -44,7 +44,7 @@ public class DownloadResource extends BaseResource {
         Metadata metadata = dataBean.getChild(location);
         checkNotModified(metadata);
         try {
-            if (uriInfo.getQueryParameters().containsKey("excel")) {
+            if (uriInfo.getQueryParameters().containsKey("excel") || uriInfo.getQueryParameters().containsKey("download")) {
                 List<InputStream> streams = new ArrayList<InputStream>();
                 streams.add(new ByteArrayInputStream(new String(new char[] { '\ufeff' }).getBytes("UTF-8")));
                 streams.add(new FileInputStream(chunkBean.getFullDataset(metadata)));
@@ -52,8 +52,6 @@ public class DownloadResource extends BaseResource {
 
                 return Response.ok(result).type("application~/vnd.ms-excel~; charset=UTF-8").header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
             }
-            else if (uriInfo.getQueryParameters().containsKey("download"))
-                return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("Content-Disposition", "Attachment;filename=" + metadata.getShortName() + ".csv").header("ETag", metadata.getUpdated()).build();
             else
                 return Response.ok(chunkBean.getFullDataset(metadata)).type(dataFormat.getMime()).header("ETag", metadata.getUpdated()).build();
         } catch (Exception e) {
