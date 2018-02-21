@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
 /**
@@ -27,12 +28,14 @@ public class CSVWriter {
 		writer = new CsvWriter(filename, ';', Charset.forName("UTF-8"));
 		writer.setForceQualifier(true);
 		writer.setUseTextQualifier(true);
+		writer.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
 	}
 
 	public CSVWriter(OutputStream stream) throws IOException {
 		writer = new CsvWriter(stream, ';', Charset.forName("UTF-8"));
 		writer.setForceQualifier(true);
 		writer.setUseTextQualifier(true);
+		writer.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
 	}
 	
 	public void fromReader(CSVReader reader, boolean originalHeaders) throws IOException
